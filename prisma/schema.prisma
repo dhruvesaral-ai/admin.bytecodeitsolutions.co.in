@@ -1,0 +1,135 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum GeneralStatus {
+  active
+  inactive
+}
+
+model Carousal {
+  id               String   @id @default(cuid())
+  carousalSlideIds String[] @map("carousal_slide_ids")
+  position         Int
+
+  @@map("carousal")
+}
+
+model CarouselSlide {
+  id                 String  @id @default(cuid())
+  bgImgUrl           String  @map("bg_img_url")
+  order              Int
+  title              String
+  description        String?
+  btnHrefLink        String? @map("btn_href_link")
+  textContainerAlign String? @map("text_container_align")
+  imgUrl             String? @map("img_url")
+  bannerHrefLink     String? @map("banner_href_link")
+
+  @@map("carousel_slide")
+}
+
+model Course {
+  id                   String        @id @default(cuid())
+  name                 String
+  description          String?
+  originalPrice        Decimal?      @db.Decimal(10, 2)
+  discountedPrice      Decimal?      @db.Decimal(10, 2)
+  rating               Float?
+  technologyTags       String[]      @map("technology_tags")
+  duration             String?
+  status               GeneralStatus @default(active)
+  courseImgUrl         String?       @map("course_img_url")
+  syllabus             String?
+  courseCategorieId    String?       @map("course_categorie_id")
+  isPlacementGurranted Boolean       @default(false) @map("is_placement_gurranted")
+  isInSale             Boolean       @default(false) @map("is_in_sale")
+  courseModuleIds      String[]      @map("course_module_ids")
+
+  courseCategorie CourseCategorie? @relation(fields: [courseCategorieId], references: [id])
+
+  @@map("course")
+}
+
+model CourseCategorie {
+  id      String   @id @default(cuid())
+  name    String
+  slug    String   @unique
+  courses Course[]
+
+  @@map("course_categorie")
+}
+
+model CourseModule {
+  id          String  @id @default(cuid())
+  title       String
+  description String?
+
+  @@map("course_module")
+}
+
+model Testimonial {
+  id          String  @id @default(cuid())
+  name        String
+  profileImg  String? @map("profile_img")
+  companyName String? @map("company_name")
+
+  @@map("testimonials")
+}
+
+model SuccessStory {
+  id       String   @id @default(cuid())
+  videoIds String[] @map("videoids")
+
+  @@map("SuccessStories")
+}
+
+model Batch {
+  id   String @id @default(cuid())
+  code String
+
+  @@map("Batch")
+}
+
+model Class {
+  id            String   @id @default(cuid())
+  title         String
+  dateAndTime   DateTime @map("date_and_time")
+  meetLink      String?  @map("meet_link")
+  recordingLink String?  @map("recording_link")
+  notesLink     String?  @map("notes_link")
+  courseIds     String[] @map("course_ids")
+  batchIds      String[] @map("batch_ids")
+
+  @@map("class")
+}
+
+model User {
+  id            String        @id @default(cuid())
+  username      String        @unique
+  profileId     String?       @map("profileid")
+  status        GeneralStatus @default(active)
+  authSessionId String?       @map("auth_session_id")
+  roleId        String?       @map("role_id")
+
+  role Role? @relation(fields: [roleId], references: [id])
+
+  @@map("user")
+}
+
+model Role {
+  id    String @id @default(cuid())
+  name  String
+  slug  String @unique
+  users User[]
+
+  @@map("role")
+}
