@@ -32,7 +32,8 @@ model CarouselSlide {
 model Course {
   id                   String           @id @default(cuid())
   name                 String
-  description          String?
+  shortDescription     String?          @map("description")
+  longDescription      String?          @map("long_description")
   originalPrice        Decimal?         @db.Decimal(10, 2)
   discountedPrice      Decimal?         @db.Decimal(10, 2)
   rating               Float?

@@ -14,6 +14,7 @@ import {
   Textarea,
 } from "@/components/admin/ui";
 import { ImageUrlField } from "@/components/admin/ImageUrlField";
+import { SyllabusPdfField } from "@/components/admin/SyllabusPdfField";
 import { apiDelete, apiGet, apiPatch, apiPost, ApiError } from "@/lib/admin/client";
 import type {
   Course,
@@ -25,7 +26,8 @@ import type {
 
 type FormState = {
   name: string;
-  description: string;
+  shortDescription: string;
+  longDescription: string;
   originalPrice: string;
   discountedPrice: string;
   rating: string;
@@ -42,7 +44,8 @@ type FormState = {
 
 const emptyForm: FormState = {
   name: "",
-  description: "",
+  shortDescription: "",
+  longDescription: "",
   originalPrice: "",
   discountedPrice: "",
   rating: "",
@@ -67,7 +70,8 @@ function parseTags(value: string) {
 function toForm(course: Course): FormState {
   return {
     name: course.name,
-    description: course.description ?? "",
+    shortDescription: course.shortDescription ?? "",
+    longDescription: course.longDescription ?? "",
     originalPrice: course.originalPrice ?? "",
     discountedPrice: course.discountedPrice ?? "",
     rating: course.rating?.toString() ?? "",
@@ -86,7 +90,10 @@ function toForm(course: Course): FormState {
 function buildPayload(form: FormState) {
   return {
     name: form.name,
-    description: form.description.trim() === "" ? null : form.description,
+    shortDescription:
+      form.shortDescription.trim() === "" ? null : form.shortDescription,
+    longDescription:
+      form.longDescription.trim() === "" ? null : form.longDescription,
     originalPrice: form.originalPrice === "" ? null : Number(form.originalPrice),
     discountedPrice:
       form.discountedPrice === "" ? null : Number(form.discountedPrice),
@@ -364,30 +371,38 @@ export default function ManageCoursesPage() {
             </label>
           </div>
           <div className="md:col-span-2">
-            <Field label="Description">
+            <Field label="Short description">
               <Textarea
-                value={form.description}
+                value={form.shortDescription}
                 onChange={(event) =>
                   setForm((current) => ({
                     ...current,
-                    description: event.target.value,
+                    shortDescription: event.target.value,
                   }))
                 }
               />
             </Field>
           </div>
           <div className="md:col-span-2">
-            <Field label="Syllabus">
+            <Field label="Long description">
               <Textarea
-                value={form.syllabus}
+                value={form.longDescription}
                 onChange={(event) =>
                   setForm((current) => ({
                     ...current,
-                    syllabus: event.target.value,
+                    longDescription: event.target.value,
                   }))
                 }
               />
             </Field>
+          </div>
+          <div className="md:col-span-2">
+            <SyllabusPdfField
+              value={form.syllabus}
+              onChange={(syllabus) =>
+                setForm((current) => ({ ...current, syllabus }))
+              }
+            />
           </div>
           <div className="md:col-span-2">
             <span className="mb-2 block text-sm font-medium text-zinc-700 dark:text-zinc-300">

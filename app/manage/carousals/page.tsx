@@ -9,11 +9,14 @@ import {
   Card,
   EmptyState,
   Field,
-  Input,
   Select,
 } from "@/components/admin/ui";
 import { apiDelete, apiGet, apiPatch, apiPost, ApiError } from "@/lib/admin/client";
-import type { Carousal, ListResponse } from "@/lib/admin/types";
+import type {
+  Carousal,
+  CarouselSlide,
+  ListResponse,
+} from "@/lib/admin/types";
 import {
   CAROUSAL_POSITIONS,
   type CarousalPosition,
@@ -21,20 +24,14 @@ import {
 
 type FormState = {
   position: CarousalPosition | "";
-  carousalSlideIds: string;
+  carousalSlideIds: string[];
 };
 
-const emptyForm: FormState = { position: "", carousalSlideIds: "" };
-
-function parseSlideIds(value: string) {
-  return value
-    .split(",")
-    .map((id) => id.trim())
-    .filter(Boolean);
-}
+const emptyForm: FormState = { position: "", carousalSlideIds: [] };
 
 export default function ManageCarousalsPage() {
   const [items, setItems] = useState<Carousal[]>([]);
+  const [slides, setSlides] = useState<CarouselSlide[]>([]);
   const [form, setForm] = useState<FormState>(emptyForm);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
@@ -47,8 +44,12 @@ export default function ManageCarousalsPage() {
     setLoading(true);
     setMessage(null);
     try {
-      const response = await apiGet<ListResponse<Carousal>>("/api/carousals");
-      setItems(response.data);
+      const [carousalsResponse, slidesResponse] = await Promise.all([
+        apiGet<ListResponse<Carousal>>("/api/carousals"),
+        apiGet<ListResponse<CarouselSlide>>("/api/carousel-slides"),
+      ]);
+      setItems(carousalsResponse.data);
+      setSlides(slidesResponse.data);
     } catch (error) {
       setMessage({
         tone: "error",
@@ -68,6 +69,18 @@ export default function ManageCarousalsPage() {
     setEditingId(null);
   }
 
+  function toggleSlide(slideId: string) {
+    setForm((current) => {
+      const isSelected = current.carousalSlideIds.includes(slideId);
+      return {
+        ...current,
+        carousalSlideIds: isSelected
+          ? current.carousalSlideIds.filter((id) => id !== slideId)
+          : [...current.carousalSlideIds, slideId],
+      };
+    });
+  }
+
   async function handleSubmit(event: React.FormEvent) {
     event.preventDefault();
     setSaving(true);
@@ -81,7 +94,7 @@ export default function ManageCarousalsPage() {
 
     const payload = {
       position: form.position,
-      carousalSlideIds: parseSlideIds(form.carousalSlideIds),
+      carousalSlideIds: form.carousalSlideIds,
     };
 
     try {
@@ -128,14 +141,14 @@ export default function ManageCarousalsPage() {
     setEditingId(item.id);
     setForm({
       position: item.position,
-      carousalSlideIds: item.carousalSlideIds.join(", "),
+      carousalSlideIds: item.carousalSlideIds,
     });
   }
 
   return (
     <AdminShell
       title="Carousals"
-      description="Set display order and attach carousel slide IDs."
+      description="Choose a position and select the slides to show in that carousal."
     >
       {message ? <Alert tone={message.tone}>{message.text}</Alert> : null}
 
@@ -168,17 +181,56 @@ export default function ManageCarousalsPage() {
               ))}
             </Select>
           </Field>
-          <Field label="Slide IDs" hint="Comma-separated carousel slide IDs">
-            <Input
-              value={form.carousalSlideIds}
-              onChange={(event) =>
-                setForm((current) => ({
-                  ...current,
-                  carousalSlideIds: event.target.value,
-                }))
-              }
-            />
-          </Field>
+          <div className="md:col-span-2">
+            <span className="mb-2 block text-sm font-medium text-zinc-700 dark:text-zinc-300">
+              Slides
+            </span>
+            {slides.length === 0 ? (
+              <p className="text-sm text-zinc-500">
+                Create carousel slides first to attach them here.
+              </p>
+            ) : (
+              <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+                {slides.map((slide) => {
+                  const selected = form.carousalSlideIds.includes(slide.id);
+                  const image = slide.imgUrl || slide.bgImgUrl;
+
+                  return (
+                    <label
+                      key={slide.id}
+                      className={`flex cursor-pointer gap-3 rounded-lg border p-3 transition ${
+                        selected
+                          ? "border-indigo-500 bg-indigo-50 dark:bg-indigo-950/30"
+                          : "border-zinc-200 dark:border-zinc-700"
+                      }`}
+                    >
+                      <input
+                        type="checkbox"
+                        className="mt-1"
+                        checked={selected}
+                        onChange={() => toggleSlide(slide.id)}
+                      />
+                      {image ? (
+                        <img
+                          src={image}
+                          alt=""
+                          className="h-16 w-24 rounded object-cover"
+                        />
+                      ) : null}
+                      <span className="min-w-0">
+                        <span className="block truncate text-sm font-medium">
+                          {slide.title}
+                        </span>
+                        <span className="mt-1 block truncate text-xs text-zinc-500">
+                          {slide.id}
+                        </span>
+                      </span>
+                    </label>
+                  );
+                })}
+              </div>
+            )}
+          </div>
           <div className="md:col-span-2">
             <Button type="submit" disabled={saving}>
               {saving ? "Saving…" : editingId ? "Update carousal" : "Create carousal"}
@@ -194,11 +246,16 @@ export default function ManageCarousalsPage() {
           <EmptyState>No carousals yet.</EmptyState>
         ) : (
           <DataTable
-            columns={["Position", "Slide IDs", "Actions"]}
+            columns={["Position", "Slides", "Actions"]}
             rows={items.map((item) => [
               item.position,
               item.carousalSlideIds.length
-                ? item.carousalSlideIds.join(", ")
+                ? item.carousalSlideIds
+                    .map(
+                      (id) =>
+                        slides.find((slide) => slide.id === id)?.title ?? id,
+                    )
+                    .join(", ")
                 : "—",
               <div key={item.id} className="flex gap-2">
                 <Button variant="secondary" onClick={() => startEdit(item)}>

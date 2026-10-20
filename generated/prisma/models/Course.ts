@@ -41,7 +41,8 @@ export type CourseSumAggregateOutputType = {
 export type CourseMinAggregateOutputType = {
   id: string | null
   name: string | null
-  description: string | null
+  shortDescription: string | null
+  longDescription: string | null
   originalPrice: runtime.Decimal | null
   discountedPrice: runtime.Decimal | null
   rating: number | null
@@ -57,7 +58,8 @@ export type CourseMinAggregateOutputType = {
 export type CourseMaxAggregateOutputType = {
   id: string | null
   name: string | null
-  description: string | null
+  shortDescription: string | null
+  longDescription: string | null
   originalPrice: runtime.Decimal | null
   discountedPrice: runtime.Decimal | null
   rating: number | null
@@ -73,7 +75,8 @@ export type CourseMaxAggregateOutputType = {
 export type CourseCountAggregateOutputType = {
   id: number
   name: number
-  description: number
+  shortDescription: number
+  longDescription: number
   originalPrice: number
   discountedPrice: number
   rating: number
@@ -105,7 +108,8 @@ export type CourseSumAggregateInputType = {
 export type CourseMinAggregateInputType = {
   id?: true
   name?: true
-  description?: true
+  shortDescription?: true
+  longDescription?: true
   originalPrice?: true
   discountedPrice?: true
   rating?: true
@@ -121,7 +125,8 @@ export type CourseMinAggregateInputType = {
 export type CourseMaxAggregateInputType = {
   id?: true
   name?: true
-  description?: true
+  shortDescription?: true
+  longDescription?: true
   originalPrice?: true
   discountedPrice?: true
   rating?: true
@@ -137,7 +142,8 @@ export type CourseMaxAggregateInputType = {
 export type CourseCountAggregateInputType = {
   id?: true
   name?: true
-  description?: true
+  shortDescription?: true
+  longDescription?: true
   originalPrice?: true
   discountedPrice?: true
   rating?: true
@@ -242,7 +248,8 @@ export type CourseGroupByArgs<ExtArgs extends runtime.Types.Extensions.InternalA
 export type CourseGroupByOutputType = {
   id: string
   name: string
-  description: string | null
+  shortDescription: string | null
+  longDescription: string | null
   originalPrice: runtime.Decimal | null
   discountedPrice: runtime.Decimal | null
   rating: number | null
@@ -283,7 +290,8 @@ export type CourseWhereInput = {
   NOT?: Prisma.CourseWhereInput | Prisma.CourseWhereInput[]
   id?: Prisma.StringFilter<"Course"> | string
   name?: Prisma.StringFilter<"Course"> | string
-  description?: Prisma.StringNullableFilter<"Course"> | string | null
+  shortDescription?: Prisma.StringNullableFilter<"Course"> | string | null
+  longDescription?: Prisma.StringNullableFilter<"Course"> | string | null
   originalPrice?: Prisma.DecimalNullableFilter<"Course"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   discountedPrice?: Prisma.DecimalNullableFilter<"Course"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   rating?: Prisma.FloatNullableFilter<"Course"> | number | null
@@ -302,7 +310,8 @@ export type CourseWhereInput = {
 export type CourseOrderByWithRelationInput = {
   id?: Prisma.SortOrder
   name?: Prisma.SortOrder
-  description?: Prisma.SortOrderInput | Prisma.SortOrder
+  shortDescription?: Prisma.SortOrderInput | Prisma.SortOrder
+  longDescription?: Prisma.SortOrderInput | Prisma.SortOrder
   originalPrice?: Prisma.SortOrderInput | Prisma.SortOrder
   discountedPrice?: Prisma.SortOrderInput | Prisma.SortOrder
   rating?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -324,7 +333,8 @@ export type CourseWhereUniqueInput = Prisma.AtLeast<{
   OR?: Prisma.CourseWhereInput[]
   NOT?: Prisma.CourseWhereInput | Prisma.CourseWhereInput[]
   name?: Prisma.StringFilter<"Course"> | string
-  description?: Prisma.StringNullableFilter<"Course"> | string | null
+  shortDescription?: Prisma.StringNullableFilter<"Course"> | string | null
+  longDescription?: Prisma.StringNullableFilter<"Course"> | string | null
   originalPrice?: Prisma.DecimalNullableFilter<"Course"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   discountedPrice?: Prisma.DecimalNullableFilter<"Course"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   rating?: Prisma.FloatNullableFilter<"Course"> | number | null
@@ -343,7 +353,8 @@ export type CourseWhereUniqueInput = Prisma.AtLeast<{
 export type CourseOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
   name?: Prisma.SortOrder
-  description?: Prisma.SortOrderInput | Prisma.SortOrder
+  shortDescription?: Prisma.SortOrderInput | Prisma.SortOrder
+  longDescription?: Prisma.SortOrderInput | Prisma.SortOrder
   originalPrice?: Prisma.SortOrderInput | Prisma.SortOrder
   discountedPrice?: Prisma.SortOrderInput | Prisma.SortOrder
   rating?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -369,7 +380,8 @@ export type CourseScalarWhereWithAggregatesInput = {
   NOT?: Prisma.CourseScalarWhereWithAggregatesInput | Prisma.CourseScalarWhereWithAggregatesInput[]
   id?: Prisma.StringWithAggregatesFilter<"Course"> | string
   name?: Prisma.StringWithAggregatesFilter<"Course"> | string
-  description?: Prisma.StringNullableWithAggregatesFilter<"Course"> | string | null
+  shortDescription?: Prisma.StringNullableWithAggregatesFilter<"Course"> | string | null
+  longDescription?: Prisma.StringNullableWithAggregatesFilter<"Course"> | string | null
   originalPrice?: Prisma.DecimalNullableWithAggregatesFilter<"Course"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   discountedPrice?: Prisma.DecimalNullableWithAggregatesFilter<"Course"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   rating?: Prisma.FloatNullableWithAggregatesFilter<"Course"> | number | null
@@ -387,7 +399,8 @@ export type CourseScalarWhereWithAggregatesInput = {
 export type CourseCreateInput = {
   id?: string
   name: string
-  description?: string | null
+  shortDescription?: string | null
+  longDescription?: string | null
   originalPrice?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   discountedPrice?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   rating?: number | null
@@ -405,7 +418,8 @@ export type CourseCreateInput = {
 export type CourseUncheckedCreateInput = {
   id?: string
   name: string
-  description?: string | null
+  shortDescription?: string | null
+  longDescription?: string | null
   originalPrice?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   discountedPrice?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   rating?: number | null
@@ -423,7 +437,8 @@ export type CourseUncheckedCreateInput = {
 export type CourseUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
-  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  shortDescription?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  longDescription?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   originalPrice?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   discountedPrice?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   rating?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
@@ -441,7 +456,8 @@ export type CourseUpdateInput = {
 export type CourseUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
-  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  shortDescription?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  longDescription?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   originalPrice?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   discountedPrice?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   rating?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
@@ -459,7 +475,8 @@ export type CourseUncheckedUpdateInput = {
 export type CourseCreateManyInput = {
   id?: string
   name: string
-  description?: string | null
+  shortDescription?: string | null
+  longDescription?: string | null
   originalPrice?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   discountedPrice?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   rating?: number | null
@@ -477,7 +494,8 @@ export type CourseCreateManyInput = {
 export type CourseUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
-  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  shortDescription?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  longDescription?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   originalPrice?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   discountedPrice?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   rating?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
@@ -494,7 +512,8 @@ export type CourseUpdateManyMutationInput = {
 export type CourseUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
-  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  shortDescription?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  longDescription?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   originalPrice?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   discountedPrice?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   rating?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
@@ -512,7 +531,8 @@ export type CourseUncheckedUpdateManyInput = {
 export type CourseCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   name?: Prisma.SortOrder
-  description?: Prisma.SortOrder
+  shortDescription?: Prisma.SortOrder
+  longDescription?: Prisma.SortOrder
   originalPrice?: Prisma.SortOrder
   discountedPrice?: Prisma.SortOrder
   rating?: Prisma.SortOrder
@@ -536,7 +556,8 @@ export type CourseAvgOrderByAggregateInput = {
 export type CourseMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
   name?: Prisma.SortOrder
-  description?: Prisma.SortOrder
+  shortDescription?: Prisma.SortOrder
+  longDescription?: Prisma.SortOrder
   originalPrice?: Prisma.SortOrder
   discountedPrice?: Prisma.SortOrder
   rating?: Prisma.SortOrder
@@ -552,7 +573,8 @@ export type CourseMaxOrderByAggregateInput = {
 export type CourseMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
   name?: Prisma.SortOrder
-  description?: Prisma.SortOrder
+  shortDescription?: Prisma.SortOrder
+  longDescription?: Prisma.SortOrder
   originalPrice?: Prisma.SortOrder
   discountedPrice?: Prisma.SortOrder
   rating?: Prisma.SortOrder
@@ -668,7 +690,8 @@ export type CourseUncheckedUpdateManyWithoutCourseCategorieNestedInput = {
 export type CourseCreateWithoutCourseCategorieInput = {
   id?: string
   name: string
-  description?: string | null
+  shortDescription?: string | null
+  longDescription?: string | null
   originalPrice?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   discountedPrice?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   rating?: number | null
@@ -685,7 +708,8 @@ export type CourseCreateWithoutCourseCategorieInput = {
 export type CourseUncheckedCreateWithoutCourseCategorieInput = {
   id?: string
   name: string
-  description?: string | null
+  shortDescription?: string | null
+  longDescription?: string | null
   originalPrice?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   discountedPrice?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   rating?: number | null
@@ -731,7 +755,8 @@ export type CourseScalarWhereInput = {
   NOT?: Prisma.CourseScalarWhereInput | Prisma.CourseScalarWhereInput[]
   id?: Prisma.StringFilter<"Course"> | string
   name?: Prisma.StringFilter<"Course"> | string
-  description?: Prisma.StringNullableFilter<"Course"> | string | null
+  shortDescription?: Prisma.StringNullableFilter<"Course"> | string | null
+  longDescription?: Prisma.StringNullableFilter<"Course"> | string | null
   originalPrice?: Prisma.DecimalNullableFilter<"Course"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   discountedPrice?: Prisma.DecimalNullableFilter<"Course"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   rating?: Prisma.FloatNullableFilter<"Course"> | number | null
@@ -749,7 +774,8 @@ export type CourseScalarWhereInput = {
 export type CourseCreateManyCourseCategorieInput = {
   id?: string
   name: string
-  description?: string | null
+  shortDescription?: string | null
+  longDescription?: string | null
   originalPrice?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   discountedPrice?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   rating?: number | null
@@ -766,7 +792,8 @@ export type CourseCreateManyCourseCategorieInput = {
 export type CourseUpdateWithoutCourseCategorieInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
-  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  shortDescription?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  longDescription?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   originalPrice?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   discountedPrice?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   rating?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
@@ -783,7 +810,8 @@ export type CourseUpdateWithoutCourseCategorieInput = {
 export type CourseUncheckedUpdateWithoutCourseCategorieInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
-  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  shortDescription?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  longDescription?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   originalPrice?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   discountedPrice?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   rating?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
@@ -800,7 +828,8 @@ export type CourseUncheckedUpdateWithoutCourseCategorieInput = {
 export type CourseUncheckedUpdateManyWithoutCourseCategorieInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
-  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  shortDescription?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  longDescription?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   originalPrice?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   discountedPrice?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   rating?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
@@ -819,7 +848,8 @@ export type CourseUncheckedUpdateManyWithoutCourseCategorieInput = {
 export type CourseSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   name?: boolean
-  description?: boolean
+  shortDescription?: boolean
+  longDescription?: boolean
   originalPrice?: boolean
   discountedPrice?: boolean
   rating?: boolean
@@ -838,7 +868,8 @@ export type CourseSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs =
 export type CourseSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   name?: boolean
-  description?: boolean
+  shortDescription?: boolean
+  longDescription?: boolean
   originalPrice?: boolean
   discountedPrice?: boolean
   rating?: boolean
@@ -857,7 +888,8 @@ export type CourseSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extens
 export type CourseSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   name?: boolean
-  description?: boolean
+  shortDescription?: boolean
+  longDescription?: boolean
   originalPrice?: boolean
   discountedPrice?: boolean
   rating?: boolean
@@ -876,7 +908,8 @@ export type CourseSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extens
 export type CourseSelectScalar = {
   id?: boolean
   name?: boolean
-  description?: boolean
+  shortDescription?: boolean
+  longDescription?: boolean
   originalPrice?: boolean
   discountedPrice?: boolean
   rating?: boolean
@@ -891,7 +924,7 @@ export type CourseSelectScalar = {
   courseModuleIds?: boolean
 }
 
-export type CourseOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "description" | "originalPrice" | "discountedPrice" | "rating" | "technologyTags" | "duration" | "status" | "courseImgUrl" | "syllabus" | "courseCategorieId" | "isPlacementGurranted" | "isInSale" | "courseModuleIds", ExtArgs["result"]["course"]>
+export type CourseOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "shortDescription" | "longDescription" | "originalPrice" | "discountedPrice" | "rating" | "technologyTags" | "duration" | "status" | "courseImgUrl" | "syllabus" | "courseCategorieId" | "isPlacementGurranted" | "isInSale" | "courseModuleIds", ExtArgs["result"]["course"]>
 export type CourseInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   courseCategorie?: boolean | Prisma.Course$courseCategorieArgs<ExtArgs>
 }
@@ -910,7 +943,8 @@ export type $CoursePayload<ExtArgs extends runtime.Types.Extensions.InternalArgs
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
     name: string
-    description: string | null
+    shortDescription: string | null
+    longDescription: string | null
     originalPrice: runtime.Decimal | null
     discountedPrice: runtime.Decimal | null
     rating: number | null
@@ -1349,7 +1383,8 @@ export interface Prisma__CourseClient<T, Null = never, ExtArgs extends runtime.T
 export interface CourseFieldRefs {
   readonly id: Prisma.FieldRef<"Course", 'String'>
   readonly name: Prisma.FieldRef<"Course", 'String'>
-  readonly description: Prisma.FieldRef<"Course", 'String'>
+  readonly shortDescription: Prisma.FieldRef<"Course", 'String'>
+  readonly longDescription: Prisma.FieldRef<"Course", 'String'>
   readonly originalPrice: Prisma.FieldRef<"Course", 'Decimal'>
   readonly discountedPrice: Prisma.FieldRef<"Course", 'Decimal'>
   readonly rating: Prisma.FieldRef<"Course", 'Float'>

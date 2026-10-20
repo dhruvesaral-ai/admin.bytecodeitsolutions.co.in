@@ -19,8 +19,8 @@ export function AdminShell({
   children: React.ReactNode;
 }) {
   return (
-    <div className="min-h-screen bg-zinc-50 text-zinc-900 dark:bg-zinc-950 dark:text-zinc-50">
-      <div className="mx-auto flex min-h-screen max-w-7xl">
+    <div className="h-screen overflow-hidden bg-zinc-50 text-zinc-900 dark:bg-zinc-950 dark:text-zinc-50">
+      <div className="flex h-screen">
         <aside className="hidden w-60 shrink-0 border-r border-zinc-200 bg-white p-5 dark:border-zinc-800 dark:bg-zinc-900 md:block">
           <Link href="/" className="mb-8 block text-sm font-semibold tracking-tight">
             Bytecode Admin
@@ -61,7 +61,7 @@ export function AdminShell({
               ))}
             </nav>
           </header>
-          <main className="flex-1 space-y-6 p-5">{children}</main>
+          <main className="flex-1 space-y-6 p-5 overflow-y-auto">{children}</main>
         </div>
       </div>
     </div>

@@ -107,7 +107,8 @@ export type CarouselSlideScalarFieldEnum = (typeof CarouselSlideScalarFieldEnum)
 export const CourseScalarFieldEnum = {
   id: 'id',
   name: 'name',
-  description: 'description',
+  shortDescription: 'shortDescription',
+  longDescription: 'longDescription',
   originalPrice: 'originalPrice',
   discountedPrice: 'discountedPrice',
   rating: 'rating',

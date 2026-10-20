@@ -52,3 +52,10 @@ export async function uploadImageFile(file: File) {
   const response = await fetch("/api/upload/image", { method: "POST", body });
   return parseResponse<{ data: { url: string } }>(response);
 }
+
+export async function uploadPdfFile(file: File) {
+  const body = new FormData();
+  body.append("file", file);
+  const response = await fetch("/api/upload/pdf", { method: "POST", body });
+  return parseResponse<{ data: { url: string } }>(response);
+}

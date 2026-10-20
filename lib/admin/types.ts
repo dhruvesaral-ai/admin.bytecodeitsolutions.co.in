@@ -35,7 +35,8 @@ export type CourseModule = {
 export type Course = {
   id: string;
   name: string;
-  description: string | null;
+  shortDescription: string | null;
+  longDescription: string | null;
   originalPrice: string | null;
   discountedPrice: string | null;
   rating: number | null;

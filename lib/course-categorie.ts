@@ -1,4 +1,5 @@
 import type { Prisma } from "@/generated/prisma/client";
+import { slugify } from "@/lib/slug";
 
 export type CourseCategorieWriteBody = {
   name?: string;
@@ -23,15 +24,15 @@ export function parseCourseCategorieCreateBody(
     return name;
   }
 
-  const slug = parseNonEmptyString(body.slug, "slug");
-  if ("error" in slug) {
-    return slug;
+  const slug = slugify(name.value);
+  if (!slug) {
+    return { error: "name must produce a non-empty slug" };
   }
 
   return {
     data: {
       name: name.value,
-      slug: slug.value,
+      slug,
     },
   };
 }
@@ -47,14 +48,15 @@ export function parseCourseCategorieUpdateBody(
       return name;
     }
     data.name = name.value;
+    data.slug = slugify(name.value);
   }
 
-  if (body.slug !== undefined) {
+  if (body.name === undefined && body.slug !== undefined) {
     const slug = parseNonEmptyString(body.slug, "slug");
     if ("error" in slug) {
       return slug;
     }
-    data.slug = slug.value;
+    data.slug = slugify(slug.value);
   }
 
   if (Object.keys(data).length === 0) {

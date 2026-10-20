@@ -6,6 +6,7 @@ import { DataTable } from "@/components/admin/DataTable";
 import { Alert, Button, Card, EmptyState, Field, Input } from "@/components/admin/ui";
 import { apiDelete, apiGet, apiPatch, apiPost, ApiError } from "@/lib/admin/client";
 import type { CourseCategorie, ListResponse } from "@/lib/admin/types";
+import { slugify } from "@/lib/slug";
 
 type FormState = { name: string; slug: string };
 
@@ -55,10 +56,12 @@ export default function ManageCourseCategoriesPage() {
 
     try {
       if (editingId) {
-        await apiPatch(`/api/course-categories/${editingId}`, form);
+        await apiPatch(`/api/course-categories/${editingId}`, {
+          name: form.name,
+        });
         setMessage({ tone: "success", text: "Category updated." });
       } else {
-        await apiPost("/api/course-categories", form);
+        await apiPost("/api/course-categories", { name: form.name });
         setMessage({ tone: "success", text: "Category created." });
       }
       resetForm();
@@ -117,18 +120,21 @@ export default function ManageCourseCategoriesPage() {
             <Input
               required
               value={form.name}
-              onChange={(event) =>
-                setForm((current) => ({ ...current, name: event.target.value }))
-              }
+              onChange={(event) => {
+                const name = event.target.value;
+                setForm((current) => ({
+                  ...current,
+                  name,
+                  slug: slugify(name),
+                }));
+              }}
             />
           </Field>
           <Field label="Slug">
             <Input
               required
+              readOnly
               value={form.slug}
-              onChange={(event) =>
-                setForm((current) => ({ ...current, slug: event.target.value }))
-              }
             />
           </Field>
           <div className="md:col-span-2">

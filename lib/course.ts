@@ -3,7 +3,8 @@ import { GeneralStatus as GeneralStatusValues } from "@/generated/prisma/client"
 
 export type CourseWriteBody = {
   name?: string;
-  description?: string | null;
+  shortDescription?: string | null;
+  longDescription?: string | null;
   originalPrice?: number | string | null;
   discountedPrice?: number | string | null;
   rating?: number | null;
@@ -121,12 +122,26 @@ function assignCourseFields(
     return { error: "name is required" };
   }
 
-  if (body.description !== undefined) {
-    const description = parseNullableString(body.description, "description");
-    if ("error" in description) {
-      return description;
+  if (body.shortDescription !== undefined) {
+    const shortDescription = parseNullableString(
+      body.shortDescription,
+      "shortDescription",
+    );
+    if ("error" in shortDescription) {
+      return shortDescription;
     }
-    data.description = description.value;
+    data.shortDescription = shortDescription.value;
+  }
+
+  if (body.longDescription !== undefined) {
+    const longDescription = parseNullableString(
+      body.longDescription,
+      "longDescription",
+    );
+    if ("error" in longDescription) {
+      return longDescription;
+    }
+    data.longDescription = longDescription.value;
   }
 
   if (body.originalPrice !== undefined) {
