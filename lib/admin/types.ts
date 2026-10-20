@@ -32,6 +32,18 @@ export type CourseModule = {
   description: string | null;
 };
 
+export type Testimonial = {
+  id: string;
+  name: string;
+  profileImg: string | null;
+  companyName: string | null;
+};
+
+export type SuccessStory = {
+  id: string;
+  videoIds: string[];
+};
+
 export type Course = {
   id: string;
   name: string;

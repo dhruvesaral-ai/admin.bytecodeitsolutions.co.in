@@ -27,6 +27,16 @@ const sections = [
     title: "Courses",
     description: "Full course catalog, pricing, and metadata.",
   },
+  {
+    href: "/manage/testimonials",
+    title: "Testimonials",
+    description: "Manage testimonial names, company details, and profile photos.",
+  },
+  {
+    href: "/manage/success-stories",
+    title: "Success stories",
+    description: "Manage video IDs associated with success stories.",
+  },
 ];
 
 export default function ManageHomePage() {
