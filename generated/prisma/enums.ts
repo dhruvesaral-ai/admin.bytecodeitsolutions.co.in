@@ -15,3 +15,14 @@ export const GeneralStatus = {
 } as const
 
 export type GeneralStatus = (typeof GeneralStatus)[keyof typeof GeneralStatus]
+
+
+export const CarousalPosition = {
+  homepage: 'homepage',
+  offer_banner: 'offer_banner',
+  development: 'development',
+  programs: 'programs',
+  training: 'training'
+} as const
+
+export type CarousalPosition = (typeof CarousalPosition)[keyof typeof CarousalPosition]

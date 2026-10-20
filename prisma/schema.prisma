@@ -1,6 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
   provider = "prisma-client"
   output   = "../generated/prisma"
@@ -10,15 +7,10 @@ datasource db {
   provider = "postgresql"
 }
 
-enum GeneralStatus {
-  active
-  inactive
-}
-
 model Carousal {
   id               String   @id @default(cuid())
   carousalSlideIds String[] @map("carousal_slide_ids")
-  position         Int
+  position         CarousalPosition
 
   @@map("carousal")
 }
@@ -38,23 +30,22 @@ model CarouselSlide {
 }
 
 model Course {
-  id                   String        @id @default(cuid())
+  id                   String           @id @default(cuid())
   name                 String
   description          String?
-  originalPrice        Decimal?      @db.Decimal(10, 2)
-  discountedPrice      Decimal?      @db.Decimal(10, 2)
+  originalPrice        Decimal?         @db.Decimal(10, 2)
+  discountedPrice      Decimal?         @db.Decimal(10, 2)
   rating               Float?
-  technologyTags       String[]      @map("technology_tags")
+  technologyTags       String[]         @map("technology_tags")
   duration             String?
-  status               GeneralStatus @default(active)
-  courseImgUrl         String?       @map("course_img_url")
+  status               GeneralStatus    @default(active)
+  courseImgUrl         String?          @map("course_img_url")
   syllabus             String?
-  courseCategorieId    String?       @map("course_categorie_id")
-  isPlacementGurranted Boolean       @default(false) @map("is_placement_gurranted")
-  isInSale             Boolean       @default(false) @map("is_in_sale")
-  courseModuleIds      String[]      @map("course_module_ids")
-
-  courseCategorie CourseCategorie? @relation(fields: [courseCategorieId], references: [id])
+  courseCategorieId    String?          @map("course_categorie_id")
+  isPlacementGurranted Boolean          @default(false) @map("is_placement_gurranted")
+  isInSale             Boolean          @default(false) @map("is_in_sale")
+  courseModuleIds      String[]         @map("course_module_ids")
+  courseCategorie      CourseCategorie? @relation(fields: [courseCategorieId], references: [id])
 
   @@map("course")
 }
@@ -119,8 +110,7 @@ model User {
   status        GeneralStatus @default(active)
   authSessionId String?       @map("auth_session_id")
   roleId        String?       @map("role_id")
-
-  role Role? @relation(fields: [roleId], references: [id])
+  role          Role?         @relation(fields: [roleId], references: [id])
 
   @@map("user")
 }
@@ -132,4 +122,17 @@ model Role {
   users User[]
 
   @@map("role")
+}
+
+enum GeneralStatus {
+  active
+  inactive
+}
+
+enum CarousalPosition {
+  homepage
+  offer_banner @map("offer-banner")
+  development
+  programs
+  training
 }

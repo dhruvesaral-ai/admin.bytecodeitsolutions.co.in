@@ -20,28 +20,18 @@ export type CarousalModel = runtime.Types.Result.DefaultSelection<Prisma.$Carous
 
 export type AggregateCarousal = {
   _count: CarousalCountAggregateOutputType | null
-  _avg: CarousalAvgAggregateOutputType | null
-  _sum: CarousalSumAggregateOutputType | null
   _min: CarousalMinAggregateOutputType | null
   _max: CarousalMaxAggregateOutputType | null
 }
 
-export type CarousalAvgAggregateOutputType = {
-  position: number | null
-}
-
-export type CarousalSumAggregateOutputType = {
-  position: number | null
-}
-
 export type CarousalMinAggregateOutputType = {
   id: string | null
-  position: number | null
+  position: $Enums.CarousalPosition | null
 }
 
 export type CarousalMaxAggregateOutputType = {
   id: string | null
-  position: number | null
+  position: $Enums.CarousalPosition | null
 }
 
 export type CarousalCountAggregateOutputType = {
@@ -51,14 +41,6 @@ export type CarousalCountAggregateOutputType = {
   _all: number
 }
 
-
-export type CarousalAvgAggregateInputType = {
-  position?: true
-}
-
-export type CarousalSumAggregateInputType = {
-  position?: true
-}
 
 export type CarousalMinAggregateInputType = {
   id?: true
@@ -115,18 +97,6 @@ export type CarousalAggregateArgs<ExtArgs extends runtime.Types.Extensions.Inter
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
    * 
-   * Select which fields to average
-  **/
-  _avg?: CarousalAvgAggregateInputType
-  /**
-   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-   * 
-   * Select which fields to sum
-  **/
-  _sum?: CarousalSumAggregateInputType
-  /**
-   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-   * 
    * Select which fields to find the minimum value
   **/
   _min?: CarousalMinAggregateInputType
@@ -157,8 +127,6 @@ export type CarousalGroupByArgs<ExtArgs extends runtime.Types.Extensions.Interna
   take?: number
   skip?: number
   _count?: CarousalCountAggregateInputType | true
-  _avg?: CarousalAvgAggregateInputType
-  _sum?: CarousalSumAggregateInputType
   _min?: CarousalMinAggregateInputType
   _max?: CarousalMaxAggregateInputType
 }
@@ -166,10 +134,8 @@ export type CarousalGroupByArgs<ExtArgs extends runtime.Types.Extensions.Interna
 export type CarousalGroupByOutputType = {
   id: string
   carousalSlideIds: string[]
-  position: number
+  position: $Enums.CarousalPosition
   _count: CarousalCountAggregateOutputType | null
-  _avg: CarousalAvgAggregateOutputType | null
-  _sum: CarousalSumAggregateOutputType | null
   _min: CarousalMinAggregateOutputType | null
   _max: CarousalMaxAggregateOutputType | null
 }
@@ -195,7 +161,7 @@ export type CarousalWhereInput = {
   NOT?: Prisma.CarousalWhereInput | Prisma.CarousalWhereInput[]
   id?: Prisma.StringFilter<"Carousal"> | string
   carousalSlideIds?: Prisma.StringNullableListFilter<"Carousal">
-  position?: Prisma.IntFilter<"Carousal"> | number
+  position?: Prisma.EnumCarousalPositionFilter<"Carousal"> | $Enums.CarousalPosition
 }
 
 export type CarousalOrderByWithRelationInput = {
@@ -210,7 +176,7 @@ export type CarousalWhereUniqueInput = Prisma.AtLeast<{
   OR?: Prisma.CarousalWhereInput[]
   NOT?: Prisma.CarousalWhereInput | Prisma.CarousalWhereInput[]
   carousalSlideIds?: Prisma.StringNullableListFilter<"Carousal">
-  position?: Prisma.IntFilter<"Carousal"> | number
+  position?: Prisma.EnumCarousalPositionFilter<"Carousal"> | $Enums.CarousalPosition
 }, "id">
 
 export type CarousalOrderByWithAggregationInput = {
@@ -218,10 +184,8 @@ export type CarousalOrderByWithAggregationInput = {
   carousalSlideIds?: Prisma.SortOrder
   position?: Prisma.SortOrder
   _count?: Prisma.CarousalCountOrderByAggregateInput
-  _avg?: Prisma.CarousalAvgOrderByAggregateInput
   _max?: Prisma.CarousalMaxOrderByAggregateInput
   _min?: Prisma.CarousalMinOrderByAggregateInput
-  _sum?: Prisma.CarousalSumOrderByAggregateInput
 }
 
 export type CarousalScalarWhereWithAggregatesInput = {
@@ -230,49 +194,49 @@ export type CarousalScalarWhereWithAggregatesInput = {
   NOT?: Prisma.CarousalScalarWhereWithAggregatesInput | Prisma.CarousalScalarWhereWithAggregatesInput[]
   id?: Prisma.StringWithAggregatesFilter<"Carousal"> | string
   carousalSlideIds?: Prisma.StringNullableListFilter<"Carousal">
-  position?: Prisma.IntWithAggregatesFilter<"Carousal"> | number
+  position?: Prisma.EnumCarousalPositionWithAggregatesFilter<"Carousal"> | $Enums.CarousalPosition
 }
 
 export type CarousalCreateInput = {
   id?: string
   carousalSlideIds?: Prisma.CarousalCreatecarousalSlideIdsInput | string[]
-  position: number
+  position: $Enums.CarousalPosition
 }
 
 export type CarousalUncheckedCreateInput = {
   id?: string
   carousalSlideIds?: Prisma.CarousalCreatecarousalSlideIdsInput | string[]
-  position: number
+  position: $Enums.CarousalPosition
 }
 
 export type CarousalUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   carousalSlideIds?: Prisma.CarousalUpdatecarousalSlideIdsInput | string[]
-  position?: Prisma.IntFieldUpdateOperationsInput | number
+  position?: Prisma.EnumCarousalPositionFieldUpdateOperationsInput | $Enums.CarousalPosition
 }
 
 export type CarousalUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   carousalSlideIds?: Prisma.CarousalUpdatecarousalSlideIdsInput | string[]
-  position?: Prisma.IntFieldUpdateOperationsInput | number
+  position?: Prisma.EnumCarousalPositionFieldUpdateOperationsInput | $Enums.CarousalPosition
 }
 
 export type CarousalCreateManyInput = {
   id?: string
   carousalSlideIds?: Prisma.CarousalCreatecarousalSlideIdsInput | string[]
-  position: number
+  position: $Enums.CarousalPosition
 }
 
 export type CarousalUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   carousalSlideIds?: Prisma.CarousalUpdatecarousalSlideIdsInput | string[]
-  position?: Prisma.IntFieldUpdateOperationsInput | number
+  position?: Prisma.EnumCarousalPositionFieldUpdateOperationsInput | $Enums.CarousalPosition
 }
 
 export type CarousalUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   carousalSlideIds?: Prisma.CarousalUpdatecarousalSlideIdsInput | string[]
-  position?: Prisma.IntFieldUpdateOperationsInput | number
+  position?: Prisma.EnumCarousalPositionFieldUpdateOperationsInput | $Enums.CarousalPosition
 }
 
 export type StringNullableListFilter<$PrismaModel = never> = {
@@ -289,10 +253,6 @@ export type CarousalCountOrderByAggregateInput = {
   position?: Prisma.SortOrder
 }
 
-export type CarousalAvgOrderByAggregateInput = {
-  position?: Prisma.SortOrder
-}
-
 export type CarousalMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
   position?: Prisma.SortOrder
@@ -300,10 +260,6 @@ export type CarousalMaxOrderByAggregateInput = {
 
 export type CarousalMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
-  position?: Prisma.SortOrder
-}
-
-export type CarousalSumOrderByAggregateInput = {
   position?: Prisma.SortOrder
 }
 
@@ -320,12 +276,8 @@ export type CarousalUpdatecarousalSlideIdsInput = {
   push?: string | string[]
 }
 
-export type IntFieldUpdateOperationsInput = {
-  set?: number
-  increment?: number
-  decrement?: number
-  multiply?: number
-  divide?: number
+export type EnumCarousalPositionFieldUpdateOperationsInput = {
+  set?: $Enums.CarousalPosition
 }
 
 
@@ -362,7 +314,7 @@ export type $CarousalPayload<ExtArgs extends runtime.Types.Extensions.InternalAr
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
     carousalSlideIds: string[]
-    position: number
+    position: $Enums.CarousalPosition
   }, ExtArgs["result"]["carousal"]>
   composites: {}
 }
@@ -788,7 +740,7 @@ export interface Prisma__CarousalClient<T, Null = never, ExtArgs extends runtime
 export interface CarousalFieldRefs {
   readonly id: Prisma.FieldRef<"Carousal", 'String'>
   readonly carousalSlideIds: Prisma.FieldRef<"Carousal", 'String[]'>
-  readonly position: Prisma.FieldRef<"Carousal", 'Int'>
+  readonly position: Prisma.FieldRef<"Carousal", 'CarousalPosition'>
 }
     
 

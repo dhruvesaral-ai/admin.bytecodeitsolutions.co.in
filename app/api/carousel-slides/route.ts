@@ -1,4 +1,4 @@
-import { prisma } from "@/lib/prisma";
+import { prisma } from "@/lib/db";
 import {
   isNextResponse,
   jsonError,
@@ -16,8 +16,8 @@ export async function GET() {
       orderBy: { order: "asc" },
     });
     return jsonOk({ data: slides });
-  } catch {
-    return jsonError("Failed to list carousel slides", 500);
+  } catch (error) {
+    return jsonError(error, 500);
   }
 }
 
@@ -35,7 +35,7 @@ export async function POST(request: Request) {
   try {
     const slide = await prisma.carouselSlide.create({ data: parsed.data });
     return jsonOk({ data: slide }, 201);
-  } catch {
-    return jsonError("Failed to create carousel slide", 500);
+  } catch (error) {
+    return jsonError(error, 500);
   }
 }

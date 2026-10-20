@@ -1,4 +1,4 @@
-import { prisma } from "@/lib/prisma";
+import { prisma } from "@/lib/db";
 import {
   isNextResponse,
   isPrismaUniqueViolation,
@@ -17,8 +17,8 @@ export async function GET() {
       orderBy: { name: "asc" },
     });
     return jsonOk({ data: categories });
-  } catch {
-    return jsonError("Failed to list course categories", 500);
+  } catch (error) {
+    return jsonError(error, 500);
   }
 }
 
@@ -40,6 +40,6 @@ export async function POST(request: Request) {
     if (isPrismaUniqueViolation(error)) {
       return jsonError("A category with this slug already exists", 409);
     }
-    return jsonError("Failed to create course category", 500);
+    return jsonError(error, 500);
   }
 }

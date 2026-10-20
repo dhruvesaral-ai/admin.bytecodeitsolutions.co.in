@@ -4,7 +4,8 @@ export function jsonOk<T>(data: T, status = 200) {
   return NextResponse.json(data, { status });
 }
 
-export function jsonError(message: string, status: number) {
+export function jsonError(error: unknown, status: number) {
+  const message = error instanceof Error ? error.message : String(error);
   return NextResponse.json({ error: message }, { status });
 }
 
@@ -14,8 +15,8 @@ export async function parseJsonBody<T extends Record<string, unknown>>(
   try {
     const body = (await request.json()) as T;
     return body;
-  } catch {
-    return jsonError("Invalid JSON body", 400);
+  } catch (error) {
+    return jsonError(error, 400);
   }
 }
 

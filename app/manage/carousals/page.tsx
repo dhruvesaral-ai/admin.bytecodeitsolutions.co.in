@@ -3,12 +3,24 @@
 import { useCallback, useEffect, useState } from "react";
 import { AdminShell } from "@/components/admin/AdminShell";
 import { DataTable } from "@/components/admin/DataTable";
-import { Alert, Button, Card, EmptyState, Field, Input } from "@/components/admin/ui";
+import {
+  Alert,
+  Button,
+  Card,
+  EmptyState,
+  Field,
+  Input,
+  Select,
+} from "@/components/admin/ui";
 import { apiDelete, apiGet, apiPatch, apiPost, ApiError } from "@/lib/admin/client";
 import type { Carousal, ListResponse } from "@/lib/admin/types";
+import {
+  CAROUSAL_POSITIONS,
+  type CarousalPosition,
+} from "@/lib/carousal-position";
 
 type FormState = {
-  position: string;
+  position: CarousalPosition | "";
   carousalSlideIds: string;
 };
 
@@ -61,9 +73,14 @@ export default function ManageCarousalsPage() {
     setSaving(true);
     setMessage(null);
 
-    const position = Number(form.position);
+    if (!form.position) {
+      setMessage({ tone: "error", text: "Select a position." });
+      setSaving(false);
+      return;
+    }
+
     const payload = {
-      position,
+      position: form.position,
       carousalSlideIds: parseSlideIds(form.carousalSlideIds),
     };
 
@@ -110,7 +127,7 @@ export default function ManageCarousalsPage() {
   function startEdit(item: Carousal) {
     setEditingId(item.id);
     setForm({
-      position: String(item.position),
+      position: item.position,
       carousalSlideIds: item.carousalSlideIds.join(", "),
     });
   }
@@ -132,14 +149,24 @@ export default function ManageCarousalsPage() {
       >
         <form className="grid gap-4 md:grid-cols-2" onSubmit={handleSubmit}>
           <Field label="Position">
-            <Input
-              type="number"
+            <Select
               required
               value={form.position}
-              onChange={(event) =>
-                setForm((current) => ({ ...current, position: event.target.value }))
-              }
-            />
+              onChange={(event) => {
+                const position =
+                  CAROUSAL_POSITIONS.find(
+                    (candidate) => candidate === event.target.value,
+                  ) ?? "";
+                setForm((current) => ({ ...current, position }));
+              }}
+            >
+              <option value="">Select position</option>
+              {CAROUSAL_POSITIONS.map((position) => (
+                <option key={position} value={position}>
+                  {position}
+                </option>
+              ))}
+            </Select>
           </Field>
           <Field label="Slide IDs" hint="Comma-separated carousel slide IDs">
             <Input

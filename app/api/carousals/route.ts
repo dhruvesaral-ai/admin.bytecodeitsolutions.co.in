@@ -1,4 +1,4 @@
-import { prisma } from "@/lib/prisma";
+import { prisma } from "@/lib/db";
 import {
   isNextResponse,
   jsonError,
@@ -7,6 +7,7 @@ import {
 } from "@/lib/api/http";
 import {
   parseCarousalCreateBody,
+  toApiCarousal,
   type CarousalWriteBody,
 } from "@/lib/carousal";
 
@@ -15,9 +16,9 @@ export async function GET() {
     const carousals = await prisma.carousal.findMany({
       orderBy: { position: "asc" },
     });
-    return jsonOk({ data: carousals });
-  } catch {
-    return jsonError("Failed to list carousals", 500);
+    return jsonOk({ data: carousals.map(toApiCarousal) });
+  } catch (error) {
+    return jsonError(error, 500);
   }
 }
 
@@ -34,8 +35,8 @@ export async function POST(request: Request) {
 
   try {
     const carousal = await prisma.carousal.create({ data: parsed.data });
-    return jsonOk({ data: carousal }, 201);
-  } catch {
-    return jsonError("Failed to create carousal", 500);
+    return jsonOk({ data: toApiCarousal(carousal) }, 201);
+  } catch (error) {
+    return jsonError(error, 500);
   }
 }

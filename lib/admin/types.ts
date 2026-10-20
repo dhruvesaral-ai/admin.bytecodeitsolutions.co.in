@@ -1,9 +1,11 @@
+import type { CarousalPosition } from "@/lib/carousal-position";
+
 export type GeneralStatus = "active" | "inactive";
 
 export type Carousal = {
   id: string;
   carousalSlideIds: string[];
-  position: number;
+  position: CarousalPosition;
 };
 
 export type CarouselSlide = {

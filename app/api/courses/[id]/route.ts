@@ -1,4 +1,4 @@
-import { prisma } from "@/lib/prisma";
+import { prisma } from "@/lib/db";
 import {
   isNextResponse,
   isPrismaForeignKeyViolation,
@@ -27,8 +27,8 @@ export async function GET(_request: Request, context: RouteContext) {
       return jsonError("Course not found", 404);
     }
     return jsonOk({ data: course });
-  } catch {
-    return jsonError("Failed to fetch course", 500);
+  } catch (error) {
+    return jsonError(error, 500);
   }
 }
 
@@ -59,7 +59,7 @@ export async function PATCH(request: Request, context: RouteContext) {
     if (isPrismaForeignKeyViolation(error)) {
       return jsonError("courseCategorieId does not match an existing category", 400);
     }
-    return jsonError("Failed to update course", 500);
+    return jsonError(error, 500);
   }
 }
 
@@ -73,6 +73,6 @@ export async function DELETE(_request: Request, context: RouteContext) {
     if (isPrismaNotFound(error)) {
       return jsonError("Course not found", 404);
     }
-    return jsonError("Failed to delete course", 500);
+    return jsonError(error, 500);
   }
 }

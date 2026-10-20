@@ -1,4 +1,4 @@
-import { prisma } from "@/lib/prisma";
+import { prisma } from "@/lib/db";
 import {
   isNextResponse,
   isPrismaForeignKeyViolation,
@@ -19,8 +19,8 @@ export async function GET() {
       include: courseDetailInclude,
     });
     return jsonOk({ data: courses });
-  } catch {
-    return jsonError("Failed to list courses", 500);
+  } catch (error) {
+    return jsonError(error, 500);
   }
 }
 
@@ -45,6 +45,6 @@ export async function POST(request: Request) {
     if (isPrismaForeignKeyViolation(error)) {
       return jsonError("courseCategorieId does not match an existing category", 400);
     }
-    return jsonError("Failed to create course", 500);
+    return jsonError(error, 500);
   }
 }

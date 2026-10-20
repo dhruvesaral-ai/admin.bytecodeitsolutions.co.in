@@ -1,4 +1,4 @@
-import { prisma } from "@/lib/prisma";
+import { prisma } from "@/lib/db";
 import {
   isNextResponse,
   jsonError,
@@ -16,8 +16,8 @@ export async function GET() {
       orderBy: { title: "asc" },
     });
     return jsonOk({ data: modules });
-  } catch {
-    return jsonError("Failed to list course modules", 500);
+  } catch (error) {
+    return jsonError(error, 500);
   }
 }
 
@@ -35,7 +35,7 @@ export async function POST(request: Request) {
   try {
     const courseModule = await prisma.courseModule.create({ data: parsed.data });
     return jsonOk({ data: courseModule }, 201);
-  } catch {
-    return jsonError("Failed to create course module", 500);
+  } catch (error) {
+    return jsonError(error, 500);
   }
 }

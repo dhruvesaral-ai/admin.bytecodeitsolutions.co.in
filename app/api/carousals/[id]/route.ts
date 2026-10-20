@@ -1,4 +1,4 @@
-import { prisma } from "@/lib/prisma";
+import { prisma } from "@/lib/db";
 import {
   isNextResponse,
   isPrismaNotFound,
@@ -8,6 +8,7 @@ import {
 } from "@/lib/api/http";
 import {
   parseCarousalUpdateBody,
+  toApiCarousal,
   type CarousalWriteBody,
 } from "@/lib/carousal";
 
@@ -21,9 +22,9 @@ export async function GET(_request: Request, context: RouteContext) {
     if (!carousal) {
       return jsonError("Carousal not found", 404);
     }
-    return jsonOk({ data: carousal });
-  } catch {
-    return jsonError("Failed to fetch carousal", 500);
+    return jsonOk({ data: toApiCarousal(carousal) });
+  } catch (error) {
+    return jsonError(error, 500);
   }
 }
 
@@ -45,12 +46,12 @@ export async function PATCH(request: Request, context: RouteContext) {
       where: { id },
       data: parsed.data,
     });
-    return jsonOk({ data: carousal });
+    return jsonOk({ data: toApiCarousal(carousal) });
   } catch (error) {
     if (isPrismaNotFound(error)) {
       return jsonError("Carousal not found", 404);
     }
-    return jsonError("Failed to update carousal", 500);
+    return jsonError(error, 500);
   }
 }
 
@@ -64,6 +65,6 @@ export async function DELETE(_request: Request, context: RouteContext) {
     if (isPrismaNotFound(error)) {
       return jsonError("Carousal not found", 404);
     }
-    return jsonError("Failed to delete carousal", 500);
+    return jsonError(error, 500);
   }
 }

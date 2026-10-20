@@ -1,4 +1,4 @@
-import { prisma } from "@/lib/prisma";
+import { prisma } from "@/lib/db";
 import {
   isNextResponse,
   isPrismaNotFound,
@@ -22,8 +22,8 @@ export async function GET(_request: Request, context: RouteContext) {
       return jsonError("Course module not found", 404);
     }
     return jsonOk({ data: courseModule });
-  } catch {
-    return jsonError("Failed to fetch course module", 500);
+  } catch (error) {
+    return jsonError(error, 500);
   }
 }
 
@@ -50,7 +50,7 @@ export async function PATCH(request: Request, context: RouteContext) {
     if (isPrismaNotFound(error)) {
       return jsonError("Course module not found", 404);
     }
-    return jsonError("Failed to update course module", 500);
+    return jsonError(error, 500);
   }
 }
 
@@ -64,6 +64,6 @@ export async function DELETE(_request: Request, context: RouteContext) {
     if (isPrismaNotFound(error)) {
       return jsonError("Course module not found", 404);
     }
-    return jsonError("Failed to delete course module", 500);
+    return jsonError(error, 500);
   }
 }

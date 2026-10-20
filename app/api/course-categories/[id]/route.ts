@@ -1,4 +1,4 @@
-import { prisma } from "@/lib/prisma";
+import { prisma } from "@/lib/db";
 import {
   isNextResponse,
   isPrismaNotFound,
@@ -23,8 +23,8 @@ export async function GET(_request: Request, context: RouteContext) {
       return jsonError("Course category not found", 404);
     }
     return jsonOk({ data: category });
-  } catch {
-    return jsonError("Failed to fetch course category", 500);
+  } catch (error) {
+    return jsonError(error, 500);
   }
 }
 
@@ -54,7 +54,7 @@ export async function PATCH(request: Request, context: RouteContext) {
     if (isPrismaUniqueViolation(error)) {
       return jsonError("A category with this slug already exists", 409);
     }
-    return jsonError("Failed to update course category", 500);
+    return jsonError(error, 500);
   }
 }
 
@@ -68,6 +68,6 @@ export async function DELETE(_request: Request, context: RouteContext) {
     if (isPrismaNotFound(error)) {
       return jsonError("Course category not found", 404);
     }
-    return jsonError("Failed to delete course category", 500);
+    return jsonError(error, 500);
   }
 }

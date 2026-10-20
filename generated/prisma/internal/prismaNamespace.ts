@@ -1449,6 +1449,20 @@ export type ListStringFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaMod
 
 
 /**
+ * Reference to a field of type 'CarousalPosition'
+ */
+export type EnumCarousalPositionFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'CarousalPosition'>
+    
+
+
+/**
+ * Reference to a field of type 'CarousalPosition[]'
+ */
+export type ListEnumCarousalPositionFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'CarousalPosition[]'>
+    
+
+
+/**
  * Reference to a field of type 'Int'
  */
 export type IntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int'>
