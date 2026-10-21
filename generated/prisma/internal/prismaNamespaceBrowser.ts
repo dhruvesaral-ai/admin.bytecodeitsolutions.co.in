@@ -54,6 +54,8 @@ export const ModelName = {
   Carousal: 'Carousal',
   CarouselSlide: 'CarouselSlide',
   Course: 'Course',
+  Lead: 'Lead',
+  LeadRemark: 'LeadRemark',
   CourseCategorie: 'CourseCategorie',
   CourseModule: 'CourseModule',
   Testimonial: 'Testimonial',
@@ -124,6 +126,37 @@ export const CourseScalarFieldEnum = {
 } as const
 
 export type CourseScalarFieldEnum = (typeof CourseScalarFieldEnum)[keyof typeof CourseScalarFieldEnum]
+
+
+export const LeadScalarFieldEnum = {
+  id: 'id',
+  firstName: 'firstName',
+  lastName: 'lastName',
+  username: 'username',
+  utmSource: 'utmSource',
+  courseId: 'courseId',
+  hasBeenCalled: 'hasBeenCalled',
+  nextCallDate: 'nextCallDate',
+  status: 'status',
+  generatedSource: 'generatedSource',
+  leadRemark: 'leadRemark',
+  message: 'message',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type LeadScalarFieldEnum = (typeof LeadScalarFieldEnum)[keyof typeof LeadScalarFieldEnum]
+
+
+export const LeadRemarkScalarFieldEnum = {
+  id: 'id',
+  leadId: 'leadId',
+  remark: 'remark',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type LeadRemarkScalarFieldEnum = (typeof LeadRemarkScalarFieldEnum)[keyof typeof LeadRemarkScalarFieldEnum]
 
 
 export const CourseCategorieScalarFieldEnum = {

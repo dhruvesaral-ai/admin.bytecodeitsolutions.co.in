@@ -47,8 +47,42 @@ model Course {
   isInSale             Boolean          @default(false) @map("is_in_sale")
   courseModuleIds      String[]         @map("course_module_ids")
   courseCategorie      CourseCategorie? @relation(fields: [courseCategorieId], references: [id])
+  leads                Lead[]
 
   @@map("course")
+}
+
+model Lead {
+  id              String              @id @default(cuid())
+  firstName       String              @map("first_name")
+  lastName        String?             @map("last_name")
+  username        String
+  utmSource       String?             @map("utm_source")
+  courseId        String?             @map("course_id")
+  hasBeenCalled   Boolean             @default(false) @map("has_been_called")
+  nextCallDate    DateTime?           @map("next_call_date")
+  status          LeadStatus          @default(hot)
+  generatedSource LeadGeneratedSource @default(online) @map("generated_source")
+  leadRemark      String?             @map("lead_remark")
+  message         String?
+  createdAt       DateTime            @default(now()) @map("createdat")
+  updatedAt       DateTime            @updatedAt @map("updatedat")
+  course          Course?             @relation(fields: [courseId], references: [id], onDelete: SetNull)
+  remarks         LeadRemark[]
+
+  @@map("leads")
+}
+
+model LeadRemark {
+  id        String   @id @default(cuid())
+  leadId    String   @map("lead_id")
+  remark    String
+  createdAt DateTime @default(now()) @map("createdat")
+  updatedAt DateTime @updatedAt @map("updatedat")
+  lead      Lead     @relation(fields: [leadId], references: [id], onDelete: Cascade)
+
+  @@index([leadId, createdAt])
+  @@map("lead_remarks")
 }
 
 model CourseCategorie {
@@ -128,6 +162,18 @@ model Role {
 enum GeneralStatus {
   active
   inactive
+}
+
+enum LeadStatus {
+  hot
+  medium
+  cold
+  converted
+}
+
+enum LeadGeneratedSource {
+  online
+  offline
 }
 
 enum CarousalPosition {

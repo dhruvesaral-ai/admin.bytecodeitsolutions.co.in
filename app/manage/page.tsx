@@ -28,6 +28,11 @@ const sections = [
     description: "Full course catalog, pricing, and metadata.",
   },
   {
+    href: "/manage/leads",
+    title: "Leads",
+    description: "Track lead status, follow-up calls, course interest, and remarks.",
+  },
+  {
     href: "/manage/testimonials",
     title: "Testimonials",
     description: "Manage testimonial names, company details, and profile photos.",

@@ -1791,6 +1791,31 @@ csstype@^3.2.2:
   resolved "https://registry.yarnpkg.com/csstype/-/csstype-3.2.3.tgz#ec48c0f3e993e50648c86da559e2610995cf989a"
   integrity sha512-z1HGKcYy2xA8AGQfwrn0PAy+PB7X/GSj3UVJW9qKyn43xWa+gl5nXmU4qqLMRzWVLFC8KusUX8T/0kCiOYpAIQ==
 
+csv-generate@^4.6.2:
+  version "4.6.2"
+  resolved "https://registry.yarnpkg.com/csv-generate/-/csv-generate-4.6.2.tgz#4487adee5f1a2b729700e6e81da57af0bc7949a2"
+  integrity sha512-1G69uT4HKxLRL3dH5UlwlEBpHFOh7A9T86XZn6IkCXkb2k5cnk3xhxNpLcYZvoBFpC1SIZTXBPHzNGd16cIp/A==
+
+csv-parse@^7.0.3:
+  version "7.0.3"
+  resolved "https://registry.yarnpkg.com/csv-parse/-/csv-parse-7.0.3.tgz#eece4221023f8f67029518af928a225a1ea3ccad"
+  integrity sha512-YFd3QM/yo17vH91L1IOZuvl09zM0zEEtdfTcOCKWcMdM++MNaQSyp09slXyFCLaPXvHstQFx/xC8myiFHSMUvw==
+
+csv-stringify@^6.9.0:
+  version "6.9.0"
+  resolved "https://registry.yarnpkg.com/csv-stringify/-/csv-stringify-6.9.0.tgz#e92dd2905f6d67f33ec9c413b02080362989e8ca"
+  integrity sha512-6b3e29CILFfSQ2nDRuZMRROzQOpPuJ+s8zPB5H7eK5ncXBbFOyVuRLU5Sx/zAUmVri3Ly49GyC8NEme4SVSAbA==
+
+csv@^6.6.4:
+  version "6.6.4"
+  resolved "https://registry.yarnpkg.com/csv/-/csv-6.6.4.tgz#4c630e731df63b72b77f89bf8c8e5cea073b8a05"
+  integrity sha512-HeLcw5VphIwHTNKljvINW9IT0stYqgZ/2AIcx5ur8DcArOvRxb4INpgDs008UStv8l7dVVJaCB3twWi59SSouA==
+  dependencies:
+    csv-generate "^4.6.2"
+    csv-parse "^7.0.3"
+    csv-stringify "^6.9.0"
+    stream-transform "^3.6.0"
+
 "d3-array@2 - 3", "d3-array@2.10.0 - 3", "d3-array@2.5.0 - 3", d3-array@3.2.4:
   version "3.2.4"
   resolved "https://registry.yarnpkg.com/d3-array/-/d3-array-3.2.4.tgz#15fec33b237f97ac5d7c986dc77da273a8ed0bb5"
@@ -3996,6 +4021,11 @@ stop-iteration-iterator@^1.1.0:
   dependencies:
     es-errors "^1.3.0"
     internal-slot "^1.1.0"
+
+stream-transform@^3.6.0:
+  version "3.6.0"
+  resolved "https://registry.yarnpkg.com/stream-transform/-/stream-transform-3.6.0.tgz#051602df3ef5b703f99f210e57650a92f5860054"
+  integrity sha512-iDtH6HV1MOQ3Ipva+9g/kke1uVLubZlEbGCxbWWlI+Ak++sDRQRxmPZ1iXlmXdLK6kP5fIziUf79GBB7erbppQ==
 
 streamsearch@^1.1.0:
   version "1.1.0"

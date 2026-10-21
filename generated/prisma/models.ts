@@ -11,6 +11,8 @@
 export type * from './models/Carousal'
 export type * from './models/CarouselSlide'
 export type * from './models/Course'
+export type * from './models/Lead'
+export type * from './models/LeadRemark'
 export type * from './models/CourseCategorie'
 export type * from './models/CourseModule'
 export type * from './models/Testimonial'

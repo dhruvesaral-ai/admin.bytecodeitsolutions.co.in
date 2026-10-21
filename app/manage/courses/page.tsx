@@ -15,7 +15,14 @@ import {
 } from "@/components/admin/ui";
 import { ImageUrlField } from "@/components/admin/ImageUrlField";
 import { SyllabusPdfField } from "@/components/admin/SyllabusPdfField";
-import { apiDelete, apiGet, apiPatch, apiPost, ApiError } from "@/lib/admin/client";
+import {
+  apiDelete,
+  apiGet,
+  apiPatch,
+  apiPost,
+  ApiError,
+  uploadCourseCsv,
+} from "@/lib/admin/client";
 import type {
   Course,
   CourseCategorie,
@@ -118,6 +125,9 @@ export default function ManageCoursesPage() {
   const [editingId, setEditingId] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [importing, setImporting] = useState(false);
+  const [importFile, setImportFile] = useState<File | null>(null);
+  const [fileInputKey, setFileInputKey] = useState(0);
   const [message, setMessage] = useState<{ tone: "error" | "success"; text: string } | null>(
     null,
   );
@@ -192,6 +202,33 @@ export default function ManageCoursesPage() {
     }
   }
 
+  async function handleImport() {
+    if (!importFile) {
+      setMessage({ tone: "error", text: "Choose a CSV file to import." });
+      return;
+    }
+
+    setImporting(true);
+    setMessage(null);
+    try {
+      const response = await uploadCourseCsv(importFile);
+      setImportFile(null);
+      setFileInputKey((current) => current + 1);
+      await load();
+      setMessage({
+        tone: "success",
+        text: `${response.data.created} course${response.data.created === 1 ? "" : "s"} imported.`,
+      });
+    } catch (error) {
+      setMessage({
+        tone: "error",
+        text: error instanceof ApiError ? error.message : "Course import failed",
+      });
+    } finally {
+      setImporting(false);
+    }
+  }
+
   async function handleDelete(id: string) {
     if (!confirm("Delete this course?")) {
       return;
@@ -222,6 +259,42 @@ export default function ManageCoursesPage() {
       description="Manage catalog entries, pricing, and linked category/modules."
     >
       {message ? <Alert tone={message.tone}>{message.text}</Alert> : null}
+
+      <Card title="Import courses from Excel or CSV">
+        <div className="grid gap-4 md:grid-cols-[1fr_auto] md:items-end">
+          <Field
+            label="Course CSV file"
+            hint="Use the template. Separate technology tags and module titles with semicolons; category and module names must match existing entries."
+          >
+            <Input
+              key={fileInputKey}
+              type="file"
+              accept=".csv,text/csv"
+              onChange={(event) =>
+                setImportFile(event.target.files?.[0] ?? null)
+              }
+            />
+          </Field>
+          <div className="flex flex-wrap gap-2">
+            <a
+              href="/api/courses/import"
+              download="course-import-template.csv"
+              className="inline-flex items-center justify-center rounded-lg border border-zinc-200 bg-white px-3 py-2 text-sm font-medium text-zinc-800 transition hover:bg-zinc-50 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-100 dark:hover:bg-zinc-800"
+            >
+              Download Excel template (CSV)
+            </a>
+            <Button
+              onClick={() => void handleImport()}
+              disabled={importing || !importFile}
+            >
+              {importing ? "Importing…" : "Upload and import"}
+            </Button>
+          </div>
+        </div>
+        <p className="mt-3 text-xs text-zinc-500 dark:text-zinc-400">
+          The whole file is validated before any courses are added. Maximum 500 courses per upload.
+        </p>
+      </Card>
 
       <Card
         title={editingId ? "Edit course" : "New course"}

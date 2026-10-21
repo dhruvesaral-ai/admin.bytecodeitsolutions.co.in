@@ -33,6 +33,16 @@ export type CarouselSlide = Prisma.CarouselSlideModel
  */
 export type Course = Prisma.CourseModel
 /**
+ * Model Lead
+ * 
+ */
+export type Lead = Prisma.LeadModel
+/**
+ * Model LeadRemark
+ * 
+ */
+export type LeadRemark = Prisma.LeadRemarkModel
+/**
  * Model CourseCategorie
  * 
  */

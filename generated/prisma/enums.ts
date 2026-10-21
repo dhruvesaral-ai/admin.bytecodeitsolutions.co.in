@@ -17,6 +17,24 @@ export const GeneralStatus = {
 export type GeneralStatus = (typeof GeneralStatus)[keyof typeof GeneralStatus]
 
 
+export const LeadStatus = {
+  hot: 'hot',
+  medium: 'medium',
+  cold: 'cold',
+  converted: 'converted'
+} as const
+
+export type LeadStatus = (typeof LeadStatus)[keyof typeof LeadStatus]
+
+
+export const LeadGeneratedSource = {
+  online: 'online',
+  offline: 'offline'
+} as const
+
+export type LeadGeneratedSource = (typeof LeadGeneratedSource)[keyof typeof LeadGeneratedSource]
+
+
 export const CarousalPosition = {
   homepage: 'homepage',
   offer_banner: 'offer_banner',

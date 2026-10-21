@@ -59,3 +59,13 @@ export async function uploadPdfFile(file: File) {
   const response = await fetch("/api/upload/pdf", { method: "POST", body });
   return parseResponse<{ data: { url: string } }>(response);
 }
+
+export async function uploadCourseCsv(file: File) {
+  const body = new FormData();
+  body.append("file", file);
+  const response = await fetch("/api/courses/import", {
+    method: "POST",
+    body,
+  });
+  return parseResponse<{ data: { created: number } }>(response);
+}

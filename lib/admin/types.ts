@@ -64,5 +64,36 @@ export type Course = {
   courseCategorie?: CourseCategorie | null;
 };
 
+export type LeadStatus = "hot" | "medium" | "cold" | "converted";
+export type LeadGeneratedSource = "online" | "offline";
+
+export type LeadRemark = {
+  id: string;
+  leadId: string;
+  remark: string;
+  createdAt: string;
+  updatedAt: string;
+};
+
+export type Lead = {
+  id: string;
+  firstName: string;
+  lastName: string | null;
+  username: string;
+  utmSource: string | null;
+  courseId: string | null;
+  hasBeenCalled: boolean;
+  nextCallDate: string | null;
+  status: LeadStatus;
+  generatedSource: LeadGeneratedSource;
+  leadRemark: string | null;
+  message: string | null;
+  createdAt: string;
+  updatedAt: string;
+  course: Pick<Course, "id" | "name"> | null;
+  remarks: LeadRemark[];
+  remarksIds: string[];
+};
+
 export type ListResponse<T> = { data: T[] };
 export type ItemResponse<T> = { data: T };

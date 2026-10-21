@@ -367,10 +367,6 @@ export type ClassCreatebatchIdsInput = {
   set: string[]
 }
 
-export type DateTimeFieldUpdateOperationsInput = {
-  set?: Date | string
-}
-
 export type ClassUpdatecourseIdsInput = {
   set?: string[]
   push?: string | string[]
