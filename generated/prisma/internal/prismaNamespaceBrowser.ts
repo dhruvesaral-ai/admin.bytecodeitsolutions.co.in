@@ -63,7 +63,8 @@ export const ModelName = {
   Batch: 'Batch',
   Class: 'Class',
   User: 'User',
-  Role: 'Role'
+  Role: 'Role',
+  Page: 'Page'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -236,6 +237,16 @@ export const RoleScalarFieldEnum = {
 } as const
 
 export type RoleScalarFieldEnum = (typeof RoleScalarFieldEnum)[keyof typeof RoleScalarFieldEnum]
+
+
+export const PageScalarFieldEnum = {
+  id: 'id',
+  heading: 'heading',
+  subheading: 'subheading',
+  routeName: 'routeName'
+} as const
+
+export type PageScalarFieldEnum = (typeof PageScalarFieldEnum)[keyof typeof PageScalarFieldEnum]
 
 
 export const SortOrder = {

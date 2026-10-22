@@ -82,3 +82,8 @@ export type User = Prisma.UserModel
  * 
  */
 export type Role = Prisma.RoleModel
+/**
+ * Model Page
+ * 
+ */
+export type Page = Prisma.PageModel

@@ -33,6 +33,11 @@ const sections = [
     description: "Track lead status, follow-up calls, course interest, and remarks.",
   },
   {
+    href: "/manage/pages",
+    title: "Pages",
+    description: "Manage page headings, subheadings, and frontend route paths.",
+  },
+  {
     href: "/manage/testimonials",
     title: "Testimonials",
     description: "Manage testimonial names, company details, and profile photos.",

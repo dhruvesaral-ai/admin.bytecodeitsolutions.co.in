@@ -409,7 +409,8 @@ export const ModelName = {
   Batch: 'Batch',
   Class: 'Class',
   User: 'User',
-  Role: 'Role'
+  Role: 'Role',
+  Page: 'Page'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -425,7 +426,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "carousal" | "carouselSlide" | "course" | "lead" | "leadRemark" | "courseCategorie" | "courseModule" | "testimonial" | "successStory" | "batch" | "class" | "user" | "role"
+    modelProps: "carousal" | "carouselSlide" | "course" | "lead" | "leadRemark" | "courseCategorie" | "courseModule" | "testimonial" | "successStory" | "batch" | "class" | "user" | "role" | "page"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -1391,6 +1392,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    Page: {
+      payload: Prisma.$PagePayload<ExtArgs>
+      fields: Prisma.PageFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.PageFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PagePayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.PageFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PagePayload>
+        }
+        findFirst: {
+          args: Prisma.PageFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PagePayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.PageFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PagePayload>
+        }
+        findMany: {
+          args: Prisma.PageFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PagePayload>[]
+        }
+        create: {
+          args: Prisma.PageCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PagePayload>
+        }
+        createMany: {
+          args: Prisma.PageCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.PageCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PagePayload>[]
+        }
+        delete: {
+          args: Prisma.PageDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PagePayload>
+        }
+        update: {
+          args: Prisma.PageUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PagePayload>
+        }
+        deleteMany: {
+          args: Prisma.PageDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.PageUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.PageUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PagePayload>[]
+        }
+        upsert: {
+          args: Prisma.PageUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PagePayload>
+        }
+        aggregate: {
+          args: Prisma.PageAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregatePage>
+        }
+        groupBy: {
+          args: Prisma.PageGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.PageGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.PageCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.PageCountAggregateOutputType> | number
+        }
+      }
+    }
   }
 } & {
   other: {
@@ -1584,6 +1659,16 @@ export const RoleScalarFieldEnum = {
 } as const
 
 export type RoleScalarFieldEnum = (typeof RoleScalarFieldEnum)[keyof typeof RoleScalarFieldEnum]
+
+
+export const PageScalarFieldEnum = {
+  id: 'id',
+  heading: 'heading',
+  subheading: 'subheading',
+  routeName: 'routeName'
+} as const
+
+export type PageScalarFieldEnum = (typeof PageScalarFieldEnum)[keyof typeof PageScalarFieldEnum]
 
 
 export const SortOrder = {
@@ -1912,6 +1997,7 @@ export type GlobalOmitConfig = {
   class?: Prisma.ClassOmit
   user?: Prisma.UserOmit
   role?: Prisma.RoleOmit
+  page?: Prisma.PageOmit
 }
 
 /* Types for Logging */

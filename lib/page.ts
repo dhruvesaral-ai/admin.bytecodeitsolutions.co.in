@@ -1,0 +1,114 @@
+import type { Prisma } from "@/generated/prisma/client";
+
+export type PageWriteBody = {
+  heading?: string;
+  subheading?: string;
+  routeName?: string;
+};
+
+/**
+ * Normalizes user-entered route names:
+ * - Trims whitespace
+ * - Strips leading/trailing slashes (e.g. "/home/" -> "home")
+ * - Converts spaces to hyphens
+ * - Converts to lowercase
+ * - Strips characters other than letters, numbers, hyphens, and underscores
+ */
+export function formatRouteName(value: string): string {
+  return value
+    .trim()
+    .toLowerCase()
+    .replace(/^\/+|\/+$/g, "")
+    .replace(/\s+/g, "-")
+    .replace(/[^a-z0-9-_]/g, "");
+}
+
+function parseNonEmptyString(
+  value: unknown,
+  field: string,
+): { value: string } | { error: string } {
+  if (typeof value !== "string" || value.trim() === "") {
+    return { error: `${field} must be a non-empty string` };
+  }
+  return { value: value.trim() };
+}
+
+export function parsePageCreateBody(
+  body: PageWriteBody,
+): { data: Prisma.PageCreateInput } | { error: string } {
+  const heading = parseNonEmptyString(body.heading, "heading");
+  if ("error" in heading) {
+    return heading;
+  }
+
+  const subheading = parseNonEmptyString(body.subheading, "subheading");
+  if ("error" in subheading) {
+    return subheading;
+  }
+
+  const rawRouteName = parseNonEmptyString(body.routeName, "routeName");
+  if ("error" in rawRouteName) {
+    return rawRouteName;
+  }
+
+  const routeName = formatRouteName(rawRouteName.value);
+  if (!routeName) {
+    return {
+      error:
+        "routeName must produce a valid non-empty route path (e.g. 'home', 'training')",
+    };
+  }
+
+  return {
+    data: {
+      heading: heading.value,
+      subheading: subheading.value,
+      routeName,
+    },
+  };
+}
+
+export function parsePageUpdateBody(
+  body: PageWriteBody,
+): { data: Prisma.PageUpdateInput } | { error: string } {
+  const data: Prisma.PageUpdateInput = {};
+
+  if (body.heading !== undefined) {
+    const heading = parseNonEmptyString(body.heading, "heading");
+    if ("error" in heading) {
+      return heading;
+    }
+    data.heading = heading.value;
+  }
+
+  if (body.subheading !== undefined) {
+    const subheading = parseNonEmptyString(body.subheading, "subheading");
+    if ("error" in subheading) {
+      return subheading;
+    }
+    data.subheading = subheading.value;
+  }
+
+  if (body.routeName !== undefined) {
+    const rawRouteName = parseNonEmptyString(body.routeName, "routeName");
+    if ("error" in rawRouteName) {
+      return rawRouteName;
+    }
+    const routeName = formatRouteName(rawRouteName.value);
+    if (!routeName) {
+      return {
+        error:
+          "routeName must produce a valid non-empty route path (e.g. 'home', 'training')",
+      };
+    }
+    data.routeName = routeName;
+  }
+
+  if (Object.keys(data).length === 0) {
+    return {
+      error: "At least one of heading, subheading, or routeName is required",
+    };
+  }
+
+  return { data };
+}

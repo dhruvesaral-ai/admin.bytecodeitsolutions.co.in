@@ -183,3 +183,12 @@ enum CarousalPosition {
   programs
   training
 }
+
+model Page {
+  id          String  @id @default(cuid())
+  heading     String
+  subheading  String
+  routeName String   @unique @map("route_name")
+  
+  @@map("page")
+}

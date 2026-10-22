@@ -95,5 +95,12 @@ export type Lead = {
   remarksIds: string[];
 };
 
+export type Page = {
+  id: string;
+  heading: string;
+  subheading: string;
+  routeName: string;
+};
+
 export type ListResponse<T> = { data: T[] };
 export type ItemResponse<T> = { data: T };

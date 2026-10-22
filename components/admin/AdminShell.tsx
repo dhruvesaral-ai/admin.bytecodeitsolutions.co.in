@@ -8,6 +8,7 @@ const nav = [
   { href: "/manage/course-modules", label: "Course modules" },
   { href: "/manage/courses", label: "Courses" },
   { href: "/manage/leads", label: "Leads" },
+  { href: "/manage/pages", label: "Pages" },
   { href: "/manage/testimonials", label: "Testimonials" },
   { href: "/manage/success-stories", label: "Success stories" },
 ];

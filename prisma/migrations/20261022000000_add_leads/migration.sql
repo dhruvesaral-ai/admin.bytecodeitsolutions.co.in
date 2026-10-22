@@ -11,7 +11,7 @@ CREATE TABLE "leads" (
     "course_id" TEXT,
     "has_been_called" BOOLEAN NOT NULL DEFAULT false,
     "next_call_date" TIMESTAMP(3),
-    "status" "LeadStatus" NOT NULL DEFAULT 'hot',
+    "status" "LeadStatus" NOT NULL DEFAULT 'medium',
     "generated_source" "LeadGeneratedSource" NOT NULL DEFAULT 'online',
     "lead_remark" TEXT,
     "message" TEXT,
