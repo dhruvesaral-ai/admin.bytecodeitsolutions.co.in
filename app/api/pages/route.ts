@@ -29,7 +29,7 @@ export async function GET(request: Request) {
     }
 
     const pages = await prisma.page.findMany({
-      orderBy: { routeName: "asc" },
+      orderBy: { createdAt: "asc" },
     });
     return jsonOk({ data: pages });
   } catch (error) {

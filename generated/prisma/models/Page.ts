@@ -29,6 +29,7 @@ export type PageMinAggregateOutputType = {
   heading: string | null
   subheading: string | null
   routeName: string | null
+  createdAt: Date | null
 }
 
 export type PageMaxAggregateOutputType = {
@@ -36,6 +37,7 @@ export type PageMaxAggregateOutputType = {
   heading: string | null
   subheading: string | null
   routeName: string | null
+  createdAt: Date | null
 }
 
 export type PageCountAggregateOutputType = {
@@ -43,6 +45,7 @@ export type PageCountAggregateOutputType = {
   heading: number
   subheading: number
   routeName: number
+  createdAt: number
   _all: number
 }
 
@@ -52,6 +55,7 @@ export type PageMinAggregateInputType = {
   heading?: true
   subheading?: true
   routeName?: true
+  createdAt?: true
 }
 
 export type PageMaxAggregateInputType = {
@@ -59,6 +63,7 @@ export type PageMaxAggregateInputType = {
   heading?: true
   subheading?: true
   routeName?: true
+  createdAt?: true
 }
 
 export type PageCountAggregateInputType = {
@@ -66,6 +71,7 @@ export type PageCountAggregateInputType = {
   heading?: true
   subheading?: true
   routeName?: true
+  createdAt?: true
   _all?: true
 }
 
@@ -146,6 +152,7 @@ export type PageGroupByOutputType = {
   heading: string
   subheading: string
   routeName: string
+  createdAt: Date
   _count: PageCountAggregateOutputType | null
   _min: PageMinAggregateOutputType | null
   _max: PageMaxAggregateOutputType | null
@@ -174,6 +181,7 @@ export type PageWhereInput = {
   heading?: Prisma.StringFilter<"Page"> | string
   subheading?: Prisma.StringFilter<"Page"> | string
   routeName?: Prisma.StringFilter<"Page"> | string
+  createdAt?: Prisma.DateTimeFilter<"Page"> | Date | string
 }
 
 export type PageOrderByWithRelationInput = {
@@ -181,6 +189,7 @@ export type PageOrderByWithRelationInput = {
   heading?: Prisma.SortOrder
   subheading?: Prisma.SortOrder
   routeName?: Prisma.SortOrder
+  createdAt?: Prisma.SortOrder
 }
 
 export type PageWhereUniqueInput = Prisma.AtLeast<{
@@ -191,6 +200,7 @@ export type PageWhereUniqueInput = Prisma.AtLeast<{
   NOT?: Prisma.PageWhereInput | Prisma.PageWhereInput[]
   heading?: Prisma.StringFilter<"Page"> | string
   subheading?: Prisma.StringFilter<"Page"> | string
+  createdAt?: Prisma.DateTimeFilter<"Page"> | Date | string
 }, "id" | "routeName">
 
 export type PageOrderByWithAggregationInput = {
@@ -198,6 +208,7 @@ export type PageOrderByWithAggregationInput = {
   heading?: Prisma.SortOrder
   subheading?: Prisma.SortOrder
   routeName?: Prisma.SortOrder
+  createdAt?: Prisma.SortOrder
   _count?: Prisma.PageCountOrderByAggregateInput
   _max?: Prisma.PageMaxOrderByAggregateInput
   _min?: Prisma.PageMinOrderByAggregateInput
@@ -211,6 +222,7 @@ export type PageScalarWhereWithAggregatesInput = {
   heading?: Prisma.StringWithAggregatesFilter<"Page"> | string
   subheading?: Prisma.StringWithAggregatesFilter<"Page"> | string
   routeName?: Prisma.StringWithAggregatesFilter<"Page"> | string
+  createdAt?: Prisma.DateTimeWithAggregatesFilter<"Page"> | Date | string
 }
 
 export type PageCreateInput = {
@@ -218,6 +230,7 @@ export type PageCreateInput = {
   heading: string
   subheading: string
   routeName: string
+  createdAt?: Date | string
 }
 
 export type PageUncheckedCreateInput = {
@@ -225,6 +238,7 @@ export type PageUncheckedCreateInput = {
   heading: string
   subheading: string
   routeName: string
+  createdAt?: Date | string
 }
 
 export type PageUpdateInput = {
@@ -232,6 +246,7 @@ export type PageUpdateInput = {
   heading?: Prisma.StringFieldUpdateOperationsInput | string
   subheading?: Prisma.StringFieldUpdateOperationsInput | string
   routeName?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type PageUncheckedUpdateInput = {
@@ -239,6 +254,7 @@ export type PageUncheckedUpdateInput = {
   heading?: Prisma.StringFieldUpdateOperationsInput | string
   subheading?: Prisma.StringFieldUpdateOperationsInput | string
   routeName?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type PageCreateManyInput = {
@@ -246,6 +262,7 @@ export type PageCreateManyInput = {
   heading: string
   subheading: string
   routeName: string
+  createdAt?: Date | string
 }
 
 export type PageUpdateManyMutationInput = {
@@ -253,6 +270,7 @@ export type PageUpdateManyMutationInput = {
   heading?: Prisma.StringFieldUpdateOperationsInput | string
   subheading?: Prisma.StringFieldUpdateOperationsInput | string
   routeName?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type PageUncheckedUpdateManyInput = {
@@ -260,6 +278,7 @@ export type PageUncheckedUpdateManyInput = {
   heading?: Prisma.StringFieldUpdateOperationsInput | string
   subheading?: Prisma.StringFieldUpdateOperationsInput | string
   routeName?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type PageCountOrderByAggregateInput = {
@@ -267,6 +286,7 @@ export type PageCountOrderByAggregateInput = {
   heading?: Prisma.SortOrder
   subheading?: Prisma.SortOrder
   routeName?: Prisma.SortOrder
+  createdAt?: Prisma.SortOrder
 }
 
 export type PageMaxOrderByAggregateInput = {
@@ -274,6 +294,7 @@ export type PageMaxOrderByAggregateInput = {
   heading?: Prisma.SortOrder
   subheading?: Prisma.SortOrder
   routeName?: Prisma.SortOrder
+  createdAt?: Prisma.SortOrder
 }
 
 export type PageMinOrderByAggregateInput = {
@@ -281,6 +302,7 @@ export type PageMinOrderByAggregateInput = {
   heading?: Prisma.SortOrder
   subheading?: Prisma.SortOrder
   routeName?: Prisma.SortOrder
+  createdAt?: Prisma.SortOrder
 }
 
 
@@ -290,6 +312,7 @@ export type PageSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   heading?: boolean
   subheading?: boolean
   routeName?: boolean
+  createdAt?: boolean
 }, ExtArgs["result"]["page"]>
 
 export type PageSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -297,6 +320,7 @@ export type PageSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   heading?: boolean
   subheading?: boolean
   routeName?: boolean
+  createdAt?: boolean
 }, ExtArgs["result"]["page"]>
 
 export type PageSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -304,6 +328,7 @@ export type PageSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   heading?: boolean
   subheading?: boolean
   routeName?: boolean
+  createdAt?: boolean
 }, ExtArgs["result"]["page"]>
 
 export type PageSelectScalar = {
@@ -311,9 +336,10 @@ export type PageSelectScalar = {
   heading?: boolean
   subheading?: boolean
   routeName?: boolean
+  createdAt?: boolean
 }
 
-export type PageOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "heading" | "subheading" | "routeName", ExtArgs["result"]["page"]>
+export type PageOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "heading" | "subheading" | "routeName" | "createdAt", ExtArgs["result"]["page"]>
 
 export type $PagePayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "Page"
@@ -323,6 +349,7 @@ export type $PagePayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     heading: string
     subheading: string
     routeName: string
+    createdAt: Date
   }, ExtArgs["result"]["page"]>
   composites: {}
 }
@@ -750,6 +777,7 @@ export interface PageFieldRefs {
   readonly heading: Prisma.FieldRef<"Page", 'String'>
   readonly subheading: Prisma.FieldRef<"Page", 'String'>
   readonly routeName: Prisma.FieldRef<"Page", 'String'>
+  readonly createdAt: Prisma.FieldRef<"Page", 'DateTime'>
 }
     
 

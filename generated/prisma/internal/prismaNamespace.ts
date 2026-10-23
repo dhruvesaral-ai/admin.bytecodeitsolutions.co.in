@@ -1665,7 +1665,8 @@ export const PageScalarFieldEnum = {
   id: 'id',
   heading: 'heading',
   subheading: 'subheading',
-  routeName: 'routeName'
+  routeName: 'routeName',
+  createdAt: 'createdAt'
 } as const
 
 export type PageScalarFieldEnum = (typeof PageScalarFieldEnum)[keyof typeof PageScalarFieldEnum]

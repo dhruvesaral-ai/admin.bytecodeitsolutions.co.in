@@ -185,10 +185,11 @@ enum CarousalPosition {
 }
 
 model Page {
-  id          String  @id @default(cuid())
-  heading     String
-  subheading  String
-  routeName String   @unique @map("route_name")
-  
+  id         String   @id @default(cuid())
+  heading    String
+  subheading String
+  routeName  String   @unique @map("route_name")
+  createdAt  DateTime @default(now()) @map("created_at")
+
   @@map("page")
 }
