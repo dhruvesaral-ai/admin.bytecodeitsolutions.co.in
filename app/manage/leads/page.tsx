@@ -31,7 +31,6 @@ type LeadForm = {
   firstName: string;
   lastName: string;
   username: string;
-  utmSource: string;
   courseId: string;
   hasBeenCalled: boolean;
   nextCallDate: string;
@@ -44,7 +43,6 @@ const emptyForm: LeadForm = {
   firstName: "",
   lastName: "",
   username: "",
-  utmSource: "",
   courseId: "",
   hasBeenCalled: false,
   nextCallDate: "",
@@ -72,7 +70,6 @@ function toForm(lead: Lead): LeadForm {
     firstName: lead.firstName,
     lastName: lead.lastName ?? "",
     username: lead.username,
-    utmSource: lead.utmSource ?? "",
     courseId: lead.courseId ?? "",
     hasBeenCalled: lead.hasBeenCalled,
     nextCallDate: toDateInput(lead.nextCallDate),
@@ -167,7 +164,6 @@ export default function ManageLeadsPage() {
       firstName: form.firstName,
       lastName: nullableValue(form.lastName),
       username: form.username,
-      utmSource: nullableValue(form.utmSource),
       courseId: form.courseId || null,
       hasBeenCalled: form.hasBeenCalled,
       nextCallDate: form.nextCallDate
@@ -294,14 +290,6 @@ export default function ManageLeadsPage() {
               value={form.username}
               onChange={(event) =>
                 setForm((current) => ({ ...current, username: event.target.value }))
-              }
-            />
-          </Field>
-          <Field label="UTM source">
-            <Input
-              value={form.utmSource}
-              onChange={(event) =>
-                setForm((current) => ({ ...current, utmSource: event.target.value }))
               }
             />
           </Field>

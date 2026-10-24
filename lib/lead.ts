@@ -8,7 +8,6 @@ export type LeadWriteBody = {
   firstName?: string;
   lastName?: string | null;
   username?: string;
-  utmSource?: string | null;
   courseId?: string | null;
   hasBeenCalled?: boolean;
   nextCallDate?: string | null;
@@ -95,7 +94,7 @@ function assignLeadFields(
     data.username = username.value;
   }
 
-  for (const field of ["lastName", "utmSource", "leadRemark", "message"] as const) {
+  for (const field of ["lastName", "leadRemark", "message"] as const) {
     if (body[field] !== undefined) {
       const parsed = nullableString(body[field], field);
       if ("error" in parsed) return parsed;

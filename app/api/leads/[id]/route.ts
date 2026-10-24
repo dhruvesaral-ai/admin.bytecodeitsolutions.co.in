@@ -41,6 +41,8 @@ export async function PATCH(request: Request, context: RouteContext) {
   const parsed = parseLeadUpdateBody(body);
   if ("error" in parsed) return jsonError(parsed.error, 400);
 
+  parsed.data.utmSource = "offline";
+
   try {
     const lead = await prisma.lead.update({
       where: { id },

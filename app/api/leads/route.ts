@@ -35,6 +35,8 @@ export async function POST(request: Request) {
   const parsed = parseLeadCreateBody(body);
   if ("error" in parsed) return jsonError(parsed.error, 400);
 
+  parsed.data.utmSource = "offline";
+
   try {
     const lead = await prisma.lead.create({
       data: parsed.data,
