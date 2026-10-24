@@ -28,18 +28,24 @@ export type CourseCategorieMinAggregateOutputType = {
   id: string | null
   name: string | null
   slug: string | null
+  createdAt: Date | null
+  updatedAt: Date | null
 }
 
 export type CourseCategorieMaxAggregateOutputType = {
   id: string | null
   name: string | null
   slug: string | null
+  createdAt: Date | null
+  updatedAt: Date | null
 }
 
 export type CourseCategorieCountAggregateOutputType = {
   id: number
   name: number
   slug: number
+  createdAt: number
+  updatedAt: number
   _all: number
 }
 
@@ -48,18 +54,24 @@ export type CourseCategorieMinAggregateInputType = {
   id?: true
   name?: true
   slug?: true
+  createdAt?: true
+  updatedAt?: true
 }
 
 export type CourseCategorieMaxAggregateInputType = {
   id?: true
   name?: true
   slug?: true
+  createdAt?: true
+  updatedAt?: true
 }
 
 export type CourseCategorieCountAggregateInputType = {
   id?: true
   name?: true
   slug?: true
+  createdAt?: true
+  updatedAt?: true
   _all?: true
 }
 
@@ -139,6 +151,8 @@ export type CourseCategorieGroupByOutputType = {
   id: string
   name: string
   slug: string
+  createdAt: Date
+  updatedAt: Date
   _count: CourseCategorieCountAggregateOutputType | null
   _min: CourseCategorieMinAggregateOutputType | null
   _max: CourseCategorieMaxAggregateOutputType | null
@@ -166,6 +180,8 @@ export type CourseCategorieWhereInput = {
   id?: Prisma.StringFilter<"CourseCategorie"> | string
   name?: Prisma.StringFilter<"CourseCategorie"> | string
   slug?: Prisma.StringFilter<"CourseCategorie"> | string
+  createdAt?: Prisma.DateTimeFilter<"CourseCategorie"> | Date | string
+  updatedAt?: Prisma.DateTimeFilter<"CourseCategorie"> | Date | string
   courses?: Prisma.CourseListRelationFilter
 }
 
@@ -173,6 +189,8 @@ export type CourseCategorieOrderByWithRelationInput = {
   id?: Prisma.SortOrder
   name?: Prisma.SortOrder
   slug?: Prisma.SortOrder
+  createdAt?: Prisma.SortOrder
+  updatedAt?: Prisma.SortOrder
   courses?: Prisma.CourseOrderByRelationAggregateInput
 }
 
@@ -183,6 +201,8 @@ export type CourseCategorieWhereUniqueInput = Prisma.AtLeast<{
   OR?: Prisma.CourseCategorieWhereInput[]
   NOT?: Prisma.CourseCategorieWhereInput | Prisma.CourseCategorieWhereInput[]
   name?: Prisma.StringFilter<"CourseCategorie"> | string
+  createdAt?: Prisma.DateTimeFilter<"CourseCategorie"> | Date | string
+  updatedAt?: Prisma.DateTimeFilter<"CourseCategorie"> | Date | string
   courses?: Prisma.CourseListRelationFilter
 }, "id" | "slug">
 
@@ -190,6 +210,8 @@ export type CourseCategorieOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
   name?: Prisma.SortOrder
   slug?: Prisma.SortOrder
+  createdAt?: Prisma.SortOrder
+  updatedAt?: Prisma.SortOrder
   _count?: Prisma.CourseCategorieCountOrderByAggregateInput
   _max?: Prisma.CourseCategorieMaxOrderByAggregateInput
   _min?: Prisma.CourseCategorieMinOrderByAggregateInput
@@ -202,12 +224,16 @@ export type CourseCategorieScalarWhereWithAggregatesInput = {
   id?: Prisma.StringWithAggregatesFilter<"CourseCategorie"> | string
   name?: Prisma.StringWithAggregatesFilter<"CourseCategorie"> | string
   slug?: Prisma.StringWithAggregatesFilter<"CourseCategorie"> | string
+  createdAt?: Prisma.DateTimeWithAggregatesFilter<"CourseCategorie"> | Date | string
+  updatedAt?: Prisma.DateTimeWithAggregatesFilter<"CourseCategorie"> | Date | string
 }
 
 export type CourseCategorieCreateInput = {
   id?: string
   name: string
   slug: string
+  createdAt?: Date | string
+  updatedAt?: Date | string
   courses?: Prisma.CourseCreateNestedManyWithoutCourseCategorieInput
 }
 
@@ -215,6 +241,8 @@ export type CourseCategorieUncheckedCreateInput = {
   id?: string
   name: string
   slug: string
+  createdAt?: Date | string
+  updatedAt?: Date | string
   courses?: Prisma.CourseUncheckedCreateNestedManyWithoutCourseCategorieInput
 }
 
@@ -222,6 +250,8 @@ export type CourseCategorieUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   slug?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   courses?: Prisma.CourseUpdateManyWithoutCourseCategorieNestedInput
 }
 
@@ -229,6 +259,8 @@ export type CourseCategorieUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   slug?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   courses?: Prisma.CourseUncheckedUpdateManyWithoutCourseCategorieNestedInput
 }
 
@@ -236,18 +268,24 @@ export type CourseCategorieCreateManyInput = {
   id?: string
   name: string
   slug: string
+  createdAt?: Date | string
+  updatedAt?: Date | string
 }
 
 export type CourseCategorieUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   slug?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type CourseCategorieUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   slug?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type CourseCategorieNullableScalarRelationFilter = {
@@ -259,18 +297,24 @@ export type CourseCategorieCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   name?: Prisma.SortOrder
   slug?: Prisma.SortOrder
+  createdAt?: Prisma.SortOrder
+  updatedAt?: Prisma.SortOrder
 }
 
 export type CourseCategorieMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
   name?: Prisma.SortOrder
   slug?: Prisma.SortOrder
+  createdAt?: Prisma.SortOrder
+  updatedAt?: Prisma.SortOrder
 }
 
 export type CourseCategorieMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
   name?: Prisma.SortOrder
   slug?: Prisma.SortOrder
+  createdAt?: Prisma.SortOrder
+  updatedAt?: Prisma.SortOrder
 }
 
 export type CourseCategorieCreateNestedOneWithoutCoursesInput = {
@@ -293,12 +337,16 @@ export type CourseCategorieCreateWithoutCoursesInput = {
   id?: string
   name: string
   slug: string
+  createdAt?: Date | string
+  updatedAt?: Date | string
 }
 
 export type CourseCategorieUncheckedCreateWithoutCoursesInput = {
   id?: string
   name: string
   slug: string
+  createdAt?: Date | string
+  updatedAt?: Date | string
 }
 
 export type CourseCategorieCreateOrConnectWithoutCoursesInput = {
@@ -321,12 +369,16 @@ export type CourseCategorieUpdateWithoutCoursesInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   slug?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type CourseCategorieUncheckedUpdateWithoutCoursesInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   slug?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 
@@ -364,6 +416,8 @@ export type CourseCategorieSelect<ExtArgs extends runtime.Types.Extensions.Inter
   id?: boolean
   name?: boolean
   slug?: boolean
+  createdAt?: boolean
+  updatedAt?: boolean
   courses?: boolean | Prisma.CourseCategorie$coursesArgs<ExtArgs>
   _count?: boolean | Prisma.CourseCategorieCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["courseCategorie"]>
@@ -372,21 +426,27 @@ export type CourseCategorieSelectCreateManyAndReturn<ExtArgs extends runtime.Typ
   id?: boolean
   name?: boolean
   slug?: boolean
+  createdAt?: boolean
+  updatedAt?: boolean
 }, ExtArgs["result"]["courseCategorie"]>
 
 export type CourseCategorieSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   name?: boolean
   slug?: boolean
+  createdAt?: boolean
+  updatedAt?: boolean
 }, ExtArgs["result"]["courseCategorie"]>
 
 export type CourseCategorieSelectScalar = {
   id?: boolean
   name?: boolean
   slug?: boolean
+  createdAt?: boolean
+  updatedAt?: boolean
 }
 
-export type CourseCategorieOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "slug", ExtArgs["result"]["courseCategorie"]>
+export type CourseCategorieOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "slug" | "createdAt" | "updatedAt", ExtArgs["result"]["courseCategorie"]>
 export type CourseCategorieInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   courses?: boolean | Prisma.CourseCategorie$coursesArgs<ExtArgs>
   _count?: boolean | Prisma.CourseCategorieCountOutputTypeDefaultArgs<ExtArgs>
@@ -403,6 +463,8 @@ export type $CourseCategoriePayload<ExtArgs extends runtime.Types.Extensions.Int
     id: string
     name: string
     slug: string
+    createdAt: Date
+    updatedAt: Date
   }, ExtArgs["result"]["courseCategorie"]>
   composites: {}
 }
@@ -830,6 +892,8 @@ export interface CourseCategorieFieldRefs {
   readonly id: Prisma.FieldRef<"CourseCategorie", 'String'>
   readonly name: Prisma.FieldRef<"CourseCategorie", 'String'>
   readonly slug: Prisma.FieldRef<"CourseCategorie", 'String'>
+  readonly createdAt: Prisma.FieldRef<"CourseCategorie", 'DateTime'>
+  readonly updatedAt: Prisma.FieldRef<"CourseCategorie", 'DateTime'>
 }
     
 

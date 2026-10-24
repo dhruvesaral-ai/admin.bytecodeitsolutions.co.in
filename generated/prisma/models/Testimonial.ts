@@ -29,6 +29,8 @@ export type TestimonialMinAggregateOutputType = {
   name: string | null
   profileImg: string | null
   companyName: string | null
+  createdAt: Date | null
+  updatedAt: Date | null
 }
 
 export type TestimonialMaxAggregateOutputType = {
@@ -36,6 +38,8 @@ export type TestimonialMaxAggregateOutputType = {
   name: string | null
   profileImg: string | null
   companyName: string | null
+  createdAt: Date | null
+  updatedAt: Date | null
 }
 
 export type TestimonialCountAggregateOutputType = {
@@ -43,6 +47,8 @@ export type TestimonialCountAggregateOutputType = {
   name: number
   profileImg: number
   companyName: number
+  createdAt: number
+  updatedAt: number
   _all: number
 }
 
@@ -52,6 +58,8 @@ export type TestimonialMinAggregateInputType = {
   name?: true
   profileImg?: true
   companyName?: true
+  createdAt?: true
+  updatedAt?: true
 }
 
 export type TestimonialMaxAggregateInputType = {
@@ -59,6 +67,8 @@ export type TestimonialMaxAggregateInputType = {
   name?: true
   profileImg?: true
   companyName?: true
+  createdAt?: true
+  updatedAt?: true
 }
 
 export type TestimonialCountAggregateInputType = {
@@ -66,6 +76,8 @@ export type TestimonialCountAggregateInputType = {
   name?: true
   profileImg?: true
   companyName?: true
+  createdAt?: true
+  updatedAt?: true
   _all?: true
 }
 
@@ -146,6 +158,8 @@ export type TestimonialGroupByOutputType = {
   name: string
   profileImg: string | null
   companyName: string | null
+  createdAt: Date
+  updatedAt: Date
   _count: TestimonialCountAggregateOutputType | null
   _min: TestimonialMinAggregateOutputType | null
   _max: TestimonialMaxAggregateOutputType | null
@@ -174,6 +188,8 @@ export type TestimonialWhereInput = {
   name?: Prisma.StringFilter<"Testimonial"> | string
   profileImg?: Prisma.StringNullableFilter<"Testimonial"> | string | null
   companyName?: Prisma.StringNullableFilter<"Testimonial"> | string | null
+  createdAt?: Prisma.DateTimeFilter<"Testimonial"> | Date | string
+  updatedAt?: Prisma.DateTimeFilter<"Testimonial"> | Date | string
 }
 
 export type TestimonialOrderByWithRelationInput = {
@@ -181,6 +197,8 @@ export type TestimonialOrderByWithRelationInput = {
   name?: Prisma.SortOrder
   profileImg?: Prisma.SortOrderInput | Prisma.SortOrder
   companyName?: Prisma.SortOrderInput | Prisma.SortOrder
+  createdAt?: Prisma.SortOrder
+  updatedAt?: Prisma.SortOrder
 }
 
 export type TestimonialWhereUniqueInput = Prisma.AtLeast<{
@@ -191,6 +209,8 @@ export type TestimonialWhereUniqueInput = Prisma.AtLeast<{
   name?: Prisma.StringFilter<"Testimonial"> | string
   profileImg?: Prisma.StringNullableFilter<"Testimonial"> | string | null
   companyName?: Prisma.StringNullableFilter<"Testimonial"> | string | null
+  createdAt?: Prisma.DateTimeFilter<"Testimonial"> | Date | string
+  updatedAt?: Prisma.DateTimeFilter<"Testimonial"> | Date | string
 }, "id">
 
 export type TestimonialOrderByWithAggregationInput = {
@@ -198,6 +218,8 @@ export type TestimonialOrderByWithAggregationInput = {
   name?: Prisma.SortOrder
   profileImg?: Prisma.SortOrderInput | Prisma.SortOrder
   companyName?: Prisma.SortOrderInput | Prisma.SortOrder
+  createdAt?: Prisma.SortOrder
+  updatedAt?: Prisma.SortOrder
   _count?: Prisma.TestimonialCountOrderByAggregateInput
   _max?: Prisma.TestimonialMaxOrderByAggregateInput
   _min?: Prisma.TestimonialMinOrderByAggregateInput
@@ -211,6 +233,8 @@ export type TestimonialScalarWhereWithAggregatesInput = {
   name?: Prisma.StringWithAggregatesFilter<"Testimonial"> | string
   profileImg?: Prisma.StringNullableWithAggregatesFilter<"Testimonial"> | string | null
   companyName?: Prisma.StringNullableWithAggregatesFilter<"Testimonial"> | string | null
+  createdAt?: Prisma.DateTimeWithAggregatesFilter<"Testimonial"> | Date | string
+  updatedAt?: Prisma.DateTimeWithAggregatesFilter<"Testimonial"> | Date | string
 }
 
 export type TestimonialCreateInput = {
@@ -218,6 +242,8 @@ export type TestimonialCreateInput = {
   name: string
   profileImg?: string | null
   companyName?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
 }
 
 export type TestimonialUncheckedCreateInput = {
@@ -225,6 +251,8 @@ export type TestimonialUncheckedCreateInput = {
   name: string
   profileImg?: string | null
   companyName?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
 }
 
 export type TestimonialUpdateInput = {
@@ -232,6 +260,8 @@ export type TestimonialUpdateInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   profileImg?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   companyName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type TestimonialUncheckedUpdateInput = {
@@ -239,6 +269,8 @@ export type TestimonialUncheckedUpdateInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   profileImg?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   companyName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type TestimonialCreateManyInput = {
@@ -246,6 +278,8 @@ export type TestimonialCreateManyInput = {
   name: string
   profileImg?: string | null
   companyName?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
 }
 
 export type TestimonialUpdateManyMutationInput = {
@@ -253,6 +287,8 @@ export type TestimonialUpdateManyMutationInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   profileImg?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   companyName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type TestimonialUncheckedUpdateManyInput = {
@@ -260,6 +296,8 @@ export type TestimonialUncheckedUpdateManyInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   profileImg?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   companyName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type TestimonialCountOrderByAggregateInput = {
@@ -267,6 +305,8 @@ export type TestimonialCountOrderByAggregateInput = {
   name?: Prisma.SortOrder
   profileImg?: Prisma.SortOrder
   companyName?: Prisma.SortOrder
+  createdAt?: Prisma.SortOrder
+  updatedAt?: Prisma.SortOrder
 }
 
 export type TestimonialMaxOrderByAggregateInput = {
@@ -274,6 +314,8 @@ export type TestimonialMaxOrderByAggregateInput = {
   name?: Prisma.SortOrder
   profileImg?: Prisma.SortOrder
   companyName?: Prisma.SortOrder
+  createdAt?: Prisma.SortOrder
+  updatedAt?: Prisma.SortOrder
 }
 
 export type TestimonialMinOrderByAggregateInput = {
@@ -281,6 +323,8 @@ export type TestimonialMinOrderByAggregateInput = {
   name?: Prisma.SortOrder
   profileImg?: Prisma.SortOrder
   companyName?: Prisma.SortOrder
+  createdAt?: Prisma.SortOrder
+  updatedAt?: Prisma.SortOrder
 }
 
 
@@ -290,6 +334,8 @@ export type TestimonialSelect<ExtArgs extends runtime.Types.Extensions.InternalA
   name?: boolean
   profileImg?: boolean
   companyName?: boolean
+  createdAt?: boolean
+  updatedAt?: boolean
 }, ExtArgs["result"]["testimonial"]>
 
 export type TestimonialSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -297,6 +343,8 @@ export type TestimonialSelectCreateManyAndReturn<ExtArgs extends runtime.Types.E
   name?: boolean
   profileImg?: boolean
   companyName?: boolean
+  createdAt?: boolean
+  updatedAt?: boolean
 }, ExtArgs["result"]["testimonial"]>
 
 export type TestimonialSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -304,6 +352,8 @@ export type TestimonialSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.E
   name?: boolean
   profileImg?: boolean
   companyName?: boolean
+  createdAt?: boolean
+  updatedAt?: boolean
 }, ExtArgs["result"]["testimonial"]>
 
 export type TestimonialSelectScalar = {
@@ -311,9 +361,11 @@ export type TestimonialSelectScalar = {
   name?: boolean
   profileImg?: boolean
   companyName?: boolean
+  createdAt?: boolean
+  updatedAt?: boolean
 }
 
-export type TestimonialOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "profileImg" | "companyName", ExtArgs["result"]["testimonial"]>
+export type TestimonialOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "profileImg" | "companyName" | "createdAt" | "updatedAt", ExtArgs["result"]["testimonial"]>
 
 export type $TestimonialPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "Testimonial"
@@ -323,6 +375,8 @@ export type $TestimonialPayload<ExtArgs extends runtime.Types.Extensions.Interna
     name: string
     profileImg: string | null
     companyName: string | null
+    createdAt: Date
+    updatedAt: Date
   }, ExtArgs["result"]["testimonial"]>
   composites: {}
 }
@@ -750,6 +804,8 @@ export interface TestimonialFieldRefs {
   readonly name: Prisma.FieldRef<"Testimonial", 'String'>
   readonly profileImg: Prisma.FieldRef<"Testimonial", 'String'>
   readonly companyName: Prisma.FieldRef<"Testimonial", 'String'>
+  readonly createdAt: Prisma.FieldRef<"Testimonial", 'DateTime'>
+  readonly updatedAt: Prisma.FieldRef<"Testimonial", 'DateTime'>
 }
     
 

@@ -581,10 +581,6 @@ export type EnumLeadGeneratedSourceFieldUpdateOperationsInput = {
   set?: $Enums.LeadGeneratedSource
 }
 
-export type DateTimeFieldUpdateOperationsInput = {
-  set?: Date | string
-}
-
 export type LeadCreateNestedOneWithoutRemarksInput = {
   create?: Prisma.XOR<Prisma.LeadCreateWithoutRemarksInput, Prisma.LeadUncheckedCreateWithoutRemarksInput>
   connectOrCreate?: Prisma.LeadCreateOrConnectWithoutRemarksInput

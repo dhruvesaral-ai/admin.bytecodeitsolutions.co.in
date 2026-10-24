@@ -28,18 +28,24 @@ export type CourseModuleMinAggregateOutputType = {
   id: string | null
   title: string | null
   description: string | null
+  createdAt: Date | null
+  updatedAt: Date | null
 }
 
 export type CourseModuleMaxAggregateOutputType = {
   id: string | null
   title: string | null
   description: string | null
+  createdAt: Date | null
+  updatedAt: Date | null
 }
 
 export type CourseModuleCountAggregateOutputType = {
   id: number
   title: number
   description: number
+  createdAt: number
+  updatedAt: number
   _all: number
 }
 
@@ -48,18 +54,24 @@ export type CourseModuleMinAggregateInputType = {
   id?: true
   title?: true
   description?: true
+  createdAt?: true
+  updatedAt?: true
 }
 
 export type CourseModuleMaxAggregateInputType = {
   id?: true
   title?: true
   description?: true
+  createdAt?: true
+  updatedAt?: true
 }
 
 export type CourseModuleCountAggregateInputType = {
   id?: true
   title?: true
   description?: true
+  createdAt?: true
+  updatedAt?: true
   _all?: true
 }
 
@@ -139,6 +151,8 @@ export type CourseModuleGroupByOutputType = {
   id: string
   title: string
   description: string | null
+  createdAt: Date
+  updatedAt: Date
   _count: CourseModuleCountAggregateOutputType | null
   _min: CourseModuleMinAggregateOutputType | null
   _max: CourseModuleMaxAggregateOutputType | null
@@ -166,12 +180,16 @@ export type CourseModuleWhereInput = {
   id?: Prisma.StringFilter<"CourseModule"> | string
   title?: Prisma.StringFilter<"CourseModule"> | string
   description?: Prisma.StringNullableFilter<"CourseModule"> | string | null
+  createdAt?: Prisma.DateTimeFilter<"CourseModule"> | Date | string
+  updatedAt?: Prisma.DateTimeFilter<"CourseModule"> | Date | string
 }
 
 export type CourseModuleOrderByWithRelationInput = {
   id?: Prisma.SortOrder
   title?: Prisma.SortOrder
   description?: Prisma.SortOrderInput | Prisma.SortOrder
+  createdAt?: Prisma.SortOrder
+  updatedAt?: Prisma.SortOrder
 }
 
 export type CourseModuleWhereUniqueInput = Prisma.AtLeast<{
@@ -181,12 +199,16 @@ export type CourseModuleWhereUniqueInput = Prisma.AtLeast<{
   NOT?: Prisma.CourseModuleWhereInput | Prisma.CourseModuleWhereInput[]
   title?: Prisma.StringFilter<"CourseModule"> | string
   description?: Prisma.StringNullableFilter<"CourseModule"> | string | null
+  createdAt?: Prisma.DateTimeFilter<"CourseModule"> | Date | string
+  updatedAt?: Prisma.DateTimeFilter<"CourseModule"> | Date | string
 }, "id">
 
 export type CourseModuleOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
   title?: Prisma.SortOrder
   description?: Prisma.SortOrderInput | Prisma.SortOrder
+  createdAt?: Prisma.SortOrder
+  updatedAt?: Prisma.SortOrder
   _count?: Prisma.CourseModuleCountOrderByAggregateInput
   _max?: Prisma.CourseModuleMaxOrderByAggregateInput
   _min?: Prisma.CourseModuleMinOrderByAggregateInput
@@ -199,66 +221,88 @@ export type CourseModuleScalarWhereWithAggregatesInput = {
   id?: Prisma.StringWithAggregatesFilter<"CourseModule"> | string
   title?: Prisma.StringWithAggregatesFilter<"CourseModule"> | string
   description?: Prisma.StringNullableWithAggregatesFilter<"CourseModule"> | string | null
+  createdAt?: Prisma.DateTimeWithAggregatesFilter<"CourseModule"> | Date | string
+  updatedAt?: Prisma.DateTimeWithAggregatesFilter<"CourseModule"> | Date | string
 }
 
 export type CourseModuleCreateInput = {
   id?: string
   title: string
   description?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
 }
 
 export type CourseModuleUncheckedCreateInput = {
   id?: string
   title: string
   description?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
 }
 
 export type CourseModuleUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type CourseModuleUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type CourseModuleCreateManyInput = {
   id?: string
   title: string
   description?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
 }
 
 export type CourseModuleUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type CourseModuleUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type CourseModuleCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   title?: Prisma.SortOrder
   description?: Prisma.SortOrder
+  createdAt?: Prisma.SortOrder
+  updatedAt?: Prisma.SortOrder
 }
 
 export type CourseModuleMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
   title?: Prisma.SortOrder
   description?: Prisma.SortOrder
+  createdAt?: Prisma.SortOrder
+  updatedAt?: Prisma.SortOrder
 }
 
 export type CourseModuleMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
   title?: Prisma.SortOrder
   description?: Prisma.SortOrder
+  createdAt?: Prisma.SortOrder
+  updatedAt?: Prisma.SortOrder
 }
 
 
@@ -267,27 +311,35 @@ export type CourseModuleSelect<ExtArgs extends runtime.Types.Extensions.Internal
   id?: boolean
   title?: boolean
   description?: boolean
+  createdAt?: boolean
+  updatedAt?: boolean
 }, ExtArgs["result"]["courseModule"]>
 
 export type CourseModuleSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   title?: boolean
   description?: boolean
+  createdAt?: boolean
+  updatedAt?: boolean
 }, ExtArgs["result"]["courseModule"]>
 
 export type CourseModuleSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   title?: boolean
   description?: boolean
+  createdAt?: boolean
+  updatedAt?: boolean
 }, ExtArgs["result"]["courseModule"]>
 
 export type CourseModuleSelectScalar = {
   id?: boolean
   title?: boolean
   description?: boolean
+  createdAt?: boolean
+  updatedAt?: boolean
 }
 
-export type CourseModuleOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "title" | "description", ExtArgs["result"]["courseModule"]>
+export type CourseModuleOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "title" | "description" | "createdAt" | "updatedAt", ExtArgs["result"]["courseModule"]>
 
 export type $CourseModulePayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "CourseModule"
@@ -296,6 +348,8 @@ export type $CourseModulePayload<ExtArgs extends runtime.Types.Extensions.Intern
     id: string
     title: string
     description: string | null
+    createdAt: Date
+    updatedAt: Date
   }, ExtArgs["result"]["courseModule"]>
   composites: {}
 }
@@ -722,6 +776,8 @@ export interface CourseModuleFieldRefs {
   readonly id: Prisma.FieldRef<"CourseModule", 'String'>
   readonly title: Prisma.FieldRef<"CourseModule", 'String'>
   readonly description: Prisma.FieldRef<"CourseModule", 'String'>
+  readonly createdAt: Prisma.FieldRef<"CourseModule", 'DateTime'>
+  readonly updatedAt: Prisma.FieldRef<"CourseModule", 'DateTime'>
 }
     
 

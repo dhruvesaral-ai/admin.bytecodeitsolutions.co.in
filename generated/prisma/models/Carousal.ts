@@ -27,17 +27,23 @@ export type AggregateCarousal = {
 export type CarousalMinAggregateOutputType = {
   id: string | null
   position: $Enums.CarousalPosition | null
+  createdAt: Date | null
+  updatedAt: Date | null
 }
 
 export type CarousalMaxAggregateOutputType = {
   id: string | null
   position: $Enums.CarousalPosition | null
+  createdAt: Date | null
+  updatedAt: Date | null
 }
 
 export type CarousalCountAggregateOutputType = {
   id: number
   carousalSlideIds: number
   position: number
+  createdAt: number
+  updatedAt: number
   _all: number
 }
 
@@ -45,17 +51,23 @@ export type CarousalCountAggregateOutputType = {
 export type CarousalMinAggregateInputType = {
   id?: true
   position?: true
+  createdAt?: true
+  updatedAt?: true
 }
 
 export type CarousalMaxAggregateInputType = {
   id?: true
   position?: true
+  createdAt?: true
+  updatedAt?: true
 }
 
 export type CarousalCountAggregateInputType = {
   id?: true
   carousalSlideIds?: true
   position?: true
+  createdAt?: true
+  updatedAt?: true
   _all?: true
 }
 
@@ -135,6 +147,8 @@ export type CarousalGroupByOutputType = {
   id: string
   carousalSlideIds: string[]
   position: $Enums.CarousalPosition
+  createdAt: Date
+  updatedAt: Date
   _count: CarousalCountAggregateOutputType | null
   _min: CarousalMinAggregateOutputType | null
   _max: CarousalMaxAggregateOutputType | null
@@ -162,12 +176,16 @@ export type CarousalWhereInput = {
   id?: Prisma.StringFilter<"Carousal"> | string
   carousalSlideIds?: Prisma.StringNullableListFilter<"Carousal">
   position?: Prisma.EnumCarousalPositionFilter<"Carousal"> | $Enums.CarousalPosition
+  createdAt?: Prisma.DateTimeFilter<"Carousal"> | Date | string
+  updatedAt?: Prisma.DateTimeFilter<"Carousal"> | Date | string
 }
 
 export type CarousalOrderByWithRelationInput = {
   id?: Prisma.SortOrder
   carousalSlideIds?: Prisma.SortOrder
   position?: Prisma.SortOrder
+  createdAt?: Prisma.SortOrder
+  updatedAt?: Prisma.SortOrder
 }
 
 export type CarousalWhereUniqueInput = Prisma.AtLeast<{
@@ -177,12 +195,16 @@ export type CarousalWhereUniqueInput = Prisma.AtLeast<{
   NOT?: Prisma.CarousalWhereInput | Prisma.CarousalWhereInput[]
   carousalSlideIds?: Prisma.StringNullableListFilter<"Carousal">
   position?: Prisma.EnumCarousalPositionFilter<"Carousal"> | $Enums.CarousalPosition
+  createdAt?: Prisma.DateTimeFilter<"Carousal"> | Date | string
+  updatedAt?: Prisma.DateTimeFilter<"Carousal"> | Date | string
 }, "id">
 
 export type CarousalOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
   carousalSlideIds?: Prisma.SortOrder
   position?: Prisma.SortOrder
+  createdAt?: Prisma.SortOrder
+  updatedAt?: Prisma.SortOrder
   _count?: Prisma.CarousalCountOrderByAggregateInput
   _max?: Prisma.CarousalMaxOrderByAggregateInput
   _min?: Prisma.CarousalMinOrderByAggregateInput
@@ -195,48 +217,64 @@ export type CarousalScalarWhereWithAggregatesInput = {
   id?: Prisma.StringWithAggregatesFilter<"Carousal"> | string
   carousalSlideIds?: Prisma.StringNullableListFilter<"Carousal">
   position?: Prisma.EnumCarousalPositionWithAggregatesFilter<"Carousal"> | $Enums.CarousalPosition
+  createdAt?: Prisma.DateTimeWithAggregatesFilter<"Carousal"> | Date | string
+  updatedAt?: Prisma.DateTimeWithAggregatesFilter<"Carousal"> | Date | string
 }
 
 export type CarousalCreateInput = {
   id?: string
   carousalSlideIds?: Prisma.CarousalCreatecarousalSlideIdsInput | string[]
   position: $Enums.CarousalPosition
+  createdAt?: Date | string
+  updatedAt?: Date | string
 }
 
 export type CarousalUncheckedCreateInput = {
   id?: string
   carousalSlideIds?: Prisma.CarousalCreatecarousalSlideIdsInput | string[]
   position: $Enums.CarousalPosition
+  createdAt?: Date | string
+  updatedAt?: Date | string
 }
 
 export type CarousalUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   carousalSlideIds?: Prisma.CarousalUpdatecarousalSlideIdsInput | string[]
   position?: Prisma.EnumCarousalPositionFieldUpdateOperationsInput | $Enums.CarousalPosition
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type CarousalUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   carousalSlideIds?: Prisma.CarousalUpdatecarousalSlideIdsInput | string[]
   position?: Prisma.EnumCarousalPositionFieldUpdateOperationsInput | $Enums.CarousalPosition
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type CarousalCreateManyInput = {
   id?: string
   carousalSlideIds?: Prisma.CarousalCreatecarousalSlideIdsInput | string[]
   position: $Enums.CarousalPosition
+  createdAt?: Date | string
+  updatedAt?: Date | string
 }
 
 export type CarousalUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   carousalSlideIds?: Prisma.CarousalUpdatecarousalSlideIdsInput | string[]
   position?: Prisma.EnumCarousalPositionFieldUpdateOperationsInput | $Enums.CarousalPosition
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type CarousalUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   carousalSlideIds?: Prisma.CarousalUpdatecarousalSlideIdsInput | string[]
   position?: Prisma.EnumCarousalPositionFieldUpdateOperationsInput | $Enums.CarousalPosition
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type StringNullableListFilter<$PrismaModel = never> = {
@@ -251,16 +289,22 @@ export type CarousalCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   carousalSlideIds?: Prisma.SortOrder
   position?: Prisma.SortOrder
+  createdAt?: Prisma.SortOrder
+  updatedAt?: Prisma.SortOrder
 }
 
 export type CarousalMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
   position?: Prisma.SortOrder
+  createdAt?: Prisma.SortOrder
+  updatedAt?: Prisma.SortOrder
 }
 
 export type CarousalMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
   position?: Prisma.SortOrder
+  createdAt?: Prisma.SortOrder
+  updatedAt?: Prisma.SortOrder
 }
 
 export type CarousalCreatecarousalSlideIdsInput = {
@@ -280,33 +324,45 @@ export type EnumCarousalPositionFieldUpdateOperationsInput = {
   set?: $Enums.CarousalPosition
 }
 
+export type DateTimeFieldUpdateOperationsInput = {
+  set?: Date | string
+}
+
 
 
 export type CarousalSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   carousalSlideIds?: boolean
   position?: boolean
+  createdAt?: boolean
+  updatedAt?: boolean
 }, ExtArgs["result"]["carousal"]>
 
 export type CarousalSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   carousalSlideIds?: boolean
   position?: boolean
+  createdAt?: boolean
+  updatedAt?: boolean
 }, ExtArgs["result"]["carousal"]>
 
 export type CarousalSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   carousalSlideIds?: boolean
   position?: boolean
+  createdAt?: boolean
+  updatedAt?: boolean
 }, ExtArgs["result"]["carousal"]>
 
 export type CarousalSelectScalar = {
   id?: boolean
   carousalSlideIds?: boolean
   position?: boolean
+  createdAt?: boolean
+  updatedAt?: boolean
 }
 
-export type CarousalOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "carousalSlideIds" | "position", ExtArgs["result"]["carousal"]>
+export type CarousalOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "carousalSlideIds" | "position" | "createdAt" | "updatedAt", ExtArgs["result"]["carousal"]>
 
 export type $CarousalPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "Carousal"
@@ -315,6 +371,8 @@ export type $CarousalPayload<ExtArgs extends runtime.Types.Extensions.InternalAr
     id: string
     carousalSlideIds: string[]
     position: $Enums.CarousalPosition
+    createdAt: Date
+    updatedAt: Date
   }, ExtArgs["result"]["carousal"]>
   composites: {}
 }
@@ -741,6 +799,8 @@ export interface CarousalFieldRefs {
   readonly id: Prisma.FieldRef<"Carousal", 'String'>
   readonly carousalSlideIds: Prisma.FieldRef<"Carousal", 'String[]'>
   readonly position: Prisma.FieldRef<"Carousal", 'CarousalPosition'>
+  readonly createdAt: Prisma.FieldRef<"Carousal", 'DateTime'>
+  readonly updatedAt: Prisma.FieldRef<"Carousal", 'DateTime'>
 }
     
 

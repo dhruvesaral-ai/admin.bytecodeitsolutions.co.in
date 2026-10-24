@@ -8,23 +8,27 @@ datasource db {
 }
 
 model Carousal {
-  id               String   @id @default(cuid())
-  carousalSlideIds String[] @map("carousal_slide_ids")
+  id               String           @id @default(cuid())
+  carousalSlideIds String[]         @map("carousal_slide_ids")
   position         CarousalPosition
+  createdAt        DateTime         @default(now()) @map("created_at")
+  updatedAt        DateTime         @updatedAt @map("updated_at")
 
   @@map("carousal")
 }
 
 model CarouselSlide {
-  id                 String  @id @default(cuid())
-  bgImgUrl           String  @map("bg_img_url")
+  id                 String   @id @default(cuid())
+  bgImgUrl           String   @map("bg_img_url")
   order              Int
   title              String
   description        String?
-  btnHrefLink        String? @map("btn_href_link")
-  textContainerAlign String? @map("text_container_align")
-  imgUrl             String? @map("img_url")
-  bannerHrefLink     String? @map("banner_href_link")
+  btnHrefLink        String?  @map("btn_href_link")
+  textContainerAlign String?  @map("text_container_align")
+  imgUrl             String?  @map("img_url")
+  bannerHrefLink     String?  @map("banner_href_link")
+  createdAt          DateTime @default(now()) @map("created_at")
+  updatedAt          DateTime @updatedAt @map("updated_at")
 
   @@map("carousel_slide")
 }
@@ -46,8 +50,12 @@ model Course {
   isPlacementGurranted Boolean          @default(false) @map("is_placement_gurranted")
   isInSale             Boolean          @default(false) @map("is_in_sale")
   courseModuleIds      String[]         @map("course_module_ids")
+  createdAt            DateTime         @default(now()) @map("created_at")
+  updatedAt            DateTime         @updatedAt @map("updated_at")
   courseCategorie      CourseCategorie? @relation(fields: [courseCategorieId], references: [id])
   leads                Lead[]
+  registrations        Registration[]
+  enrollments          Enrollment[]
 
   @@map("course")
 }
@@ -86,41 +94,53 @@ model LeadRemark {
 }
 
 model CourseCategorie {
-  id      String   @id @default(cuid())
-  name    String
-  slug    String   @unique
-  courses Course[]
+  id        String   @id @default(cuid())
+  name      String
+  slug      String   @unique
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+  courses   Course[]
 
   @@map("course_categorie")
 }
 
 model CourseModule {
-  id          String  @id @default(cuid())
+  id          String   @id @default(cuid())
   title       String
   description String?
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
 
   @@map("course_module")
 }
 
 model Testimonial {
-  id          String  @id @default(cuid())
+  id          String   @id @default(cuid())
   name        String
-  profileImg  String? @map("profile_img")
-  companyName String? @map("company_name")
+  profileImg  String?  @map("profile_img")
+  companyName String?  @map("company_name")
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
 
   @@map("testimonials")
 }
 
 model SuccessStory {
-  id       String   @id @default(cuid())
-  videoIds String[] @map("videoids")
+  id        String   @id @default(cuid())
+  videoIds  String[] @map("videoids")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
 
   @@map("SuccessStories")
 }
 
 model Batch {
-  id   String @id @default(cuid())
-  code String
+  id            String         @id @default(cuid())
+  name          String
+  createdAt     DateTime       @default(now()) @map("created_at")
+  updatedAt     DateTime       @updatedAt @map("updated_at")
+  registrations Registration[]
+  enrollments   Enrollment[]
 
   @@map("Batch")
 }
@@ -134,29 +154,85 @@ model Class {
   notesLink     String?  @map("notes_link")
   courseIds     String[] @map("course_ids")
   batchIds      String[] @map("batch_ids")
+  createdAt     DateTime @default(now()) @map("created_at")
+  updatedAt     DateTime @updatedAt @map("updated_at")
 
   @@map("class")
 }
 
 model User {
-  id            String        @id @default(cuid())
-  username      String        @unique
-  profileId     String?       @map("profileid")
-  status        GeneralStatus @default(active)
-  authSessionId String?       @map("auth_session_id")
-  roleId        String?       @map("role_id")
-  role          Role?         @relation(fields: [roleId], references: [id])
+  id            String         @id @default(cuid())
+  username      String         @unique
+  profileId     String?        @map("profileid")
+  status        GeneralStatus  @default(active)
+  authSessionId String?        @map("auth_session_id")
+  roleId        String?        @map("role_id")
+  createdAt     DateTime       @default(now()) @map("created_at")
+  updatedAt     DateTime       @updatedAt @map("updated_at")
+  role          Role?          @relation(fields: [roleId], references: [id])
+  registrations Registration[]
+  enrollments   Enrollment[]
 
   @@map("user")
 }
 
 model Role {
-  id    String @id @default(cuid())
-  name  String
-  slug  String @unique
-  users User[]
+  id        String   @id @default(cuid())
+  name      String
+  slug      String   @unique
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+  users     User[]
 
   @@map("role")
+}
+
+model Registration {
+  id             String    @id @default(cuid())
+  userId         String    @map("user_id")
+  courseId       String    @map("course_id")
+  batchId        String?   @map("batch_id")
+  registrationNo String    @unique @map("registration_no")
+  createdAt      DateTime  @default(now()) @map("created_at")
+  updatedAt      DateTime  @updatedAt @map("updated_at")
+  user           User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  course         Course    @relation(fields: [courseId], references: [id], onDelete: Restrict)
+  batch          Batch?    @relation(fields: [batchId], references: [id], onDelete: SetNull)
+  payments       Payment[]
+
+  @@map("registration")
+}
+
+model Enrollment {
+  id           String    @id @default(cuid())
+  userId       String    @map("user_id")
+  courseId     String    @map("course_id")
+  enrollmentNo String    @unique @map("enrollment_no")
+  batchId      String?   @map("batch_id")
+  createdAt    DateTime  @default(now()) @map("created_at")
+  updatedAt    DateTime  @updatedAt @map("updated_at")
+  user         User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  course       Course    @relation(fields: [courseId], references: [id], onDelete: Restrict)
+  batch        Batch?    @relation(fields: [batchId], references: [id], onDelete: SetNull)
+  payments     Payment[]
+
+  @@map("enrollment")
+}
+
+model Payment {
+  id             String        @id @default(cuid())
+  enrollmentId   String?       @map("enrollment_id")
+  registrationId String?       @map("registration_id")
+  paymentMethod  String        @map("payment_method")
+  rupees         Decimal       @db.Decimal(10, 2)
+  paymentProof   String?       @map("payment_proof")
+  isVerified     Boolean       @default(false) @map("is_verified")
+  createdAt      DateTime      @default(now()) @map("created_at")
+  updatedAt      DateTime      @updatedAt @map("updated_at")
+  enrollment     Enrollment?   @relation(fields: [enrollmentId], references: [id], onDelete: SetNull)
+  registration   Registration? @relation(fields: [registrationId], references: [id], onDelete: SetNull)
+
+  @@map("payment")
 }
 
 enum GeneralStatus {
@@ -190,6 +266,7 @@ model Page {
   subheading String
   routeName  String   @unique @map("route_name")
   createdAt  DateTime @default(now()) @map("created_at")
+  updatedAt  DateTime @updatedAt @map("updated_at")
 
   @@map("page")
 }

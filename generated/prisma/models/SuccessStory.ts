@@ -26,30 +26,42 @@ export type AggregateSuccessStory = {
 
 export type SuccessStoryMinAggregateOutputType = {
   id: string | null
+  createdAt: Date | null
+  updatedAt: Date | null
 }
 
 export type SuccessStoryMaxAggregateOutputType = {
   id: string | null
+  createdAt: Date | null
+  updatedAt: Date | null
 }
 
 export type SuccessStoryCountAggregateOutputType = {
   id: number
   videoIds: number
+  createdAt: number
+  updatedAt: number
   _all: number
 }
 
 
 export type SuccessStoryMinAggregateInputType = {
   id?: true
+  createdAt?: true
+  updatedAt?: true
 }
 
 export type SuccessStoryMaxAggregateInputType = {
   id?: true
+  createdAt?: true
+  updatedAt?: true
 }
 
 export type SuccessStoryCountAggregateInputType = {
   id?: true
   videoIds?: true
+  createdAt?: true
+  updatedAt?: true
   _all?: true
 }
 
@@ -128,6 +140,8 @@ export type SuccessStoryGroupByArgs<ExtArgs extends runtime.Types.Extensions.Int
 export type SuccessStoryGroupByOutputType = {
   id: string
   videoIds: string[]
+  createdAt: Date
+  updatedAt: Date
   _count: SuccessStoryCountAggregateOutputType | null
   _min: SuccessStoryMinAggregateOutputType | null
   _max: SuccessStoryMaxAggregateOutputType | null
@@ -154,11 +168,15 @@ export type SuccessStoryWhereInput = {
   NOT?: Prisma.SuccessStoryWhereInput | Prisma.SuccessStoryWhereInput[]
   id?: Prisma.StringFilter<"SuccessStory"> | string
   videoIds?: Prisma.StringNullableListFilter<"SuccessStory">
+  createdAt?: Prisma.DateTimeFilter<"SuccessStory"> | Date | string
+  updatedAt?: Prisma.DateTimeFilter<"SuccessStory"> | Date | string
 }
 
 export type SuccessStoryOrderByWithRelationInput = {
   id?: Prisma.SortOrder
   videoIds?: Prisma.SortOrder
+  createdAt?: Prisma.SortOrder
+  updatedAt?: Prisma.SortOrder
 }
 
 export type SuccessStoryWhereUniqueInput = Prisma.AtLeast<{
@@ -167,11 +185,15 @@ export type SuccessStoryWhereUniqueInput = Prisma.AtLeast<{
   OR?: Prisma.SuccessStoryWhereInput[]
   NOT?: Prisma.SuccessStoryWhereInput | Prisma.SuccessStoryWhereInput[]
   videoIds?: Prisma.StringNullableListFilter<"SuccessStory">
+  createdAt?: Prisma.DateTimeFilter<"SuccessStory"> | Date | string
+  updatedAt?: Prisma.DateTimeFilter<"SuccessStory"> | Date | string
 }, "id">
 
 export type SuccessStoryOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
   videoIds?: Prisma.SortOrder
+  createdAt?: Prisma.SortOrder
+  updatedAt?: Prisma.SortOrder
   _count?: Prisma.SuccessStoryCountOrderByAggregateInput
   _max?: Prisma.SuccessStoryMaxOrderByAggregateInput
   _min?: Prisma.SuccessStoryMinOrderByAggregateInput
@@ -183,54 +205,76 @@ export type SuccessStoryScalarWhereWithAggregatesInput = {
   NOT?: Prisma.SuccessStoryScalarWhereWithAggregatesInput | Prisma.SuccessStoryScalarWhereWithAggregatesInput[]
   id?: Prisma.StringWithAggregatesFilter<"SuccessStory"> | string
   videoIds?: Prisma.StringNullableListFilter<"SuccessStory">
+  createdAt?: Prisma.DateTimeWithAggregatesFilter<"SuccessStory"> | Date | string
+  updatedAt?: Prisma.DateTimeWithAggregatesFilter<"SuccessStory"> | Date | string
 }
 
 export type SuccessStoryCreateInput = {
   id?: string
   videoIds?: Prisma.SuccessStoryCreatevideoIdsInput | string[]
+  createdAt?: Date | string
+  updatedAt?: Date | string
 }
 
 export type SuccessStoryUncheckedCreateInput = {
   id?: string
   videoIds?: Prisma.SuccessStoryCreatevideoIdsInput | string[]
+  createdAt?: Date | string
+  updatedAt?: Date | string
 }
 
 export type SuccessStoryUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   videoIds?: Prisma.SuccessStoryUpdatevideoIdsInput | string[]
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type SuccessStoryUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   videoIds?: Prisma.SuccessStoryUpdatevideoIdsInput | string[]
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type SuccessStoryCreateManyInput = {
   id?: string
   videoIds?: Prisma.SuccessStoryCreatevideoIdsInput | string[]
+  createdAt?: Date | string
+  updatedAt?: Date | string
 }
 
 export type SuccessStoryUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   videoIds?: Prisma.SuccessStoryUpdatevideoIdsInput | string[]
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type SuccessStoryUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   videoIds?: Prisma.SuccessStoryUpdatevideoIdsInput | string[]
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type SuccessStoryCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   videoIds?: Prisma.SortOrder
+  createdAt?: Prisma.SortOrder
+  updatedAt?: Prisma.SortOrder
 }
 
 export type SuccessStoryMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
+  createdAt?: Prisma.SortOrder
+  updatedAt?: Prisma.SortOrder
 }
 
 export type SuccessStoryMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
+  createdAt?: Prisma.SortOrder
+  updatedAt?: Prisma.SortOrder
 }
 
 export type SuccessStoryCreatevideoIdsInput = {
@@ -247,24 +291,32 @@ export type SuccessStoryUpdatevideoIdsInput = {
 export type SuccessStorySelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   videoIds?: boolean
+  createdAt?: boolean
+  updatedAt?: boolean
 }, ExtArgs["result"]["successStory"]>
 
 export type SuccessStorySelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   videoIds?: boolean
+  createdAt?: boolean
+  updatedAt?: boolean
 }, ExtArgs["result"]["successStory"]>
 
 export type SuccessStorySelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   videoIds?: boolean
+  createdAt?: boolean
+  updatedAt?: boolean
 }, ExtArgs["result"]["successStory"]>
 
 export type SuccessStorySelectScalar = {
   id?: boolean
   videoIds?: boolean
+  createdAt?: boolean
+  updatedAt?: boolean
 }
 
-export type SuccessStoryOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "videoIds", ExtArgs["result"]["successStory"]>
+export type SuccessStoryOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "videoIds" | "createdAt" | "updatedAt", ExtArgs["result"]["successStory"]>
 
 export type $SuccessStoryPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "SuccessStory"
@@ -272,6 +324,8 @@ export type $SuccessStoryPayload<ExtArgs extends runtime.Types.Extensions.Intern
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
     videoIds: string[]
+    createdAt: Date
+    updatedAt: Date
   }, ExtArgs["result"]["successStory"]>
   composites: {}
 }
@@ -697,6 +751,8 @@ export interface Prisma__SuccessStoryClient<T, Null = never, ExtArgs extends run
 export interface SuccessStoryFieldRefs {
   readonly id: Prisma.FieldRef<"SuccessStory", 'String'>
   readonly videoIds: Prisma.FieldRef<"SuccessStory", 'String[]'>
+  readonly createdAt: Prisma.FieldRef<"SuccessStory", 'DateTime'>
+  readonly updatedAt: Prisma.FieldRef<"SuccessStory", 'DateTime'>
 }
     
 
@@ -896,7 +952,7 @@ export type SuccessStoryCreateArgs<ExtArgs extends runtime.Types.Extensions.Inte
   /**
    * The data needed to create a SuccessStory.
    */
-  data?: Prisma.XOR<Prisma.SuccessStoryCreateInput, Prisma.SuccessStoryUncheckedCreateInput>
+  data: Prisma.XOR<Prisma.SuccessStoryCreateInput, Prisma.SuccessStoryUncheckedCreateInput>
 }
 
 /**

@@ -44,6 +44,8 @@ export type CarouselSlideMinAggregateOutputType = {
   textContainerAlign: string | null
   imgUrl: string | null
   bannerHrefLink: string | null
+  createdAt: Date | null
+  updatedAt: Date | null
 }
 
 export type CarouselSlideMaxAggregateOutputType = {
@@ -56,6 +58,8 @@ export type CarouselSlideMaxAggregateOutputType = {
   textContainerAlign: string | null
   imgUrl: string | null
   bannerHrefLink: string | null
+  createdAt: Date | null
+  updatedAt: Date | null
 }
 
 export type CarouselSlideCountAggregateOutputType = {
@@ -68,6 +72,8 @@ export type CarouselSlideCountAggregateOutputType = {
   textContainerAlign: number
   imgUrl: number
   bannerHrefLink: number
+  createdAt: number
+  updatedAt: number
   _all: number
 }
 
@@ -90,6 +96,8 @@ export type CarouselSlideMinAggregateInputType = {
   textContainerAlign?: true
   imgUrl?: true
   bannerHrefLink?: true
+  createdAt?: true
+  updatedAt?: true
 }
 
 export type CarouselSlideMaxAggregateInputType = {
@@ -102,6 +110,8 @@ export type CarouselSlideMaxAggregateInputType = {
   textContainerAlign?: true
   imgUrl?: true
   bannerHrefLink?: true
+  createdAt?: true
+  updatedAt?: true
 }
 
 export type CarouselSlideCountAggregateInputType = {
@@ -114,6 +124,8 @@ export type CarouselSlideCountAggregateInputType = {
   textContainerAlign?: true
   imgUrl?: true
   bannerHrefLink?: true
+  createdAt?: true
+  updatedAt?: true
   _all?: true
 }
 
@@ -213,6 +225,8 @@ export type CarouselSlideGroupByOutputType = {
   textContainerAlign: string | null
   imgUrl: string | null
   bannerHrefLink: string | null
+  createdAt: Date
+  updatedAt: Date
   _count: CarouselSlideCountAggregateOutputType | null
   _avg: CarouselSlideAvgAggregateOutputType | null
   _sum: CarouselSlideSumAggregateOutputType | null
@@ -248,6 +262,8 @@ export type CarouselSlideWhereInput = {
   textContainerAlign?: Prisma.StringNullableFilter<"CarouselSlide"> | string | null
   imgUrl?: Prisma.StringNullableFilter<"CarouselSlide"> | string | null
   bannerHrefLink?: Prisma.StringNullableFilter<"CarouselSlide"> | string | null
+  createdAt?: Prisma.DateTimeFilter<"CarouselSlide"> | Date | string
+  updatedAt?: Prisma.DateTimeFilter<"CarouselSlide"> | Date | string
 }
 
 export type CarouselSlideOrderByWithRelationInput = {
@@ -260,6 +276,8 @@ export type CarouselSlideOrderByWithRelationInput = {
   textContainerAlign?: Prisma.SortOrderInput | Prisma.SortOrder
   imgUrl?: Prisma.SortOrderInput | Prisma.SortOrder
   bannerHrefLink?: Prisma.SortOrderInput | Prisma.SortOrder
+  createdAt?: Prisma.SortOrder
+  updatedAt?: Prisma.SortOrder
 }
 
 export type CarouselSlideWhereUniqueInput = Prisma.AtLeast<{
@@ -275,6 +293,8 @@ export type CarouselSlideWhereUniqueInput = Prisma.AtLeast<{
   textContainerAlign?: Prisma.StringNullableFilter<"CarouselSlide"> | string | null
   imgUrl?: Prisma.StringNullableFilter<"CarouselSlide"> | string | null
   bannerHrefLink?: Prisma.StringNullableFilter<"CarouselSlide"> | string | null
+  createdAt?: Prisma.DateTimeFilter<"CarouselSlide"> | Date | string
+  updatedAt?: Prisma.DateTimeFilter<"CarouselSlide"> | Date | string
 }, "id">
 
 export type CarouselSlideOrderByWithAggregationInput = {
@@ -287,6 +307,8 @@ export type CarouselSlideOrderByWithAggregationInput = {
   textContainerAlign?: Prisma.SortOrderInput | Prisma.SortOrder
   imgUrl?: Prisma.SortOrderInput | Prisma.SortOrder
   bannerHrefLink?: Prisma.SortOrderInput | Prisma.SortOrder
+  createdAt?: Prisma.SortOrder
+  updatedAt?: Prisma.SortOrder
   _count?: Prisma.CarouselSlideCountOrderByAggregateInput
   _avg?: Prisma.CarouselSlideAvgOrderByAggregateInput
   _max?: Prisma.CarouselSlideMaxOrderByAggregateInput
@@ -307,6 +329,8 @@ export type CarouselSlideScalarWhereWithAggregatesInput = {
   textContainerAlign?: Prisma.StringNullableWithAggregatesFilter<"CarouselSlide"> | string | null
   imgUrl?: Prisma.StringNullableWithAggregatesFilter<"CarouselSlide"> | string | null
   bannerHrefLink?: Prisma.StringNullableWithAggregatesFilter<"CarouselSlide"> | string | null
+  createdAt?: Prisma.DateTimeWithAggregatesFilter<"CarouselSlide"> | Date | string
+  updatedAt?: Prisma.DateTimeWithAggregatesFilter<"CarouselSlide"> | Date | string
 }
 
 export type CarouselSlideCreateInput = {
@@ -319,6 +343,8 @@ export type CarouselSlideCreateInput = {
   textContainerAlign?: string | null
   imgUrl?: string | null
   bannerHrefLink?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
 }
 
 export type CarouselSlideUncheckedCreateInput = {
@@ -331,6 +357,8 @@ export type CarouselSlideUncheckedCreateInput = {
   textContainerAlign?: string | null
   imgUrl?: string | null
   bannerHrefLink?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
 }
 
 export type CarouselSlideUpdateInput = {
@@ -343,6 +371,8 @@ export type CarouselSlideUpdateInput = {
   textContainerAlign?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   imgUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   bannerHrefLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type CarouselSlideUncheckedUpdateInput = {
@@ -355,6 +385,8 @@ export type CarouselSlideUncheckedUpdateInput = {
   textContainerAlign?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   imgUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   bannerHrefLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type CarouselSlideCreateManyInput = {
@@ -367,6 +399,8 @@ export type CarouselSlideCreateManyInput = {
   textContainerAlign?: string | null
   imgUrl?: string | null
   bannerHrefLink?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
 }
 
 export type CarouselSlideUpdateManyMutationInput = {
@@ -379,6 +413,8 @@ export type CarouselSlideUpdateManyMutationInput = {
   textContainerAlign?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   imgUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   bannerHrefLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type CarouselSlideUncheckedUpdateManyInput = {
@@ -391,6 +427,8 @@ export type CarouselSlideUncheckedUpdateManyInput = {
   textContainerAlign?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   imgUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   bannerHrefLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type CarouselSlideCountOrderByAggregateInput = {
@@ -403,6 +441,8 @@ export type CarouselSlideCountOrderByAggregateInput = {
   textContainerAlign?: Prisma.SortOrder
   imgUrl?: Prisma.SortOrder
   bannerHrefLink?: Prisma.SortOrder
+  createdAt?: Prisma.SortOrder
+  updatedAt?: Prisma.SortOrder
 }
 
 export type CarouselSlideAvgOrderByAggregateInput = {
@@ -419,6 +459,8 @@ export type CarouselSlideMaxOrderByAggregateInput = {
   textContainerAlign?: Prisma.SortOrder
   imgUrl?: Prisma.SortOrder
   bannerHrefLink?: Prisma.SortOrder
+  createdAt?: Prisma.SortOrder
+  updatedAt?: Prisma.SortOrder
 }
 
 export type CarouselSlideMinOrderByAggregateInput = {
@@ -431,6 +473,8 @@ export type CarouselSlideMinOrderByAggregateInput = {
   textContainerAlign?: Prisma.SortOrder
   imgUrl?: Prisma.SortOrder
   bannerHrefLink?: Prisma.SortOrder
+  createdAt?: Prisma.SortOrder
+  updatedAt?: Prisma.SortOrder
 }
 
 export type CarouselSlideSumOrderByAggregateInput = {
@@ -461,6 +505,8 @@ export type CarouselSlideSelect<ExtArgs extends runtime.Types.Extensions.Interna
   textContainerAlign?: boolean
   imgUrl?: boolean
   bannerHrefLink?: boolean
+  createdAt?: boolean
+  updatedAt?: boolean
 }, ExtArgs["result"]["carouselSlide"]>
 
 export type CarouselSlideSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -473,6 +519,8 @@ export type CarouselSlideSelectCreateManyAndReturn<ExtArgs extends runtime.Types
   textContainerAlign?: boolean
   imgUrl?: boolean
   bannerHrefLink?: boolean
+  createdAt?: boolean
+  updatedAt?: boolean
 }, ExtArgs["result"]["carouselSlide"]>
 
 export type CarouselSlideSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -485,6 +533,8 @@ export type CarouselSlideSelectUpdateManyAndReturn<ExtArgs extends runtime.Types
   textContainerAlign?: boolean
   imgUrl?: boolean
   bannerHrefLink?: boolean
+  createdAt?: boolean
+  updatedAt?: boolean
 }, ExtArgs["result"]["carouselSlide"]>
 
 export type CarouselSlideSelectScalar = {
@@ -497,9 +547,11 @@ export type CarouselSlideSelectScalar = {
   textContainerAlign?: boolean
   imgUrl?: boolean
   bannerHrefLink?: boolean
+  createdAt?: boolean
+  updatedAt?: boolean
 }
 
-export type CarouselSlideOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "bgImgUrl" | "order" | "title" | "description" | "btnHrefLink" | "textContainerAlign" | "imgUrl" | "bannerHrefLink", ExtArgs["result"]["carouselSlide"]>
+export type CarouselSlideOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "bgImgUrl" | "order" | "title" | "description" | "btnHrefLink" | "textContainerAlign" | "imgUrl" | "bannerHrefLink" | "createdAt" | "updatedAt", ExtArgs["result"]["carouselSlide"]>
 
 export type $CarouselSlidePayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "CarouselSlide"
@@ -514,6 +566,8 @@ export type $CarouselSlidePayload<ExtArgs extends runtime.Types.Extensions.Inter
     textContainerAlign: string | null
     imgUrl: string | null
     bannerHrefLink: string | null
+    createdAt: Date
+    updatedAt: Date
   }, ExtArgs["result"]["carouselSlide"]>
   composites: {}
 }
@@ -946,6 +1000,8 @@ export interface CarouselSlideFieldRefs {
   readonly textContainerAlign: Prisma.FieldRef<"CarouselSlide", 'String'>
   readonly imgUrl: Prisma.FieldRef<"CarouselSlide", 'String'>
   readonly bannerHrefLink: Prisma.FieldRef<"CarouselSlide", 'String'>
+  readonly createdAt: Prisma.FieldRef<"CarouselSlide", 'DateTime'>
+  readonly updatedAt: Prisma.FieldRef<"CarouselSlide", 'DateTime'>
 }
     
 

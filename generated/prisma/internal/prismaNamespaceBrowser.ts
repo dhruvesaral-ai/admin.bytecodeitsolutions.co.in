@@ -64,6 +64,9 @@ export const ModelName = {
   Class: 'Class',
   User: 'User',
   Role: 'Role',
+  Registration: 'Registration',
+  Enrollment: 'Enrollment',
+  Payment: 'Payment',
   Page: 'Page'
 } as const
 
@@ -86,7 +89,9 @@ export type TransactionIsolationLevel = (typeof TransactionIsolationLevel)[keyof
 export const CarousalScalarFieldEnum = {
   id: 'id',
   carousalSlideIds: 'carousalSlideIds',
-  position: 'position'
+  position: 'position',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
 } as const
 
 export type CarousalScalarFieldEnum = (typeof CarousalScalarFieldEnum)[keyof typeof CarousalScalarFieldEnum]
@@ -101,7 +106,9 @@ export const CarouselSlideScalarFieldEnum = {
   btnHrefLink: 'btnHrefLink',
   textContainerAlign: 'textContainerAlign',
   imgUrl: 'imgUrl',
-  bannerHrefLink: 'bannerHrefLink'
+  bannerHrefLink: 'bannerHrefLink',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
 } as const
 
 export type CarouselSlideScalarFieldEnum = (typeof CarouselSlideScalarFieldEnum)[keyof typeof CarouselSlideScalarFieldEnum]
@@ -123,7 +130,9 @@ export const CourseScalarFieldEnum = {
   courseCategorieId: 'courseCategorieId',
   isPlacementGurranted: 'isPlacementGurranted',
   isInSale: 'isInSale',
-  courseModuleIds: 'courseModuleIds'
+  courseModuleIds: 'courseModuleIds',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
 } as const
 
 export type CourseScalarFieldEnum = (typeof CourseScalarFieldEnum)[keyof typeof CourseScalarFieldEnum]
@@ -163,7 +172,9 @@ export type LeadRemarkScalarFieldEnum = (typeof LeadRemarkScalarFieldEnum)[keyof
 export const CourseCategorieScalarFieldEnum = {
   id: 'id',
   name: 'name',
-  slug: 'slug'
+  slug: 'slug',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
 } as const
 
 export type CourseCategorieScalarFieldEnum = (typeof CourseCategorieScalarFieldEnum)[keyof typeof CourseCategorieScalarFieldEnum]
@@ -172,7 +183,9 @@ export type CourseCategorieScalarFieldEnum = (typeof CourseCategorieScalarFieldE
 export const CourseModuleScalarFieldEnum = {
   id: 'id',
   title: 'title',
-  description: 'description'
+  description: 'description',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
 } as const
 
 export type CourseModuleScalarFieldEnum = (typeof CourseModuleScalarFieldEnum)[keyof typeof CourseModuleScalarFieldEnum]
@@ -182,7 +195,9 @@ export const TestimonialScalarFieldEnum = {
   id: 'id',
   name: 'name',
   profileImg: 'profileImg',
-  companyName: 'companyName'
+  companyName: 'companyName',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
 } as const
 
 export type TestimonialScalarFieldEnum = (typeof TestimonialScalarFieldEnum)[keyof typeof TestimonialScalarFieldEnum]
@@ -190,7 +205,9 @@ export type TestimonialScalarFieldEnum = (typeof TestimonialScalarFieldEnum)[key
 
 export const SuccessStoryScalarFieldEnum = {
   id: 'id',
-  videoIds: 'videoIds'
+  videoIds: 'videoIds',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
 } as const
 
 export type SuccessStoryScalarFieldEnum = (typeof SuccessStoryScalarFieldEnum)[keyof typeof SuccessStoryScalarFieldEnum]
@@ -198,7 +215,9 @@ export type SuccessStoryScalarFieldEnum = (typeof SuccessStoryScalarFieldEnum)[k
 
 export const BatchScalarFieldEnum = {
   id: 'id',
-  code: 'code'
+  name: 'name',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
 } as const
 
 export type BatchScalarFieldEnum = (typeof BatchScalarFieldEnum)[keyof typeof BatchScalarFieldEnum]
@@ -212,7 +231,9 @@ export const ClassScalarFieldEnum = {
   recordingLink: 'recordingLink',
   notesLink: 'notesLink',
   courseIds: 'courseIds',
-  batchIds: 'batchIds'
+  batchIds: 'batchIds',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
 } as const
 
 export type ClassScalarFieldEnum = (typeof ClassScalarFieldEnum)[keyof typeof ClassScalarFieldEnum]
@@ -224,7 +245,9 @@ export const UserScalarFieldEnum = {
   profileId: 'profileId',
   status: 'status',
   authSessionId: 'authSessionId',
-  roleId: 'roleId'
+  roleId: 'roleId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
 } as const
 
 export type UserScalarFieldEnum = (typeof UserScalarFieldEnum)[keyof typeof UserScalarFieldEnum]
@@ -233,10 +256,53 @@ export type UserScalarFieldEnum = (typeof UserScalarFieldEnum)[keyof typeof User
 export const RoleScalarFieldEnum = {
   id: 'id',
   name: 'name',
-  slug: 'slug'
+  slug: 'slug',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
 } as const
 
 export type RoleScalarFieldEnum = (typeof RoleScalarFieldEnum)[keyof typeof RoleScalarFieldEnum]
+
+
+export const RegistrationScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  courseId: 'courseId',
+  batchId: 'batchId',
+  registrationNo: 'registrationNo',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type RegistrationScalarFieldEnum = (typeof RegistrationScalarFieldEnum)[keyof typeof RegistrationScalarFieldEnum]
+
+
+export const EnrollmentScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  courseId: 'courseId',
+  enrollmentNo: 'enrollmentNo',
+  batchId: 'batchId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type EnrollmentScalarFieldEnum = (typeof EnrollmentScalarFieldEnum)[keyof typeof EnrollmentScalarFieldEnum]
+
+
+export const PaymentScalarFieldEnum = {
+  id: 'id',
+  enrollmentId: 'enrollmentId',
+  registrationId: 'registrationId',
+  paymentMethod: 'paymentMethod',
+  rupees: 'rupees',
+  paymentProof: 'paymentProof',
+  isVerified: 'isVerified',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type PaymentScalarFieldEnum = (typeof PaymentScalarFieldEnum)[keyof typeof PaymentScalarFieldEnum]
 
 
 export const PageScalarFieldEnum = {
@@ -244,7 +310,8 @@ export const PageScalarFieldEnum = {
   heading: 'heading',
   subheading: 'subheading',
   routeName: 'routeName',
-  createdAt: 'createdAt'
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
 } as const
 
 export type PageScalarFieldEnum = (typeof PageScalarFieldEnum)[keyof typeof PageScalarFieldEnum]
