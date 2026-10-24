@@ -78,6 +78,25 @@ function generatedSource(
   return { value };
 }
 
+function parseLeadUsername(
+  value: unknown,
+): { value: string } | { error: string } {
+  if (typeof value !== "string" || value.trim() === "") {
+    return { error: "username must be a 10-digit phone number" };
+  }
+  const sanitized = value.trim().replace(/[\s-]/g, "");
+  if (/^\d{10}$/.test(sanitized)) {
+    return { value: `+91${sanitized}` };
+  }
+  if (/^\+91\d{10}$/.test(sanitized)) {
+    return { value: sanitized };
+  }
+  if (/^91\d{10}$/.test(sanitized)) {
+    return { value: `+${sanitized}` };
+  }
+  return { error: "username must be a 10-digit phone number" };
+}
+
 function assignLeadFields(
   body: LeadWriteBody,
   data: Prisma.LeadUncheckedCreateInput | Prisma.LeadUncheckedUpdateInput,
@@ -89,7 +108,7 @@ function assignLeadFields(
   }
 
   if (body.username !== undefined) {
-    const username = requiredString(body.username, "username");
+    const username = parseLeadUsername(body.username);
     if ("error" in username) return username;
     data.username = username.value;
   }
@@ -145,7 +164,7 @@ export function parseLeadCreateBody(
 ): { data: Prisma.LeadUncheckedCreateInput } | { error: string } {
   const firstName = requiredString(body.firstName, "firstName");
   if ("error" in firstName) return firstName;
-  const username = requiredString(body.username, "username");
+  const username = parseLeadUsername(body.username);
   if ("error" in username) return username;
 
   const data: Prisma.LeadUncheckedCreateInput = {

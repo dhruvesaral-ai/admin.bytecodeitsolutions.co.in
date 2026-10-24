@@ -65,11 +65,27 @@ function toDateInput(value: string | null) {
   return localDate.toISOString().slice(0, 16);
 }
 
+function sanitizePhoneDigits(value: string | null | undefined): string {
+  if (!value) return "";
+  let cleaned = value.trim();
+  if (cleaned.startsWith("+91")) {
+    cleaned = cleaned.slice(3);
+  }
+  const digits = cleaned.replace(/\D/g, "");
+  if (digits.length === 12 && digits.startsWith("91")) {
+    return digits.slice(2, 12);
+  }
+  if (digits.length === 11 && digits.startsWith("0")) {
+    return digits.slice(1, 11);
+  }
+  return digits.slice(0, 10);
+}
+
 function toForm(lead: Lead): LeadForm {
   return {
     firstName: lead.firstName,
     lastName: lead.lastName ?? "",
-    username: lead.username,
+    username: sanitizePhoneDigits(lead.username),
     courseId: lead.courseId ?? "",
     hasBeenCalled: lead.hasBeenCalled,
     nextCallDate: toDateInput(lead.nextCallDate),
@@ -158,12 +174,21 @@ export default function ManageLeadsPage() {
 
   async function handleSubmit(event: React.FormEvent) {
     event.preventDefault();
+    const cleanUsername = sanitizePhoneDigits(form.username);
+    if (cleanUsername.length !== 10) {
+      setMessage({
+        tone: "error",
+        text: "Please enter a valid 10-digit phone number for username.",
+      });
+      return;
+    }
+
     setSaving(true);
     setMessage(null);
     const payload = {
       firstName: form.firstName,
       lastName: nullableValue(form.lastName),
-      username: form.username,
+      username: cleanUsername,
       courseId: form.courseId || null,
       hasBeenCalled: form.hasBeenCalled,
       nextCallDate: form.nextCallDate
@@ -284,12 +309,22 @@ export default function ManageLeadsPage() {
               }
             />
           </Field>
-          <Field label="Username / contact">
+          <Field
+            label="Phone number (Username)"
+            hint="10-digit mobile number (backend stores with +91)"
+          >
             <Input
+              type="tel"
               required
+              placeholder="e.g. 9876543210"
+              maxLength={15}
+              pattern="[0-9]{10}"
               value={form.username}
               onChange={(event) =>
-                setForm((current) => ({ ...current, username: event.target.value }))
+                setForm((current) => ({
+                  ...current,
+                  username: sanitizePhoneDigits(event.target.value),
+                }))
               }
             />
           </Field>
@@ -434,7 +469,7 @@ export default function ManageLeadsPage() {
           <DataTable
             columns={[
               "Name",
-              "Username",
+              "Phone (Username)",
               "Course",
               "Status",
               "Follow-up",
