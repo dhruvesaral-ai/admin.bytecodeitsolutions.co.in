@@ -11,6 +11,7 @@
     "contract:emit": "prisma contract emit"
   },
   "dependencies": {
+    "@google/genai": "^2.31.0",
     "@prisma/adapter-pg": "7",
     "@prisma/client": "7",
     "csv": "^6.6.4",

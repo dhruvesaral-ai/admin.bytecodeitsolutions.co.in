@@ -52,6 +52,11 @@ const sections = [
     title: "Success stories",
     description: "Manage video IDs associated with success stories.",
   },
+  {
+    href: "/docs",
+    title: "API Documentation",
+    description: "Interactive reference for every API endpoint, request payloads, responses, and parameters.",
+  },
 ];
 
 export default function ManageHomePage() {
