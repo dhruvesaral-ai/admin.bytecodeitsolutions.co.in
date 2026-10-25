@@ -1,6 +1,6 @@
 "use client";
 
-import { use, useCallback, useEffect, useState } from "react";
+import { Suspense, use, useCallback, useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { AdminShell } from "@/components/admin/AdminShell";
@@ -50,7 +50,7 @@ export function buildRegistrationNumber(batchName: string, profileName: string):
   return `REG_${cleanBatch}_${cleanProfile}`;
 }
 
-export default function LeadRegistrationPage({
+function LeadRegistrationWizard({
   params,
 }: {
   params: Promise<RouteParams>;
@@ -1529,5 +1529,25 @@ export default function LeadRegistrationPage({
         </Card>
       )}
     </AdminShell>
+  );
+}
+
+export default function LeadRegistrationPage({
+  params,
+}: {
+  params: Promise<RouteParams>;
+}) {
+  return (
+    <Suspense
+      fallback={
+        <AdminShell title="Lead Registration" description="Loading lead details…">
+          <div className="py-12 text-center text-sm text-zinc-500">
+            Loading lead registration wizard…
+          </div>
+        </AdminShell>
+      }
+    >
+      <LeadRegistrationWizard params={params} />
+    </Suspense>
   );
 }
