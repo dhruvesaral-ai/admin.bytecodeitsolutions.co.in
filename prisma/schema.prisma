@@ -37,7 +37,6 @@ model User {
   id            String         @id @default(cuid())
   username      String         @unique
   status        GeneralStatus  @default(active)
-  authSessionId String?        @map("auth_session_id")
   roleId        String?        @map("role_id")
   createdAt     DateTime       @default(now()) @map("created_at")
   updatedAt     DateTime       @updatedAt @map("updated_at")
