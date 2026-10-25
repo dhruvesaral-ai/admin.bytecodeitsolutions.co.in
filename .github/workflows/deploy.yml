@@ -18,12 +18,10 @@ jobs:
           username: ${{ secrets.SERVER_USER }}
           key: ${{ secrets.SERVER_SSH_KEY }}
           script: |
-            set -e
             cd /var/www/admin.bytecodeitsolutions.co.in
             git pull --ff-only origin main
             yarn install --frozen-lockfile
             yarn prisma generate
             yarn prisma migrate deploy
             yarn build
-            pm2 restart admin.bytecodeitsolutions.co.in --update-env || pm2 start yarn --name admin.bytecodeitsolutions.co.in -- start
-            pm2 save
+            pm2 restart admin.bytecodeitsolutions --update-env
