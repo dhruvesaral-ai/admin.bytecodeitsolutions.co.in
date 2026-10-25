@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
+import Link from "next/link";
 import { AdminShell } from "@/components/admin/AdminShell";
 import { DataTable } from "@/components/admin/DataTable";
 import {
@@ -487,13 +488,24 @@ export default function ManageLeadsPage() {
                 : `Not called${lead.nextCallDate ? ` · ${formatDate(lead.nextCallDate)}` : ""}`,
               lead.remarksIds.length,
               formatDate(lead.createdAt),
-              <div key={lead.id} className="flex gap-2">
-                <Button variant="secondary" onClick={() => startEdit(lead)}>
+              <div key={lead.id} className="flex items-center gap-2">
+                <Link
+                  href={`/manage/leads/registration/${lead.id}`}
+                  className="inline-flex items-center justify-center rounded-lg bg-indigo-600 px-2.5 py-1.5 text-xs font-medium text-white transition hover:bg-indigo-500 shadow-sm"
+                >
+                  Register
+                </Link>
+                <Button
+                  variant="secondary"
+                  onClick={() => startEdit(lead)}
+                  className="text-xs px-2.5 py-1.5"
+                >
                   Edit
                 </Button>
                 <Button
                   variant="danger"
                   onClick={() => void handleDelete(lead.id)}
+                  className="text-xs px-2.5 py-1.5"
                 >
                   Delete
                 </Button>

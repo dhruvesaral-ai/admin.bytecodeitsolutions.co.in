@@ -3,6 +3,11 @@ import { AdminShell } from "@/components/admin/AdminShell";
 
 const sections = [
   {
+    href: "/manage/roles",
+    title: "Roles",
+    description: "Manage access levels and authorization roles for platform users.",
+  },
+  {
     href: "/manage/carousals",
     title: "Carousals",
     description: "Order homepage carousals and link slide IDs.",

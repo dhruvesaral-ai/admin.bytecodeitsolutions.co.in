@@ -44,6 +44,18 @@ export type SuccessStory = {
   videoIds: string[];
 };
 
+export type Batch = {
+  id: string;
+  name: string;
+  createdAt?: string;
+  updatedAt?: string;
+  _count?: {
+    registrations?: number;
+    enrollments?: number;
+    classes?: number;
+  };
+};
+
 export type Course = {
   id: string;
   name: string;
@@ -102,5 +114,99 @@ export type Page = {
   routeName: string;
 };
 
+export type Role = {
+  id: string;
+  name: string;
+  slug: string;
+  createdAt: string;
+  updatedAt: string;
+  _count?: { users: number };
+};
+
+export type User = {
+  id: string;
+  username: string;
+  status: GeneralStatus;
+  roleId: string | null;
+  createdAt: string;
+  updatedAt: string;
+  role?: Role | null;
+  profile?: Profile | null;
+};
+
+export type Profile = {
+  id: string;
+  userId: string;
+  name: string;
+  email: string;
+  status: GeneralStatus;
+  profileImgUrl: string | null;
+  createdAt: string;
+  updatedAt: string;
+  user?: User;
+  addresses?: Address[];
+};
+
+export type Address = {
+  id: string;
+  addressLine: string;
+  pincode: string;
+  city: string;
+  state: string;
+  country: string;
+  profileId: string;
+  createdAt: string;
+  updatedAt: string;
+  profile?: Pick<Profile, "id" | "name" | "email">;
+};
+
+export type Registration = {
+  id: string;
+  courseId: string;
+  batchId: string | null;
+  profileId: string;
+  registrationNo: string;
+  createdAt: string;
+  updatedAt: string;
+  course?: Pick<Course, "id" | "name">;
+  batch?: { id: string; name: string } | null;
+  profile?: Pick<Profile, "id" | "name" | "email">;
+  enrollment?: { id: string; enrollmentNo: string } | null;
+  payments?: Payment[];
+};
+
+export type Enrollment = {
+  id: string;
+  courseId: string;
+  registrationId: string;
+  enrollmentNo: string;
+  batchId: string | null;
+  profileId: string;
+  createdAt: string;
+  updatedAt: string;
+  course?: Pick<Course, "id" | "name">;
+  batch?: { id: string; name: string } | null;
+  profile?: Pick<Profile, "id" | "name" | "email">;
+  registration?: Pick<Registration, "id" | "registrationNo">;
+  payments?: Payment[];
+};
+
+export type Payment = {
+  id: string;
+  enrollmentId: string | null;
+  registrationId: string | null;
+  paymentMethod: string;
+  rupees: number | string;
+  paymentProof: string | null;
+  isVerified: boolean;
+  profileId: string;
+  createdAt: string;
+  updatedAt: string;
+  profile?: Pick<Profile, "id" | "name" | "email">;
+  enrollment?: { id: string; enrollmentNo: string; course?: Pick<Course, "id" | "name"> } | null;
+  registration?: { id: string; registrationNo: string; course?: Pick<Course, "id" | "name"> } | null;
+};
+
 export type ListResponse<T> = { data: T[] };
 export type ItemResponse<T> = { data: T };
+
