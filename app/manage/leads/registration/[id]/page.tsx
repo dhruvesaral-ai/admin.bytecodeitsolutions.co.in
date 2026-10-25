@@ -25,6 +25,7 @@ import type {
   ItemResponse,
   Lead,
   ListResponse,
+  Payment,
   Profile,
   Registration,
   Role,
@@ -69,14 +70,26 @@ export default function LeadRegistrationPage({
     text: string;
   } | null>(null);
 
-  // Active step: 1 (User), 2 (Profile & Address), 3 (Registration), 4 (Completed)
-  const [step, setStep] = useState<1 | 2 | 3 | 4>(1);
+  // Active step: 1 (User), 2 (Profile & Address), 3 (Registration), 4 (Payment), 5 (Completed)
+  const [step, setStep] = useState<1 | 2 | 3 | 4 | 5>(1);
 
   // Entities created during wizard
   const [createdUser, setCreatedUser] = useState<User | null>(null);
   const [createdProfile, setCreatedProfile] = useState<Profile | null>(null);
   const [createdAddress, setCreatedAddress] = useState<Address | null>(null);
   const [completedRegistration, setCompletedRegistration] = useState<Registration | null>(null);
+  const [createdPayment, setCreatedPayment] = useState<Payment | null>(null);
+
+  // Step 4 Form: Registration Payment
+  const [paymentForm, setPaymentForm] = useState({
+    rupees: "",
+    paymentMethod: "upi",
+    paymentProof: "",
+    isVerified: true,
+  });
+
+  // Inline payment on completion screen toggle & form
+  const [showCompletePaymentForm, setShowCompletePaymentForm] = useState(false);
 
   // Step 1 Form: User Creation
   const [userForm, setUserForm] = useState({
@@ -145,6 +158,54 @@ export default function LeadRegistrationPage({
         courseId: leadData.courseId ?? (coursesRes.data.length > 0 ? coursesRes.data[0].id : ""),
         batchId: batchesRes.data.length > 0 ? batchesRes.data[0].id : "",
       }));
+
+      // Look up existing user, profile, address, and registration if already created
+      try {
+        const userRes = await apiGet<ListResponse<User>>(
+          `/api/users?username=${encodeURIComponent(leadData.username)}`
+        );
+        if (userRes.data && userRes.data.length > 0) {
+          const u = userRes.data[0];
+          setCreatedUser(u);
+          if (u.profile) {
+            setCreatedProfile(u.profile);
+            setProfileForm((prev) => ({
+              ...prev,
+              name: u.profile?.name || prev.name,
+              email: u.profile?.email || prev.email,
+            }));
+            if (u.profile.addresses && u.profile.addresses.length > 0) {
+              const a = u.profile.addresses[0];
+              setCreatedAddress(a);
+              setProfileForm((prev) => ({
+                ...prev,
+                addressLine: a.addressLine || prev.addressLine,
+                city: a.city || prev.city,
+                state: a.state || prev.state,
+                pincode: a.pincode || prev.pincode,
+                country: a.country || prev.country,
+              }));
+            }
+            // Check if student profile already has a registration
+            const regRes = await apiGet<ListResponse<Registration>>(
+              `/api/registrations?profileId=${u.profile.id}`
+            );
+            if (regRes.data && regRes.data.length > 0) {
+              const r = regRes.data[0];
+              setCompletedRegistration(r);
+              setRegForm((prev) => ({
+                ...prev,
+                courseId: r.courseId,
+                batchId: r.batchId || "",
+                registrationNo: r.registrationNo,
+                isCustomRegNo: true,
+              }));
+            }
+          }
+        }
+      } catch {
+        // Non-blocking lookup
+      }
     } catch (error) {
       setMessage({
         tone: "error",
@@ -368,14 +429,48 @@ export default function LeadRegistrationPage({
     }
 
     try {
-      const regRes = await apiPost<ItemResponse<Registration>>("/api/registrations", {
-        courseId,
-        batchId: batchId || null,
-        profileId: createdProfile.id,
-        registrationNo: registrationNo.trim(),
-      });
+      let reg: Registration;
+      if (completedRegistration) {
+        // If registration was already created, update it
+        const updateRes = await apiPatch<ItemResponse<Registration>>(
+          `/api/registrations/${completedRegistration.id}`,
+          {
+            courseId,
+            batchId: batchId || null,
+            registrationNo: registrationNo.trim(),
+          }
+        );
+        reg = updateRes.data;
+      } else {
+        try {
+          const regRes = await apiPost<ItemResponse<Registration>>("/api/registrations", {
+            courseId,
+            batchId: batchId || null,
+            profileId: createdProfile.id,
+            registrationNo: registrationNo.trim(),
+          });
+          reg = regRes.data;
+        } catch (postErr) {
+          if (postErr instanceof ApiError && postErr.status === 409) {
+            // Check if this registration belongs to the current student
+            const findRes = await apiGet<ListResponse<Registration>>(
+              `/api/registrations?registrationNo=${encodeURIComponent(registrationNo.trim())}`
+            );
+            if (
+              findRes.data &&
+              findRes.data.length > 0 &&
+              findRes.data[0].profileId === createdProfile.id
+            ) {
+              reg = findRes.data[0];
+            } else {
+              throw postErr;
+            }
+          } else {
+            throw postErr;
+          }
+        }
+      }
 
-      const reg = regRes.data;
       setCompletedRegistration(reg);
 
       // Automatically mark lead as converted and log a remark
@@ -391,7 +486,22 @@ export default function LeadRegistrationPage({
         // Non-blocking if lead remark update fails
       }
 
-      setMessage({ tone: "success", text: "Registration completed successfully!" });
+      // Pre-fill payment amount from selected course if not yet entered
+      const course = courses.find((c) => c.id === courseId);
+      if (course) {
+        const fee = course.discountedPrice ?? course.originalPrice;
+        if (fee) {
+          setPaymentForm((prev) => ({
+            ...prev,
+            rupees: prev.rupees || String(fee),
+          }));
+        }
+      }
+
+      setMessage({
+        tone: "success",
+        text: "Registration confirmed! Proceeding to payment step.",
+      });
       setStep(4);
     } catch (err) {
       if (err instanceof ApiError && err.status === 409) {
@@ -400,7 +510,7 @@ export default function LeadRegistrationPage({
         setRegForm((prev) => ({ ...prev, registrationNo: newNo, isCustomRegNo: true }));
         setMessage({
           tone: "error",
-          text: `Registration number "${registrationNo.trim()}" is already in use. Suggested updated number: "${newNo}" — please click Submit again.`,
+          text: `Registration number "${registrationNo.trim()}" is already assigned to another student. Suggested updated number: "${newNo}" — please click Submit again.`,
         });
       } else {
         setMessage({
@@ -408,6 +518,97 @@ export default function LeadRegistrationPage({
           text: err instanceof ApiError ? err.message : "Registration failed.",
         });
       }
+    } finally {
+      setSubmitting(false);
+    }
+  }
+
+  // --- STEP 4: Handle Registration Payment ---
+  async function handleStep4Submit(event: React.FormEvent) {
+    event.preventDefault();
+    if (!createdProfile || !completedRegistration) {
+      setMessage({ tone: "error", text: "Registration record missing. Return to step 3." });
+      return;
+    }
+
+    const rupeesVal = parseFloat(paymentForm.rupees);
+    if (isNaN(rupeesVal) || rupeesVal < 0) {
+      setMessage({ tone: "error", text: "Please enter a valid non-negative payment amount." });
+      return;
+    }
+
+    setSubmitting(true);
+    setMessage(null);
+
+    try {
+      const payRes = await apiPost<ItemResponse<Payment>>("/api/payments", {
+        profileId: createdProfile.id,
+        registrationId: completedRegistration.id,
+        rupees: rupeesVal,
+        paymentMethod: paymentForm.paymentMethod,
+        paymentProof: paymentForm.paymentProof.trim() || null,
+        isVerified: paymentForm.isVerified,
+      });
+
+      setCreatedPayment(payRes.data);
+      setMessage({
+        tone: "success",
+        text: `Payment of ₹${rupeesVal.toLocaleString("en-IN")} recorded successfully!`,
+      });
+      setStep(5);
+    } catch (err) {
+      setMessage({
+        tone: "error",
+        text: err instanceof ApiError ? err.message : "Payment recording failed.",
+      });
+    } finally {
+      setSubmitting(false);
+    }
+  }
+
+  function handleSkipPayment() {
+    setMessage({
+      tone: "success",
+      text: "Registration completed. Payment marked as pending.",
+    });
+    setStep(5);
+  }
+
+  // Record payment from the completion screen (if skipped earlier)
+  async function handleCompleteRecordPayment(event: React.FormEvent) {
+    event.preventDefault();
+    if (!createdProfile || !completedRegistration) return;
+
+    const rupeesVal = parseFloat(paymentForm.rupees);
+    if (isNaN(rupeesVal) || rupeesVal < 0) {
+      setMessage({ tone: "error", text: "Please enter a valid non-negative payment amount." });
+      return;
+    }
+
+    setSubmitting(true);
+    setMessage(null);
+
+    try {
+      const payRes = await apiPost<ItemResponse<Payment>>("/api/payments", {
+        profileId: createdProfile.id,
+        registrationId: completedRegistration.id,
+        rupees: rupeesVal,
+        paymentMethod: paymentForm.paymentMethod,
+        paymentProof: paymentForm.paymentProof.trim() || null,
+        isVerified: paymentForm.isVerified,
+      });
+
+      setCreatedPayment(payRes.data);
+      setShowCompletePaymentForm(false);
+      setMessage({
+        tone: "success",
+        text: `Payment of ₹${rupeesVal.toLocaleString("en-IN")} recorded successfully!`,
+      });
+    } catch (err) {
+      setMessage({
+        tone: "error",
+        text: err instanceof ApiError ? err.message : "Payment recording failed.",
+      });
     } finally {
       setSubmitting(false);
     }
@@ -495,7 +696,8 @@ export default function LeadRegistrationPage({
           { num: 1, label: "User Account" },
           { num: 2, label: "Profile & Address" },
           { num: 3, label: "Registration" },
-          { num: 4, label: "Complete" },
+          { num: 4, label: "Payment" },
+          { num: 5, label: "Complete" },
         ].map((s) => {
           const isActive = step === s.num;
           const isDone = step > s.num;
@@ -848,20 +1050,213 @@ export default function LeadRegistrationPage({
               </dl>
             </div>
 
-            <div className="flex items-center gap-3 pt-3 md:col-span-2">
+            <div className="flex flex-wrap items-center gap-3 pt-3 md:col-span-2">
               <Button variant="secondary" onClick={() => setStep(2)} type="button">
                 ← Back to Profile
               </Button>
               <Button type="submit" disabled={submitting}>
-                {submitting ? "Completing Registration…" : "Complete Registration ✓"}
+                {submitting
+                  ? "Saving Registration…"
+                  : completedRegistration
+                  ? "Update & Go to Payment →"
+                  : "Next: Payment Step →"}
+              </Button>
+              {completedRegistration ? (
+                <Button
+                  variant="ghost"
+                  type="button"
+                  onClick={() => {
+                    if (selectedCourse && !paymentForm.rupees) {
+                      const fee = selectedCourse.discountedPrice ?? selectedCourse.originalPrice;
+                      if (fee) {
+                        setPaymentForm((prev) => ({ ...prev, rupees: String(fee) }));
+                      }
+                    }
+                    setStep(4);
+                  }}
+                >
+                  Proceed to Payment (Already Registered) →
+                </Button>
+              ) : null}
+            </div>
+          </form>
+        </Card>
+      )}
+
+      {/* ================= STEP 4: REGISTRATION PAYMENT ================= */}
+      {step === 4 && completedRegistration && (
+        <Card
+          title="Step 4: Registration Payment"
+          action={
+            <span className="font-mono text-xs font-semibold text-indigo-600 dark:text-indigo-400">
+              Reg No: {completedRegistration.registrationNo}
+            </span>
+          }
+        >
+          <form className="grid gap-4 md:grid-cols-2" onSubmit={handleStep4Submit}>
+            <div className="rounded-lg border border-indigo-100 bg-indigo-50/50 p-4 dark:border-indigo-900/50 dark:bg-indigo-950/20 md:col-span-2">
+              <h4 className="text-xs font-semibold uppercase tracking-wider text-indigo-700 dark:text-indigo-300">
+                Course & Fee Summary
+              </h4>
+              <dl className="mt-2 grid grid-cols-2 gap-x-4 gap-y-2 text-xs sm:grid-cols-4">
+                <div>
+                  <dt className="text-zinc-500">Course</dt>
+                  <dd className="font-semibold text-zinc-900 dark:text-zinc-100">
+                    {selectedCourse?.name ?? "—"}
+                  </dd>
+                </div>
+                <div>
+                  <dt className="text-zinc-500">Assigned Batch</dt>
+                  <dd className="font-semibold text-zinc-900 dark:text-zinc-100">
+                    {selectedBatch?.name ?? "Unassigned"}
+                  </dd>
+                </div>
+                <div>
+                  <dt className="text-zinc-500">Course Original Price</dt>
+                  <dd className="font-mono text-zinc-700 dark:text-zinc-300">
+                    {selectedCourse?.originalPrice ? `₹${selectedCourse.originalPrice}` : "—"}
+                  </dd>
+                </div>
+                <div>
+                  <dt className="text-zinc-500">Course Offer Price</dt>
+                  <dd className="font-mono font-bold text-emerald-600 dark:text-emerald-400">
+                    {selectedCourse?.discountedPrice ? `₹${selectedCourse.discountedPrice}` : "—"}
+                  </dd>
+                </div>
+              </dl>
+            </div>
+
+            <Field
+              label="Payment Amount (₹ / INR)"
+              hint="Enter the registration fee or token payment received."
+            >
+              <div className="space-y-1.5">
+                <Input
+                  type="number"
+                  min="0"
+                  step="0.01"
+                  required
+                  placeholder="e.g. 500, 1000, 5000"
+                  value={paymentForm.rupees}
+                  onChange={(e) =>
+                    setPaymentForm((prev) => ({ ...prev, rupees: e.target.value }))
+                  }
+                />
+                <div className="flex flex-wrap gap-1.5 pt-1">
+                  {selectedCourse?.discountedPrice ? (
+                    <button
+                      type="button"
+                      onClick={() =>
+                        setPaymentForm((prev) => ({
+                          ...prev,
+                          rupees: String(selectedCourse.discountedPrice),
+                        }))
+                      }
+                      className="rounded border border-emerald-200 bg-emerald-50 px-2 py-0.5 text-[11px] font-medium text-emerald-700 hover:bg-emerald-100 dark:border-emerald-800 dark:bg-emerald-950/40 dark:text-emerald-300"
+                    >
+                      Full Fee: ₹{selectedCourse.discountedPrice}
+                    </button>
+                  ) : null}
+                  <button
+                    type="button"
+                    onClick={() =>
+                      setPaymentForm((prev) => ({ ...prev, rupees: "500" }))
+                    }
+                    className="rounded border border-zinc-200 bg-zinc-50 px-2 py-0.5 text-[11px] font-medium text-zinc-700 hover:bg-zinc-100 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-300"
+                  >
+                    Token: ₹500
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() =>
+                      setPaymentForm((prev) => ({ ...prev, rupees: "1000" }))
+                    }
+                    className="rounded border border-zinc-200 bg-zinc-50 px-2 py-0.5 text-[11px] font-medium text-zinc-700 hover:bg-zinc-100 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-300"
+                  >
+                    Token: ₹1,000
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() =>
+                      setPaymentForm((prev) => ({ ...prev, rupees: "2000" }))
+                    }
+                    className="rounded border border-zinc-200 bg-zinc-50 px-2 py-0.5 text-[11px] font-medium text-zinc-700 hover:bg-zinc-100 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-300"
+                  >
+                    Token: ₹2,000
+                  </button>
+                </div>
+              </div>
+            </Field>
+
+            <Field label="Payment Method" hint="Select how the payment was received.">
+              <Select
+                value={paymentForm.paymentMethod}
+                onChange={(e) =>
+                  setPaymentForm((prev) => ({ ...prev, paymentMethod: e.target.value }))
+                }
+              >
+                <option value="upi">UPI (GPay / PhonePe / Paytm / QR)</option>
+                <option value="cash">Cash</option>
+                <option value="bank_transfer">Bank Transfer (NEFT / IMPS / RTGS)</option>
+                <option value="card">Credit / Debit Card</option>
+                <option value="cheque">Cheque / Demand Draft</option>
+                <option value="other">Other</option>
+              </Select>
+            </Field>
+
+            <Field
+              label="Transaction Ref / Proof"
+              hint="UPI UTR number, bank reference ID, receipt number, or note."
+            >
+              <Input
+                placeholder="e.g. UTR: 324109847291 or Cash Receipt #104"
+                value={paymentForm.paymentProof}
+                onChange={(e) =>
+                  setPaymentForm((prev) => ({ ...prev, paymentProof: e.target.value }))
+                }
+              />
+            </Field>
+
+            <Field
+              label="Verification Status"
+              hint="Mark verified if payment was confirmed in account / received in cash."
+            >
+              <div className="flex items-center gap-2 pt-2">
+                <input
+                  type="checkbox"
+                  id="isVerifiedCheck"
+                  checked={paymentForm.isVerified}
+                  onChange={(e) =>
+                    setPaymentForm((prev) => ({ ...prev, isVerified: e.target.checked }))
+                  }
+                  className="h-4 w-4 rounded border-zinc-300 text-indigo-600 focus:ring-indigo-500"
+                />
+                <label
+                  htmlFor="isVerifiedCheck"
+                  className="cursor-pointer text-xs font-medium text-zinc-700 dark:text-zinc-300"
+                >
+                  Mark as verified immediately
+                </label>
+              </div>
+            </Field>
+
+            <div className="flex flex-wrap items-center gap-3 pt-3 md:col-span-2">
+              <Button variant="secondary" onClick={() => setStep(3)} type="button">
+                ← Back to Registration
+              </Button>
+              <Button type="submit" disabled={submitting}>
+                {submitting ? "Recording Payment…" : "Record Payment & Complete ✓"}
+              </Button>
+              <Button variant="ghost" onClick={handleSkipPayment} type="button">
+                Skip Payment for Now →
               </Button>
             </div>
           </form>
         </Card>
       )}
 
-      {/* ================= STEP 4: COMPLETED SCREEN ================= */}
-      {step === 4 && completedRegistration && (
+      {/* ================= STEP 5: COMPLETED SCREEN ================= */}
+      {step === 5 && completedRegistration && (
         <Card title="Registration Completed Successfully">
           <div className="space-y-6 py-2">
             <div className="flex items-center gap-3 text-emerald-600 dark:text-emerald-400">
@@ -873,12 +1268,16 @@ export default function LeadRegistrationPage({
                   Lead successfully converted to registered student!
                 </h3>
                 <p className="text-xs text-zinc-500">
-                  Lead status has been marked as <strong>converted</strong> and all user credentials, profile, and registration records have been saved.
+                  Lead status has been marked as <strong>converted</strong> and all user credentials, profile, registration, and payment records have been saved.
                 </p>
               </div>
             </div>
 
+            {/* Registration Details */}
             <div className="rounded-xl border border-zinc-200 bg-zinc-50 p-5 dark:border-zinc-800 dark:bg-zinc-950/60">
+              <h4 className="text-xs font-semibold uppercase tracking-wider text-zinc-500 mb-3">
+                Registration & Student Details
+              </h4>
               <dl className="grid gap-4 sm:grid-cols-2 text-sm">
                 <div>
                   <dt className="text-xs text-zinc-500">Registration Number</dt>
@@ -893,7 +1292,7 @@ export default function LeadRegistrationPage({
                   </dd>
                 </div>
                 <div>
-                  <dt className="text-xs text-zinc-500">Username / Phone</dt>
+                  <dt className="text-xs text-zinc-500">Username / Login</dt>
                   <dd className="mt-0.5 font-mono text-zinc-700 dark:text-zinc-300">
                     @{createdUser?.username}
                   </dd>
@@ -925,6 +1324,144 @@ export default function LeadRegistrationPage({
                   </div>
                 ) : null}
               </dl>
+            </div>
+
+            {/* Payment Record Section */}
+            <div className="rounded-xl border border-zinc-200 bg-zinc-50 p-5 dark:border-zinc-800 dark:bg-zinc-950/60">
+              <div className="flex items-center justify-between">
+                <h4 className="text-xs font-semibold uppercase tracking-wider text-zinc-500">
+                  Registration Payment Status
+                </h4>
+                {createdPayment ? (
+                  <span
+                    className={`rounded-full px-2.5 py-0.5 text-xs font-medium ${
+                      createdPayment.isVerified
+                        ? "bg-emerald-100 text-emerald-800 dark:bg-emerald-950/60 dark:text-emerald-300"
+                        : "bg-amber-100 text-amber-800 dark:bg-amber-950/60 dark:text-amber-300"
+                    }`}
+                  >
+                    {createdPayment.isVerified ? "Payment Verified ✓" : "Payment Recorded (Pending Verification)"}
+                  </span>
+                ) : (
+                  <span className="rounded-full bg-amber-100 px-2.5 py-0.5 text-xs font-medium text-amber-800 dark:bg-amber-950/60 dark:text-amber-300">
+                    Payment Pending
+                  </span>
+                )}
+              </div>
+
+              {createdPayment ? (
+                <dl className="mt-4 grid gap-4 sm:grid-cols-3 text-sm">
+                  <div>
+                    <dt className="text-xs text-zinc-500">Amount Received</dt>
+                    <dd className="mt-0.5 font-mono text-base font-bold text-emerald-600 dark:text-emerald-400">
+                      ₹{Number(createdPayment.rupees).toLocaleString("en-IN")}
+                    </dd>
+                  </div>
+                  <div>
+                    <dt className="text-xs text-zinc-500">Payment Method</dt>
+                    <dd className="mt-0.5 font-medium uppercase text-zinc-800 dark:text-zinc-200">
+                      {createdPayment.paymentMethod.replace(/_/g, " ")}
+                    </dd>
+                  </div>
+                  <div>
+                    <dt className="text-xs text-zinc-500">Transaction Reference</dt>
+                    <dd className="mt-0.5 font-mono text-zinc-700 dark:text-zinc-300">
+                      {createdPayment.paymentProof || "N/A"}
+                    </dd>
+                  </div>
+                </dl>
+              ) : (
+                <div className="mt-3">
+                  <p className="text-xs text-zinc-500">
+                    No payment was recorded during registration. You can record registration payment at any time:
+                  </p>
+                  {!showCompletePaymentForm ? (
+                    <div className="mt-2">
+                      <Button
+                        variant="secondary"
+                        onClick={() => setShowCompletePaymentForm(true)}
+                        type="button"
+                      >
+                        + Record Registration Payment Now
+                      </Button>
+                    </div>
+                  ) : (
+                    <form
+                      onSubmit={handleCompleteRecordPayment}
+                      className="mt-3 grid gap-3 rounded-lg border border-zinc-200 bg-white p-4 dark:border-zinc-700 dark:bg-zinc-900 md:grid-cols-2"
+                    >
+                      <Field label="Amount (₹)" hint="Received fee">
+                        <Input
+                          type="number"
+                          min="0"
+                          step="0.01"
+                          required
+                          value={paymentForm.rupees}
+                          onChange={(e) =>
+                            setPaymentForm((prev) => ({ ...prev, rupees: e.target.value }))
+                          }
+                          placeholder="Amount in ₹"
+                        />
+                      </Field>
+                      <Field label="Method">
+                        <Select
+                          value={paymentForm.paymentMethod}
+                          onChange={(e) =>
+                            setPaymentForm((prev) => ({ ...prev, paymentMethod: e.target.value }))
+                          }
+                        >
+                          <option value="upi">UPI</option>
+                          <option value="cash">Cash</option>
+                          <option value="bank_transfer">Bank Transfer</option>
+                          <option value="card">Credit / Debit Card</option>
+                          <option value="cheque">Cheque</option>
+                          <option value="other">Other</option>
+                        </Select>
+                      </Field>
+                      <Field label="Transaction Ref / Proof">
+                        <Input
+                          value={paymentForm.paymentProof}
+                          onChange={(e) =>
+                            setPaymentForm((prev) => ({ ...prev, paymentProof: e.target.value }))
+                          }
+                          placeholder="e.g. UTR / Receipt No"
+                        />
+                      </Field>
+                      <Field label="Verification">
+                        <div className="flex items-center gap-2 pt-2">
+                          <input
+                            type="checkbox"
+                            id="inlineVerifyCheck"
+                            checked={paymentForm.isVerified}
+                            onChange={(e) =>
+                              setPaymentForm((prev) => ({ ...prev, isVerified: e.target.checked }))
+                            }
+                            className="h-4 w-4 rounded border-zinc-300 text-indigo-600 focus:ring-indigo-500"
+                          />
+                          <label
+                            htmlFor="inlineVerifyCheck"
+                            className="cursor-pointer text-xs font-medium text-zinc-700 dark:text-zinc-300"
+                          >
+                            Mark verified
+                          </label>
+                        </div>
+                      </Field>
+                      <div className="flex items-center gap-2 pt-1 md:col-span-2">
+                        <Button type="submit" disabled={submitting}>
+                          {submitting ? "Saving Payment…" : "Save Payment ✓"}
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          type="button"
+                          onClick={() => setShowCompletePaymentForm(false)}
+                        >
+                          Cancel
+                        </Button>
+                      </div>
+                    </form>
+                  )}
+                </div>
+              )}
             </div>
 
             <div className="flex flex-wrap items-center gap-3 pt-2">

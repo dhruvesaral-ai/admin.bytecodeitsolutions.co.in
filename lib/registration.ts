@@ -39,7 +39,15 @@ export function generateRegistrationNo(): string {
 
 export function parseRegistrationCreateBody(
   body: RegistrationWriteBody,
-): { data: Prisma.RegistrationCreateInput } | { error: string } {
+):
+  | {
+      data: Prisma.RegistrationCreateInput;
+      profileId: string;
+      courseId: string;
+      batchId: string | null;
+      registrationNo: string;
+    }
+  | { error: string } {
   const courseId = parseNonEmptyString(body.courseId, "courseId");
   if ("error" in courseId) {
     return courseId;
@@ -60,17 +68,23 @@ export function parseRegistrationCreateBody(
   }
 
   let batch: Prisma.BatchCreateNestedOneWithoutRegistrationsInput | undefined;
+  let batchIdVal: string | null = null;
   if (body.batchId !== undefined && body.batchId !== null) {
-    const batchId = parseNullableId(body.batchId, "batchId");
-    if ("error" in batchId) {
-      return batchId;
+    const parsedBatch = parseNullableId(body.batchId, "batchId");
+    if ("error" in parsedBatch) {
+      return parsedBatch;
     }
-    if (batchId.value) {
-      batch = { connect: { id: batchId.value } };
+    batchIdVal = parsedBatch.value;
+    if (parsedBatch.value) {
+      batch = { connect: { id: parsedBatch.value } };
     }
   }
 
   return {
+    profileId: profileId.value,
+    courseId: courseId.value,
+    batchId: batchIdVal,
+    registrationNo,
     data: {
       registrationNo,
       course: { connect: { id: courseId.value } },
