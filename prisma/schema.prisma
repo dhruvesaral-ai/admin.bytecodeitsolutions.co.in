@@ -7,57 +7,57 @@ datasource db {
   provider = "postgresql"
 }
 
-model Carousal {
-  id               String           @id @default(cuid())
-  carousalSlideIds String[]         @map("carousal_slide_ids")
-  position         CarousalPosition
-  createdAt        DateTime         @default(now()) @map("created_at")
-  updatedAt        DateTime         @updatedAt @map("updated_at")
 
-  @@map("carousal")
+enum GeneralStatus {
+  active
+  inactive
 }
 
-model CarouselSlide {
-  id                 String   @id @default(cuid())
-  bgImgUrl           String   @map("bg_img_url")
-  order              Int
-  title              String
-  description        String?
-  btnHrefLink        String?  @map("btn_href_link")
-  textContainerAlign String?  @map("text_container_align")
-  imgUrl             String?  @map("img_url")
-  bannerHrefLink     String?  @map("banner_href_link")
-  createdAt          DateTime @default(now()) @map("created_at")
-  updatedAt          DateTime @updatedAt @map("updated_at")
-
-  @@map("carousel_slide")
+enum LeadStatus {
+  hot
+  medium
+  cold
+  converted
 }
 
-model Course {
-  id                   String           @id @default(cuid())
-  name                 String
-  shortDescription     String?          @map("description")
-  longDescription      String?          @map("long_description")
-  originalPrice        Decimal?         @db.Decimal(10, 2)
-  discountedPrice      Decimal?         @db.Decimal(10, 2)
-  rating               Float?
-  technologyTags       String[]         @map("technology_tags")
-  duration             String?
-  status               GeneralStatus    @default(active)
-  courseImgUrl         String?          @map("course_img_url")
-  syllabus             String?
-  courseCategorieId    String?          @map("course_categorie_id")
-  isPlacementGurranted Boolean          @default(false) @map("is_placement_gurranted")
-  isInSale             Boolean          @default(false) @map("is_in_sale")
-  courseModuleIds      String[]         @map("course_module_ids")
-  createdAt            DateTime         @default(now()) @map("created_at")
-  updatedAt            DateTime         @updatedAt @map("updated_at")
-  courseCategorie      CourseCategorie? @relation(fields: [courseCategorieId], references: [id])
-  leads                Lead[]
-  registrations        Registration[]
-  enrollments          Enrollment[]
+enum LeadGeneratedSource {
+  online
+  offline
+}
 
-  @@map("course")
+enum CarousalPosition {
+  homepage
+  offer_banner @map("offer-banner")
+  development
+  programs
+  training
+}
+
+model User {
+  id            String         @id @default(cuid())
+  username      String         @unique
+  profileId     String?        @map("profileid")
+  status        GeneralStatus  @default(active)
+  authSessionId String?        @map("auth_session_id")
+  roleId        String?        @map("role_id")
+  createdAt     DateTime       @default(now()) @map("created_at")
+  updatedAt     DateTime       @updatedAt @map("updated_at")
+  role          Role?          @relation(fields: [roleId], references: [id])
+  registrations Registration[]
+  enrollments   Enrollment[]
+
+  @@map("user")
+}
+
+model Role {
+  id        String   @id @default(cuid())
+  name      String
+  slug      String   @unique
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+  users     User[]
+
+  @@map("role")
 }
 
 model Lead {
@@ -91,100 +91,6 @@ model LeadRemark {
 
   @@index([leadId, createdAt])
   @@map("lead_remarks")
-}
-
-model CourseCategorie {
-  id        String   @id @default(cuid())
-  name      String
-  slug      String   @unique
-  createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @updatedAt @map("updated_at")
-  courses   Course[]
-
-  @@map("course_categorie")
-}
-
-model CourseModule {
-  id          String   @id @default(cuid())
-  title       String
-  description String?
-  createdAt   DateTime @default(now()) @map("created_at")
-  updatedAt   DateTime @updatedAt @map("updated_at")
-
-  @@map("course_module")
-}
-
-model Testimonial {
-  id          String   @id @default(cuid())
-  name        String
-  profileImg  String?  @map("profile_img")
-  companyName String?  @map("company_name")
-  createdAt   DateTime @default(now()) @map("created_at")
-  updatedAt   DateTime @updatedAt @map("updated_at")
-
-  @@map("testimonials")
-}
-
-model SuccessStory {
-  id        String   @id @default(cuid())
-  videoIds  String[] @map("videoids")
-  createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @updatedAt @map("updated_at")
-
-  @@map("SuccessStories")
-}
-
-model Batch {
-  id            String         @id @default(cuid())
-  name          String
-  createdAt     DateTime       @default(now()) @map("created_at")
-  updatedAt     DateTime       @updatedAt @map("updated_at")
-  registrations Registration[]
-  enrollments   Enrollment[]
-
-  @@map("Batch")
-}
-
-model Class {
-  id            String   @id @default(cuid())
-  title         String
-  dateAndTime   DateTime @map("date_and_time")
-  meetLink      String?  @map("meet_link")
-  recordingLink String?  @map("recording_link")
-  notesLink     String?  @map("notes_link")
-  courseIds     String[] @map("course_ids")
-  batchIds      String[] @map("batch_ids")
-  createdAt     DateTime @default(now()) @map("created_at")
-  updatedAt     DateTime @updatedAt @map("updated_at")
-
-  @@map("class")
-}
-
-model User {
-  id            String         @id @default(cuid())
-  username      String         @unique
-  profileId     String?        @map("profileid")
-  status        GeneralStatus  @default(active)
-  authSessionId String?        @map("auth_session_id")
-  roleId        String?        @map("role_id")
-  createdAt     DateTime       @default(now()) @map("created_at")
-  updatedAt     DateTime       @updatedAt @map("updated_at")
-  role          Role?          @relation(fields: [roleId], references: [id])
-  registrations Registration[]
-  enrollments   Enrollment[]
-
-  @@map("user")
-}
-
-model Role {
-  id        String   @id @default(cuid())
-  name      String
-  slug      String   @unique
-  createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @updatedAt @map("updated_at")
-  users     User[]
-
-  @@map("role")
 }
 
 model Registration {
@@ -235,29 +141,124 @@ model Payment {
   @@map("payment")
 }
 
-enum GeneralStatus {
-  active
-  inactive
+model CourseCategorie {
+  id        String   @id @default(cuid())
+  name      String
+  slug      String   @unique
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+  courses   Course[]
+
+  @@map("course_categorie")
 }
 
-enum LeadStatus {
-  hot
-  medium
-  cold
-  converted
+model Course {
+  id                   String           @id @default(cuid())
+  name                 String
+  shortDescription     String?          @map("description")
+  longDescription      String?          @map("long_description")
+  originalPrice        Decimal?         @db.Decimal(10, 2)
+  discountedPrice      Decimal?         @db.Decimal(10, 2)
+  rating               Float?
+  technologyTags       String[]         @map("technology_tags")
+  duration             String?
+  status               GeneralStatus    @default(active)
+  courseImgUrl         String?          @map("course_img_url")
+  syllabus             String?
+  courseCategorieId    String?          @map("course_categorie_id")
+  isPlacementGurranted Boolean          @default(false) @map("is_placement_gurranted")
+  isInSale             Boolean          @default(false) @map("is_in_sale")
+  courseModuleIds      String[]         @map("course_module_ids")
+  createdAt            DateTime         @default(now()) @map("created_at")
+  updatedAt            DateTime         @updatedAt @map("updated_at")
+  courseCategorie      CourseCategorie? @relation(fields: [courseCategorieId], references: [id])
+  leads                Lead[]
+  registrations        Registration[]
+  enrollments          Enrollment[]
+
+  @@map("course")
 }
 
-enum LeadGeneratedSource {
-  online
-  offline
+model CourseModule {
+  id          String   @id @default(cuid())
+  title       String
+  description String?
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  @@map("course_module")
 }
 
-enum CarousalPosition {
-  homepage
-  offer_banner @map("offer-banner")
-  development
-  programs
-  training
+model Class {
+  id            String   @id @default(cuid())
+  title         String
+  dateAndTime   DateTime @map("date_and_time")
+  meetLink      String?  @map("meet_link")
+  recordingLink String?  @map("recording_link")
+  notesLink     String?  @map("notes_link")
+  courseIds     String[] @map("course_ids")
+  batchIds      String[] @map("batch_ids")
+  createdAt     DateTime @default(now()) @map("created_at")
+  updatedAt     DateTime @updatedAt @map("updated_at")
+
+  @@map("class")
+}
+
+model Batch {
+  id            String         @id @default(cuid())
+  name          String
+  createdAt     DateTime       @default(now()) @map("created_at")
+  updatedAt     DateTime       @updatedAt @map("updated_at")
+  registrations Registration[]
+  enrollments   Enrollment[]
+
+  @@map("Batch")
+}
+
+model Carousal {
+  id               String           @id @default(cuid())
+  carousalSlideIds String[]         @map("carousal_slide_ids")
+  position         CarousalPosition
+  createdAt        DateTime         @default(now()) @map("created_at")
+  updatedAt        DateTime         @updatedAt @map("updated_at")
+
+  @@map("carousal")
+}
+
+model CarouselSlide {
+  id                 String   @id @default(cuid())
+  bgImgUrl           String   @map("bg_img_url")
+  order              Int
+  title              String
+  description        String?
+  btnHrefLink        String?  @map("btn_href_link")
+  textContainerAlign String?  @map("text_container_align")
+  imgUrl             String?  @map("img_url")
+  bannerHrefLink     String?  @map("banner_href_link")
+  createdAt          DateTime @default(now()) @map("created_at")
+  updatedAt          DateTime @updatedAt @map("updated_at")
+
+  @@map("carousel_slide")
+}
+
+model Testimonial {
+  id          String   @id @default(cuid())
+  name        String
+  profileImg  String?  @map("profile_img")
+  companyName String?  @map("company_name")
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  @@map("testimonials")
+}
+
+model SuccessStory {
+  id        String   @id @default(cuid())
+  videoIds  String[] @map("videoids")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("SuccessStories")
 }
 
 model Page {

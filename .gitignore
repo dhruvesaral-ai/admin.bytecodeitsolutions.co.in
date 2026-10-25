@@ -43,7 +43,7 @@ node_modules/
 dist/
 .env
 
-/src/generated/prisma
+/generated/
 
 # user uploads (keep folder structure)
 /public/uploads/**/*
