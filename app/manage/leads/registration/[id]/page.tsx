@@ -505,12 +505,31 @@ export default function LeadRegistrationPage({
       setStep(4);
     } catch (err) {
       if (err instanceof ApiError && err.status === 409) {
+        try {
+          const findRes = await apiGet<ListResponse<Registration>>(
+            `/api/registrations?registrationNo=${encodeURIComponent(registrationNo.trim())}`
+          );
+          if (findRes.data && findRes.data.length > 0) {
+            const existingReg = findRes.data[0];
+            setCompletedRegistration(existingReg);
+            if (selectedCourse && !paymentForm.rupees) {
+              const fee = selectedCourse.discountedPrice ?? selectedCourse.originalPrice;
+              if (fee) setPaymentForm((prev) => ({ ...prev, rupees: String(fee) }));
+            }
+            setMessage({
+              tone: "success",
+              text: `Registration "${existingReg.registrationNo}" already exists. Proceeding directly to Payment Step.`,
+            });
+            setStep(4);
+            return;
+          }
+        } catch {}
         const uniqueSuffix = `_${Date.now().toString(36).slice(-3).toUpperCase()}`;
         const newNo = `${registrationNo.trim()}${uniqueSuffix}`;
         setRegForm((prev) => ({ ...prev, registrationNo: newNo, isCustomRegNo: true }));
         setMessage({
           tone: "error",
-          text: `Registration number "${registrationNo.trim()}" is already assigned to another student. Suggested updated number: "${newNo}" — please click Submit again.`,
+          text: `Registration number "${registrationNo.trim()}" is already assigned to another student. Suggested updated number: "${newNo}" — please click Submit again, or click "Proceed to Payment Step" below.`,
         });
       } else {
         setMessage({
@@ -526,9 +545,22 @@ export default function LeadRegistrationPage({
   // --- STEP 4: Handle Registration Payment ---
   async function handleStep4Submit(event: React.FormEvent) {
     event.preventDefault();
-    if (!createdProfile || !completedRegistration) {
-      setMessage({ tone: "error", text: "Registration record missing. Return to step 3." });
+    if (!createdProfile) {
+      setMessage({ tone: "error", text: "Student profile missing. Return to step 2." });
       return;
+    }
+
+    let reg = completedRegistration;
+    if (!reg) {
+      try {
+        const findRes = await apiGet<ListResponse<Registration>>(
+          `/api/registrations?registrationNo=${encodeURIComponent(regForm.registrationNo.trim())}`
+        );
+        if (findRes.data && findRes.data.length > 0) {
+          reg = findRes.data[0];
+          setCompletedRegistration(reg);
+        }
+      } catch {}
     }
 
     const rupeesVal = parseFloat(paymentForm.rupees);
@@ -543,7 +575,7 @@ export default function LeadRegistrationPage({
     try {
       const payRes = await apiPost<ItemResponse<Payment>>("/api/payments", {
         profileId: createdProfile.id,
-        registrationId: completedRegistration.id,
+        registrationId: reg?.id ?? null,
         rupees: rupeesVal,
         paymentMethod: paymentForm.paymentMethod,
         paymentProof: paymentForm.paymentProof.trim() || null,
@@ -702,14 +734,23 @@ export default function LeadRegistrationPage({
           const isActive = step === s.num;
           const isDone = step > s.num;
           return (
-            <div
+            <button
               key={s.num}
-              className={`flex flex-1 items-center gap-2 rounded-lg border px-3 py-2 text-xs font-medium transition ${
+              type="button"
+              onClick={() => {
+                // Pre-fill payment amount if moving to step 4
+                if (s.num === 4 && selectedCourse && !paymentForm.rupees) {
+                  const fee = selectedCourse.discountedPrice ?? selectedCourse.originalPrice;
+                  if (fee) setPaymentForm((prev) => ({ ...prev, rupees: String(fee) }));
+                }
+                setStep(s.num as 1 | 2 | 3 | 4 | 5);
+              }}
+              className={`flex flex-1 items-center gap-2 rounded-lg border px-3 py-2 text-xs font-medium text-left transition cursor-pointer ${
                 isActive
                   ? "border-indigo-500 bg-indigo-50/50 text-indigo-700 dark:border-indigo-500 dark:bg-indigo-950/40 dark:text-indigo-300"
                   : isDone
-                  ? "border-emerald-300 bg-emerald-50/40 text-emerald-800 dark:border-emerald-800 dark:bg-emerald-950/30 dark:text-emerald-300"
-                  : "border-zinc-200 bg-white text-zinc-400 dark:border-zinc-800 dark:bg-zinc-900"
+                  ? "border-emerald-300 bg-emerald-50/40 text-emerald-800 hover:bg-emerald-100/50 dark:border-emerald-800 dark:bg-emerald-950/30 dark:text-emerald-300"
+                  : "border-zinc-200 bg-white text-zinc-500 hover:border-zinc-300 dark:border-zinc-800 dark:bg-zinc-900 dark:text-zinc-400"
               }`}
             >
               <span
@@ -724,7 +765,7 @@ export default function LeadRegistrationPage({
                 {isDone ? "✓" : s.num}
               </span>
               <span className="truncate">{s.label}</span>
-            </div>
+            </button>
           );
         })}
       </nav>
@@ -1061,35 +1102,41 @@ export default function LeadRegistrationPage({
                   ? "Update & Go to Payment →"
                   : "Next: Payment Step →"}
               </Button>
-              {completedRegistration ? (
-                <Button
-                  variant="ghost"
-                  type="button"
-                  onClick={() => {
-                    if (selectedCourse && !paymentForm.rupees) {
-                      const fee = selectedCourse.discountedPrice ?? selectedCourse.originalPrice;
-                      if (fee) {
-                        setPaymentForm((prev) => ({ ...prev, rupees: String(fee) }));
-                      }
+              <Button
+                variant="secondary"
+                type="button"
+                onClick={async () => {
+                  try {
+                    const findRes = await apiGet<ListResponse<Registration>>(
+                      `/api/registrations?registrationNo=${encodeURIComponent(regForm.registrationNo.trim())}`
+                    );
+                    if (findRes.data && findRes.data.length > 0) {
+                      setCompletedRegistration(findRes.data[0]);
                     }
-                    setStep(4);
-                  }}
-                >
-                  Proceed to Payment (Already Registered) →
-                </Button>
-              ) : null}
+                  } catch {}
+                  if (selectedCourse && !paymentForm.rupees) {
+                    const fee = selectedCourse.discountedPrice ?? selectedCourse.originalPrice;
+                    if (fee) {
+                      setPaymentForm((prev) => ({ ...prev, rupees: String(fee) }));
+                    }
+                  }
+                  setStep(4);
+                }}
+              >
+                Proceed to Payment Step →
+              </Button>
             </div>
           </form>
         </Card>
       )}
 
       {/* ================= STEP 4: REGISTRATION PAYMENT ================= */}
-      {step === 4 && completedRegistration && (
+      {step === 4 && (
         <Card
           title="Step 4: Registration Payment"
           action={
             <span className="font-mono text-xs font-semibold text-indigo-600 dark:text-indigo-400">
-              Reg No: {completedRegistration.registrationNo}
+              Reg No: {completedRegistration?.registrationNo || regForm.registrationNo}
             </span>
           }
         >
@@ -1256,7 +1303,7 @@ export default function LeadRegistrationPage({
       )}
 
       {/* ================= STEP 5: COMPLETED SCREEN ================= */}
-      {step === 5 && completedRegistration && (
+      {step === 5 && (
         <Card title="Registration Completed Successfully">
           <div className="space-y-6 py-2">
             <div className="flex items-center gap-3 text-emerald-600 dark:text-emerald-400">
@@ -1282,7 +1329,7 @@ export default function LeadRegistrationPage({
                 <div>
                   <dt className="text-xs text-zinc-500">Registration Number</dt>
                   <dd className="mt-0.5 font-mono text-base font-bold text-indigo-600 dark:text-indigo-400">
-                    {completedRegistration.registrationNo}
+                    {completedRegistration?.registrationNo || regForm.registrationNo}
                   </dd>
                 </div>
                 <div>

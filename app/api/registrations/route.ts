@@ -62,19 +62,16 @@ export async function POST(request: Request) {
     });
 
     if (existing) {
-      if (existing.profileId === parsed.profileId) {
-        // If it belongs to the same student, update course & batch and return existing cleanly
-        const updated = await prisma.registration.update({
-          where: { id: existing.id },
-          data: {
-            course: { connect: { id: parsed.courseId } },
-            batch: parsed.batchId ? { connect: { id: parsed.batchId } } : { disconnect: true },
-          },
-          include: registrationDetailInclude,
-        });
-        return jsonOk({ data: updated }, 200);
-      }
-      return jsonError("A registration with this registrationNo already exists", 409);
+      const updated = await prisma.registration.update({
+        where: { id: existing.id },
+        data: {
+          profile: { connect: { id: parsed.profileId } },
+          course: { connect: { id: parsed.courseId } },
+          batch: parsed.batchId ? { connect: { id: parsed.batchId } } : { disconnect: true },
+        },
+        include: registrationDetailInclude,
+      });
+      return jsonOk({ data: updated }, 200);
     }
 
     const registration = await prisma.registration.create({
