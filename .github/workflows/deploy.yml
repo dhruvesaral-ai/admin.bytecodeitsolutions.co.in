@@ -18,7 +18,15 @@ jobs:
           username: ${{ secrets.SERVER_USER }}
           key: ${{ secrets.SERVER_SSH_KEY }}
           script: |
+            export NVM_DIR="/root/.nvm"
+            export PATH="/root/.nvm/versions/node/v24.21.0/bin:/usr/local/bin:/usr/bin:/bin"
+
             cd /var/www/admin.bytecodeitsolutions.co.in
+
+            node -v
+            yarn -v
+            pm2 -v
+
             git pull --ff-only origin main
             yarn install --frozen-lockfile
             yarn prisma generate
