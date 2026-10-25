@@ -5,6 +5,18 @@ import multer from "multer";
 const imageDir = path.join(process.cwd(), "public/uploads/images");
 const pdfDir = path.join(process.cwd(), "public/uploads/pdfs");
 
+function sanitizeFilename(originalName: string): string {
+  const ext = path.extname(originalName).toLowerCase();
+  const base = path.basename(originalName, ext);
+  const cleanBase = base
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "") // remove diacritics
+    .replace(/[^a-zA-Z0-9_-]/g, "-") // replace spaces and special characters with dash
+    .replace(/-+/g, "-") // collapse consecutive dashes
+    .replace(/^-|-$/g, ""); // trim leading/trailing dashes
+  return `${Date.now()}-${cleanBase || "file"}${ext}`;
+}
+
 function diskStorage(dir: string) {
   return multer.diskStorage({
     destination(_req, _file, cb) {
@@ -12,7 +24,7 @@ function diskStorage(dir: string) {
       cb(null, dir);
     },
     filename(_req, file, cb) {
-      cb(null, `${Date.now()}-${file.originalname}`);
+      cb(null, sanitizeFilename(file.originalname));
     },
   });
 }
