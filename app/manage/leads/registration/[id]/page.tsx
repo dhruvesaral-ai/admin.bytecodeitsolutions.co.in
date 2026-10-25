@@ -236,6 +236,26 @@ export default function LeadRegistrationPage({
       }
 
       setCreatedUser(user);
+      if (user.profile) {
+        setCreatedProfile(user.profile);
+        setProfileForm((prev) => ({
+          ...prev,
+          name: user.profile?.name || prev.name,
+          email: user.profile?.email || prev.email,
+        }));
+        if (user.profile.addresses && user.profile.addresses.length > 0) {
+          const firstAddr = user.profile.addresses[0];
+          setCreatedAddress(firstAddr);
+          setProfileForm((prev) => ({
+            ...prev,
+            addressLine: firstAddr.addressLine || prev.addressLine,
+            city: firstAddr.city || prev.city,
+            state: firstAddr.state || prev.state,
+            pincode: firstAddr.pincode || prev.pincode,
+            country: firstAddr.country || prev.country,
+          }));
+        }
+      }
       setStep(2);
     } catch (err) {
       setMessage({
@@ -273,41 +293,43 @@ export default function LeadRegistrationPage({
     }
 
     try {
-      let profile: Profile;
-      try {
-        const profileRes = await apiPost<ItemResponse<Profile>>("/api/profiles", {
-          userId: createdUser.id,
-          name: name.trim(),
-          email: email.trim(),
-          status: "active",
+      const profileRes = await apiPost<ItemResponse<Profile>>("/api/profiles", {
+        userId: createdUser.id,
+        name: name.trim(),
+        email: email.trim(),
+        status: "active",
+      });
+      const profile = profileRes.data;
+
+      // Upsert Address: Update existing if already created or existing on profile, else create
+      const existingAddrId =
+        createdAddress?.id ||
+        (profile.addresses && profile.addresses.length > 0 ? profile.addresses[0].id : null);
+
+      let savedAddress: Address;
+      if (existingAddrId) {
+        const addrRes = await apiPatch<ItemResponse<Address>>(`/api/addresses/${existingAddrId}`, {
+          addressLine: addressLine.trim(),
+          city: city.trim(),
+          state: state.trim(),
+          pincode: pincode.trim(),
+          country: country.trim() || "India",
         });
-        profile = profileRes.data;
-      } catch (err) {
-        // If user already has a profile (409), query profiles by userId
-        if (err instanceof ApiError && err.status === 409) {
-          const listRes = await apiGet<ListResponse<Profile>>(`/api/profiles?userId=${createdUser.id}`);
-          if (listRes.data && listRes.data.length > 0) {
-            profile = listRes.data[0];
-          } else {
-            throw err;
-          }
-        } else {
-          throw err;
-        }
+        savedAddress = addrRes.data;
+      } else {
+        const addrRes = await apiPost<ItemResponse<Address>>("/api/addresses", {
+          profileId: profile.id,
+          addressLine: addressLine.trim(),
+          city: city.trim(),
+          state: state.trim(),
+          pincode: pincode.trim(),
+          country: country.trim() || "India",
+        });
+        savedAddress = addrRes.data;
       }
 
-      // Create Address
-      const addrRes = await apiPost<ItemResponse<Address>>("/api/addresses", {
-        profileId: profile.id,
-        addressLine: addressLine.trim(),
-        city: city.trim(),
-        state: state.trim(),
-        pincode: pincode.trim(),
-        country: country.trim() || "India",
-      });
-
       setCreatedProfile(profile);
-      setCreatedAddress(addrRes.data);
+      setCreatedAddress(savedAddress);
       setMessage({ tone: "success", text: "Profile and address saved." });
       setStep(3);
     } catch (err) {
@@ -372,10 +394,20 @@ export default function LeadRegistrationPage({
       setMessage({ tone: "success", text: "Registration completed successfully!" });
       setStep(4);
     } catch (err) {
-      setMessage({
-        tone: "error",
-        text: err instanceof ApiError ? err.message : "Registration failed.",
-      });
+      if (err instanceof ApiError && err.status === 409) {
+        const uniqueSuffix = `_${Date.now().toString(36).slice(-3).toUpperCase()}`;
+        const newNo = `${registrationNo.trim()}${uniqueSuffix}`;
+        setRegForm((prev) => ({ ...prev, registrationNo: newNo, isCustomRegNo: true }));
+        setMessage({
+          tone: "error",
+          text: `Registration number "${registrationNo.trim()}" is already in use. Suggested updated number: "${newNo}" — please click Submit again.`,
+        });
+      } else {
+        setMessage({
+          tone: "error",
+          text: err instanceof ApiError ? err.message : "Registration failed.",
+        });
+      }
     } finally {
       setSubmitting(false);
     }

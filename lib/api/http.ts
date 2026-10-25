@@ -36,6 +36,10 @@ export function isPrismaForeignKeyViolation(error: unknown): boolean {
   return isPrismaCode(error, "P2003");
 }
 
+export function isPrismaRelationViolation(error: unknown): boolean {
+  return isPrismaCode(error, "P2014");
+}
+
 function isPrismaCode(error: unknown, code: string): boolean {
   return (
     typeof error === "object" &&

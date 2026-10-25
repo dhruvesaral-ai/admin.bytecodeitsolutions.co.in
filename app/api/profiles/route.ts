@@ -54,15 +54,19 @@ export async function POST(request: Request) {
   }
 
   try {
-    const profile = await prisma.profile.create({
-      data: parsed.data,
+    const profile = await prisma.profile.upsert({
+      where: { userId: parsed.userId },
+      create: parsed.data,
+      update: {
+        name: parsed.data.name,
+        email: parsed.data.email,
+        status: parsed.data.status,
+        profileImgUrl: parsed.data.profileImgUrl,
+      },
       include: profileDetailInclude,
     });
     return jsonOk({ data: profile }, 201);
   } catch (error) {
-    if (isPrismaUniqueViolation(error)) {
-      return jsonError("A profile for this user already exists", 409);
-    }
     if (isPrismaForeignKeyViolation(error)) {
       return jsonError("userId does not match an existing user", 400);
     }

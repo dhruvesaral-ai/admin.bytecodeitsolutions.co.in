@@ -54,7 +54,7 @@ function parseGeneralStatus(
 
 export function parseProfileCreateBody(
   body: ProfileWriteBody,
-): { data: Prisma.ProfileCreateInput } | { error: string } {
+): { data: Prisma.ProfileCreateInput; userId: string } | { error: string } {
   const userId = parseNonEmptyString(body.userId, "userId");
   if ("error" in userId) {
     return userId;
@@ -89,6 +89,7 @@ export function parseProfileCreateBody(
   }
 
   return {
+    userId: userId.value,
     data: {
       name: name.value,
       email: email.value,

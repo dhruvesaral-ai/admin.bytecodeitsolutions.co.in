@@ -3,6 +3,7 @@ import {
   isNextResponse,
   isPrismaForeignKeyViolation,
   isPrismaNotFound,
+  isPrismaRelationViolation,
   isPrismaUniqueViolation,
   jsonError,
   jsonOk,
@@ -72,7 +73,7 @@ export async function PATCH(request: Request, context: RouteContext) {
     if (isPrismaNotFound(error)) {
       return jsonError("Profile not found", 404);
     }
-    if (isPrismaUniqueViolation(error)) {
+    if (isPrismaUniqueViolation(error) || isPrismaRelationViolation(error)) {
       return jsonError("A profile for this user already exists", 409);
     }
     if (isPrismaForeignKeyViolation(error)) {

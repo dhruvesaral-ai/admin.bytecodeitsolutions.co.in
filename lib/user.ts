@@ -122,5 +122,9 @@ export function parseUserUpdateBody(
 
 export const userDetailInclude = {
   role: true,
-  profile: true,
+  profile: {
+    include: {
+      addresses: true,
+    },
+  },
 } as const;
