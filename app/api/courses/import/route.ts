@@ -260,10 +260,14 @@ export async function POST(request: Request) {
   }
 
   try {
-    const result = await prisma.course.createMany({
-      data: validated,
-    });
-    return jsonOk({ data: { created: result.count } }, 201);
+    const result = await prisma.$transaction(
+      validated.map((data) =>
+        prisma.course.create({
+          data,
+        }),
+      ),
+    );
+    return jsonOk({ data: { created: result.length } }, 201);
   } catch (error) {
     if (isPrismaForeignKeyViolation(error)) {
       return jsonError("A referenced category no longer exists; no courses were imported", 400);

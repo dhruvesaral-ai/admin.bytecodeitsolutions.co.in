@@ -9,6 +9,7 @@ import {
 import {
   courseDetailInclude,
   parseCourseCreateBody,
+  toApiCourse,
   type CourseWriteBody,
 } from "@/lib/course";
 
@@ -18,7 +19,7 @@ export async function GET() {
       orderBy: { name: "asc" },
       include: courseDetailInclude,
     });
-    return jsonOk({ data: courses });
+    return jsonOk({ data: courses.map(toApiCourse) });
   } catch (error) {
     return jsonError(error, 500);
   }
@@ -40,7 +41,7 @@ export async function POST(request: Request) {
       data: parsed.data,
       include: courseDetailInclude,
     });
-    return jsonOk({ data: course }, 201);
+    return jsonOk({ data: toApiCourse(course) }, 201);
   } catch (error) {
     if (isPrismaForeignKeyViolation(error)) {
       return jsonError("courseCategorieId does not match an existing category", 400);

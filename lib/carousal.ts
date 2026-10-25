@@ -44,12 +44,15 @@ function parsePosition(
   return { value: prismaPositionByApiPosition[position] };
 }
 
-export function toApiCarousal<T extends { position: PrismaCarousalPosition }>(
+export function toApiCarousal<
+  T extends { position: PrismaCarousalPosition; slides?: { id: string }[] },
+>(
   carousal: T,
-): Omit<T, "position"> & { position: CarousalPosition } {
+): Omit<T, "position"> & { position: CarousalPosition; carousalSlideIds: string[] } {
   return {
     ...carousal,
     position: apiPositionByPrismaPosition[carousal.position],
+    carousalSlideIds: carousal.slides ? carousal.slides.map((slide) => slide.id) : [],
   };
 }
 
@@ -72,7 +75,7 @@ export function parseCarousalCreateBody(
   return {
     data: {
       position: position.value,
-      carousalSlideIds: slideIds,
+      slides: slideIds.length > 0 ? { connect: slideIds.map((id) => ({ id })) } : undefined,
     },
   };
 }
@@ -97,7 +100,9 @@ export function parseCarousalUpdateBody(
     ) {
       return { error: "carousalSlideIds must be an array of strings" };
     }
-    data.carousalSlideIds = body.carousalSlideIds;
+    data.slides = {
+      set: body.carousalSlideIds.map((id) => ({ id })),
+    };
   }
 
   if (Object.keys(data).length === 0) {

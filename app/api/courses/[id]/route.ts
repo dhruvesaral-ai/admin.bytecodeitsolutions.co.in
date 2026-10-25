@@ -10,6 +10,7 @@ import {
 import {
   courseDetailInclude,
   parseCourseUpdateBody,
+  toApiCourse,
   type CourseWriteBody,
 } from "@/lib/course";
 
@@ -26,7 +27,7 @@ export async function GET(_request: Request, context: RouteContext) {
     if (!course) {
       return jsonError("Course not found", 404);
     }
-    return jsonOk({ data: course });
+    return jsonOk({ data: toApiCourse(course) });
   } catch (error) {
     return jsonError(error, 500);
   }
@@ -51,7 +52,7 @@ export async function PATCH(request: Request, context: RouteContext) {
       data: parsed.data,
       include: courseDetailInclude,
     });
-    return jsonOk({ data: course });
+    return jsonOk({ data: toApiCourse(course) });
   } catch (error) {
     if (isPrismaNotFound(error)) {
       return jsonError("Course not found", 404);

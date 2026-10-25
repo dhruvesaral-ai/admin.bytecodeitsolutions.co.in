@@ -109,7 +109,7 @@ function parseNullableId(
 
 function assignCourseFields(
   body: CourseWriteBody,
-  data: Prisma.CourseUncheckedCreateInput | Prisma.CourseUncheckedUpdateInput,
+  data: Prisma.CourseCreateInput | Prisma.CourseUpdateInput,
   mode: "create" | "update",
 ): { error: string } | null {
   if (body.name !== undefined) {
@@ -219,7 +219,11 @@ function assignCourseFields(
     if ("error" in courseCategorieId) {
       return courseCategorieId;
     }
-    data.courseCategorieId = courseCategorieId.value;
+    if (courseCategorieId.value) {
+      data.courseCategorie = { connect: { id: courseCategorieId.value } };
+    } else if (mode === "update") {
+      data.courseCategorie = { disconnect: true };
+    }
   }
 
   if (body.isPlacementGurranted !== undefined) {
@@ -241,7 +245,15 @@ function assignCourseFields(
     if ("error" in courseModuleIds) {
       return courseModuleIds;
     }
-    data.courseModuleIds = courseModuleIds.value;
+    if (mode === "create") {
+      (data as Prisma.CourseCreateInput).modules = {
+        connect: courseModuleIds.value.map((id) => ({ id })),
+      };
+    } else {
+      (data as Prisma.CourseUpdateInput).modules = {
+        set: courseModuleIds.value.map((id) => ({ id })),
+      };
+    }
   }
 
   return null;
@@ -249,11 +261,11 @@ function assignCourseFields(
 
 export function parseCourseCreateBody(
   body: CourseWriteBody,
-): { data: Prisma.CourseUncheckedCreateInput } | { error: string } {
-  const data = {
+): { data: Prisma.CourseCreateInput } | { error: string } {
+  const data: Prisma.CourseCreateInput = {
+    name: "",
     technologyTags: [],
-    courseModuleIds: [],
-  } as unknown as Prisma.CourseUncheckedCreateInput;
+  };
 
   const error = assignCourseFields(body, data, "create");
   if (error) {
@@ -269,8 +281,8 @@ export function parseCourseCreateBody(
 
 export function parseCourseUpdateBody(
   body: CourseWriteBody,
-): { data: Prisma.CourseUncheckedUpdateInput } | { error: string } {
-  const data: Prisma.CourseUncheckedUpdateInput = {};
+): { data: Prisma.CourseUpdateInput } | { error: string } {
+  const data: Prisma.CourseUpdateInput = {};
 
   const error = assignCourseFields(body, data, "update");
   if (error) {
@@ -286,4 +298,14 @@ export function parseCourseUpdateBody(
 
 export const courseDetailInclude = {
   courseCategorie: true,
+  modules: true,
 } as const;
+
+export function toApiCourse<T extends { modules?: { id: string }[] }>(
+  course: T,
+): T & { courseModuleIds: string[] } {
+  return {
+    ...course,
+    courseModuleIds: course.modules ? course.modules.map((m) => m.id) : [],
+  };
+}

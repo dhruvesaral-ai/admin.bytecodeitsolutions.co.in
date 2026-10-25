@@ -15,6 +15,7 @@ export async function GET() {
   try {
     const carousals = await prisma.carousal.findMany({
       orderBy: { position: "asc" },
+      include: { slides: true },
     });
     return jsonOk({ data: carousals.map(toApiCarousal) });
   } catch (error) {
@@ -34,7 +35,10 @@ export async function POST(request: Request) {
   }
 
   try {
-    const carousal = await prisma.carousal.create({ data: parsed.data });
+    const carousal = await prisma.carousal.create({
+      data: parsed.data,
+      include: { slides: true },
+    });
     return jsonOk({ data: toApiCarousal(carousal) }, 201);
   } catch (error) {
     return jsonError(error, 500);

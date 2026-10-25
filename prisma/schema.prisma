@@ -36,17 +36,44 @@ enum CarousalPosition {
 model User {
   id            String         @id @default(cuid())
   username      String         @unique
-  profileId     String?        @map("profileid")
   status        GeneralStatus  @default(active)
   authSessionId String?        @map("auth_session_id")
   roleId        String?        @map("role_id")
   createdAt     DateTime       @default(now()) @map("created_at")
   updatedAt     DateTime       @updatedAt @map("updated_at")
   role          Role?          @relation(fields: [roleId], references: [id])
-  registrations Registration[]
-  enrollments   Enrollment[]
+  profile       Profile?
 
   @@map("user")
+}
+
+model Profile {
+  id              String   @id @default(cuid())
+  userId          String   @unique @map("user_id")
+  name            String
+  email           String
+  status          GeneralStatus @default(active)
+  profileImgUrl   String?  @map("profile_img_url")
+  createdAt       DateTime @default(now()) @map("created_at")
+  updatedAt       DateTime @updatedAt @map("updated_at")
+  user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  addresses       Address[]
+  enrollments     Enrollment[]
+  registrations   Registration[]
+  payments        Payment[]
+}
+
+model Address {
+  id            String   @id @default(cuid())
+  addressLine   String   @map("address_line")
+  pincode       String
+  city          String
+  state         String
+  country       String
+  profileId     String   @map("profile_id")
+  createdAt     DateTime @default(now()) @map("created_at")
+  updatedAt     DateTime @updatedAt @map("updated_at")
+  profile       Profile  @relation(fields: [profileId], references: [id], onDelete: Cascade)
 }
 
 model Role {
@@ -95,33 +122,34 @@ model LeadRemark {
 
 model Registration {
   id             String    @id @default(cuid())
-  userId         String    @map("user_id")
   courseId       String    @map("course_id")
   batchId        String?   @map("batch_id")
+  profileId      String    @map("profile_id")
   registrationNo String    @unique @map("registration_no")
   createdAt      DateTime  @default(now()) @map("created_at")
   updatedAt      DateTime  @updatedAt @map("updated_at")
-  user           User      @relation(fields: [userId], references: [id], onDelete: Cascade)
   course         Course    @relation(fields: [courseId], references: [id], onDelete: Restrict)
   batch          Batch?    @relation(fields: [batchId], references: [id], onDelete: SetNull)
   payments       Payment[]
-
+  profile        Profile   @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  enrollment     Enrollment?
   @@map("registration")
 }
 
 model Enrollment {
   id           String    @id @default(cuid())
-  userId       String    @map("user_id")
   courseId     String    @map("course_id")
+  registrationId String   @unique @map("registration_id")
   enrollmentNo String    @unique @map("enrollment_no")
   batchId      String?   @map("batch_id")
   createdAt    DateTime  @default(now()) @map("created_at")
   updatedAt    DateTime  @updatedAt @map("updated_at")
-  user         User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  profileId    String    @map("profile_id")
   course       Course    @relation(fields: [courseId], references: [id], onDelete: Restrict)
   batch        Batch?    @relation(fields: [batchId], references: [id], onDelete: SetNull)
   payments     Payment[]
-
+  profile      Profile  @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  registration Registration @relation(fields: [registrationId], references: [id], onDelete: Restrict)
   @@map("enrollment")
 }
 
@@ -137,7 +165,8 @@ model Payment {
   updatedAt      DateTime      @updatedAt @map("updated_at")
   enrollment     Enrollment?   @relation(fields: [enrollmentId], references: [id], onDelete: SetNull)
   registration   Registration? @relation(fields: [registrationId], references: [id], onDelete: SetNull)
-
+  profileId      String        @map("profile_id")
+  profile        Profile      @relation(fields: [profileId], references: [id], onDelete: Restrict)
   @@map("payment")
 }
 
@@ -168,14 +197,13 @@ model Course {
   courseCategorieId    String?          @map("course_categorie_id")
   isPlacementGurranted Boolean          @default(false) @map("is_placement_gurranted")
   isInSale             Boolean          @default(false) @map("is_in_sale")
-  courseModuleIds      String[]         @map("course_module_ids")
   createdAt            DateTime         @default(now()) @map("created_at")
   updatedAt            DateTime         @updatedAt @map("updated_at")
   courseCategorie      CourseCategorie? @relation(fields: [courseCategorieId], references: [id])
   leads                Lead[]
   registrations        Registration[]
   enrollments          Enrollment[]
-
+  modules              CourseModule[]
   @@map("course")
 }
 
@@ -185,6 +213,7 @@ model CourseModule {
   description String?
   createdAt   DateTime @default(now()) @map("created_at")
   updatedAt   DateTime @updatedAt @map("updated_at")
+  courses     Course[]
 
   @@map("course_module")
 }
@@ -196,10 +225,9 @@ model Class {
   meetLink      String?  @map("meet_link")
   recordingLink String?  @map("recording_link")
   notesLink     String?  @map("notes_link")
-  courseIds     String[] @map("course_ids")
-  batchIds      String[] @map("batch_ids")
   createdAt     DateTime @default(now()) @map("created_at")
   updatedAt     DateTime @updatedAt @map("updated_at")
+  batches       Batch[]
 
   @@map("class")
 }
@@ -211,32 +239,35 @@ model Batch {
   updatedAt     DateTime       @updatedAt @map("updated_at")
   registrations Registration[]
   enrollments   Enrollment[]
+  classes       Class[]
 
   @@map("Batch")
 }
 
 model Carousal {
-  id               String           @id @default(cuid())
-  carousalSlideIds String[]         @map("carousal_slide_ids")
-  position         CarousalPosition
-  createdAt        DateTime         @default(now()) @map("created_at")
-  updatedAt        DateTime         @updatedAt @map("updated_at")
+  id        String           @id @default(cuid())
+  position  CarousalPosition
+  createdAt DateTime         @default(now()) @map("created_at")
+  updatedAt DateTime         @updatedAt @map("updated_at")
+  slides    CarouselSlide[]
 
   @@map("carousal")
 }
 
 model CarouselSlide {
-  id                 String   @id @default(cuid())
-  bgImgUrl           String   @map("bg_img_url")
+  id                 String    @id @default(cuid())
+  carousalId         String?   @map("carousal_id")
+  bgImgUrl           String    @map("bg_img_url")
   order              Int
   title              String
   description        String?
-  btnHrefLink        String?  @map("btn_href_link")
-  textContainerAlign String?  @map("text_container_align")
-  imgUrl             String?  @map("img_url")
-  bannerHrefLink     String?  @map("banner_href_link")
-  createdAt          DateTime @default(now()) @map("created_at")
-  updatedAt          DateTime @updatedAt @map("updated_at")
+  btnHrefLink        String?   @map("btn_href_link")
+  textContainerAlign String?   @map("text_container_align")
+  imgUrl             String?   @map("img_url")
+  bannerHrefLink     String?   @map("banner_href_link")
+  createdAt          DateTime  @default(now()) @map("created_at")
+  updatedAt          DateTime  @updatedAt @map("updated_at")
+  carousal           Carousal? @relation(fields: [carousalId], references: [id], onDelete: Cascade)
 
   @@map("carousel_slide")
 }

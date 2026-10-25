@@ -18,7 +18,10 @@ export async function GET(_request: Request, context: RouteContext) {
   const { id } = await context.params;
 
   try {
-    const carousal = await prisma.carousal.findUnique({ where: { id } });
+    const carousal = await prisma.carousal.findUnique({
+      where: { id },
+      include: { slides: true },
+    });
     if (!carousal) {
       return jsonError("Carousal not found", 404);
     }
@@ -45,6 +48,7 @@ export async function PATCH(request: Request, context: RouteContext) {
     const carousal = await prisma.carousal.update({
       where: { id },
       data: parsed.data,
+      include: { slides: true },
     });
     return jsonOk({ data: toApiCarousal(carousal) });
   } catch (error) {
