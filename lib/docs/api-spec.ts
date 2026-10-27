@@ -57,6 +57,7 @@ export const API_CATEGORIES: ApiCategory[] = [
   { id: "pages", name: "CMS Pages", description: "Dynamic page builder contents by route name" },
   { id: "testimonials", name: "Testimonials", description: "Student and client reviews with company branding" },
   { id: "success-stories", name: "Success Stories", description: "Student video testimonies and showcase stories" },
+  { id: "settings", name: "Settings", description: "Company branding, contact numbers, and registered address" },
   { id: "uploads", name: "File Uploads", description: "Media image and PDF document upload handlers" },
 ];
 
@@ -1303,6 +1304,124 @@ export const API_ENDPOINTS: ApiEndpoint[] = [
     },
     responses: [
       { status: 201, description: "Created", exampleJson: JSON.stringify({ data: { id: "story_1", videoIds: ["dQw4w9WgXcQ"] } }, null, 2) },
+    ],
+  },
+
+  // ================= SETTINGS =================
+  {
+    id: "settings-list",
+    category: "settings",
+    method: "GET",
+    path: "/api/settings",
+    title: "List Settings",
+    description: "Retrieve all site setting records with their linked company address.",
+    responses: [
+      {
+        status: 200,
+        description: "List of settings",
+        exampleJson: JSON.stringify({
+          data: [
+            {
+              id: "set_cm101abc",
+              companyName: "Bytecode IT Solutions",
+              companyLogoUrl: "/uploads/images/logo.webp",
+              companyAddressId: "addr_cm202xyz",
+              companyWhatsappNumber: "+919876543210",
+              companyPrimaryContactNumber: "+919876543211",
+              companySecondaryContactNumber: "+919876543212",
+              createdAt: "2026-10-27T12:00:00.000Z",
+              updatedAt: "2026-10-27T12:00:00.000Z",
+              address: {
+                id: "addr_cm202xyz",
+                addressLine: "2nd Floor, MG Road",
+                pincode: "452001",
+                city: "Indore",
+                state: "Madhya Pradesh",
+                country: "India",
+              },
+            },
+          ],
+        }, null, 2),
+      },
+    ],
+  },
+  {
+    id: "settings-create",
+    category: "settings",
+    method: "POST",
+    path: "/api/settings",
+    title: "Create Settings",
+    description: "Create a site setting record with company branding, contact numbers, and an optional address link.",
+    requestBody: {
+      contentType: "application/json",
+      fields: [
+        { name: "companyName", type: "string | null", required: false, description: "Registered company name", example: "Bytecode IT Solutions" },
+        { name: "companyLogoUrl", type: "string | null", required: false, description: "Hosted logo URL from /api/upload/image", example: "/uploads/images/logo.webp" },
+        { name: "companyAddressId", type: "string | null", required: false, description: "Existing Address ID to link as the company address", example: "cmvntewju000810vw8vabpoym" },
+        { name: "companyWhatsappNumber", type: "string | null", required: false, description: "WhatsApp contact number", example: "+919876543210" },
+        { name: "companyPrimaryContactNumber", type: "string | null", required: false, description: "Primary phone number", example: "+919876543211" },
+        { name: "companySecondaryContactNumber", type: "string | null", required: false, description: "Secondary phone number", example: "+919876543212" },
+      ],
+      exampleJson: JSON.stringify({
+        companyName: "Bytecode IT Solutions",
+        companyLogoUrl: "/uploads/images/logo.webp",
+        companyAddressId: "cmvntewju000810vw8vabpoym",
+        companyWhatsappNumber: "+919876543210",
+        companyPrimaryContactNumber: "+919876543211",
+      }, null, 2),
+    },
+    responses: [
+      { status: 201, description: "Created", exampleJson: JSON.stringify({ data: { id: "set_1", companyName: "Bytecode IT Solutions" } }, null, 2) },
+      { status: 400, description: "companyAddressId does not match an existing address", exampleJson: JSON.stringify({ error: "companyAddressId does not match an existing address" }, null, 2) },
+    ],
+  },
+  {
+    id: "settings-get",
+    category: "settings",
+    method: "GET",
+    path: "/api/settings/[id]",
+    title: "Get Setting By ID",
+    description: "Fetch a single setting record including its linked company address.",
+    responses: [
+      { status: 200, description: "Setting found", exampleJson: JSON.stringify({ data: { id: "set_1", companyName: "Bytecode IT Solutions", address: { id: "addr_1", city: "Indore" } } }, null, 2) },
+      { status: 404, description: "Setting not found", exampleJson: JSON.stringify({ error: "Setting not found" }, null, 2) },
+    ],
+  },
+  {
+    id: "settings-update",
+    category: "settings",
+    method: "PATCH",
+    path: "/api/settings/[id]",
+    title: "Update Setting",
+    description: "Partially update a setting record. Send companyAddressId as null to unlink the company address.",
+    requestBody: {
+      contentType: "application/json",
+      fields: [
+        { name: "companyName", type: "string | null", required: false, description: "Registered company name", example: "Bytecode IT Solutions" },
+        { name: "companyLogoUrl", type: "string | null", required: false, description: "Hosted logo URL", example: "/uploads/images/logo.webp" },
+        { name: "companyAddressId", type: "string | null", required: false, description: "Address ID to link, or null to unlink", example: "cmvntewju000810vw8vabpoym" },
+        { name: "companyWhatsappNumber", type: "string | null", required: false, description: "WhatsApp contact number", example: "+919876543210" },
+        { name: "companyPrimaryContactNumber", type: "string | null", required: false, description: "Primary phone number", example: "+919876543211" },
+        { name: "companySecondaryContactNumber", type: "string | null", required: false, description: "Secondary phone number", example: "+919876543212" },
+      ],
+      exampleJson: JSON.stringify({ companyName: "Bytecode IT Solutions Pvt. Ltd." }, null, 2),
+    },
+    responses: [
+      { status: 200, description: "Updated", exampleJson: JSON.stringify({ data: { id: "set_1", companyName: "Bytecode IT Solutions Pvt. Ltd." } }, null, 2) },
+      { status: 400, description: "Validation or address link error", exampleJson: JSON.stringify({ error: "At least one setting field is required to update" }, null, 2) },
+      { status: 404, description: "Setting not found", exampleJson: JSON.stringify({ error: "Setting not found" }, null, 2) },
+    ],
+  },
+  {
+    id: "settings-delete",
+    category: "settings",
+    method: "DELETE",
+    path: "/api/settings/[id]",
+    title: "Delete Setting",
+    description: "Permanently remove a setting record.",
+    responses: [
+      { status: 200, description: "Deleted", exampleJson: JSON.stringify({ data: { id: "set_1" } }, null, 2) },
+      { status: 404, description: "Setting not found", exampleJson: JSON.stringify({ error: "Setting not found" }, null, 2) },
     ],
   },
 
