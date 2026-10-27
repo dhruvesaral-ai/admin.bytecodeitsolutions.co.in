@@ -1323,8 +1323,9 @@ export const API_ENDPOINTS: ApiEndpoint[] = [
           data: [
             {
               id: "set_cm101abc",
+              companyLightThemedLogoUrl: "/uploads/images/logo-light.webp",
+              companyDarkThemedLogoUrl: "/uploads/images/logo-dark.webp",
               companyName: "Bytecode IT Solutions",
-              companyLogoUrl: "/uploads/images/logo.webp",
               companyAddress: "2nd Floor, MG Road, Indore, Madhya Pradesh 452001",
               companyWhatsappNumber: "+919876543210",
               companyPrimaryContactNumber: "+919876543211",
@@ -1343,12 +1344,13 @@ export const API_ENDPOINTS: ApiEndpoint[] = [
     method: "POST",
     path: "/api/settings",
     title: "Create Settings",
-    description: "Create a site setting record with company branding, free-text address, and contact numbers.",
+    description: "Create a site setting record with light and dark themed company logos, free-text address, and contact numbers.",
     requestBody: {
       contentType: "application/json",
       fields: [
         { name: "companyName", type: "string | null", required: false, description: "Registered company name", example: "Bytecode IT Solutions" },
-        { name: "companyLogoUrl", type: "string | null", required: false, description: "Hosted logo URL from /api/upload/image", example: "/uploads/images/logo.webp" },
+        { name: "companyLightThemedLogoUrl", type: "string | null", required: false, description: "Hosted logo URL used on light backgrounds, from /api/upload/image", example: "/uploads/images/logo-light.webp" },
+        { name: "companyDarkThemedLogoUrl", type: "string | null", required: false, description: "Hosted logo URL used on dark backgrounds, from /api/upload/image", example: "/uploads/images/logo-dark.webp" },
         { name: "companyAddress", type: "string | null", required: false, description: "Company address as free text", example: "2nd Floor, MG Road, Indore, MP 452001" },
         { name: "companyWhatsappNumber", type: "string | null", required: false, description: "WhatsApp contact number", example: "+919876543210" },
         { name: "companyPrimaryContactNumber", type: "string | null", required: false, description: "Primary phone number", example: "+919876543211" },
@@ -1356,7 +1358,8 @@ export const API_ENDPOINTS: ApiEndpoint[] = [
       ],
       exampleJson: JSON.stringify({
         companyName: "Bytecode IT Solutions",
-        companyLogoUrl: "/uploads/images/logo.webp",
+        companyLightThemedLogoUrl: "/uploads/images/logo-light.webp",
+        companyDarkThemedLogoUrl: "/uploads/images/logo-dark.webp",
         companyAddress: "2nd Floor, MG Road, Indore, MP 452001",
         companyWhatsappNumber: "+919876543210",
         companyPrimaryContactNumber: "+919876543211",
@@ -1384,12 +1387,13 @@ export const API_ENDPOINTS: ApiEndpoint[] = [
     method: "PATCH",
     path: "/api/settings/[id]",
     title: "Update Setting",
-    description: "Partially update a setting record. Send companyAddress as null to clear the stored address.",
+    description: "Partially update a setting record. Send companyAddress as null to clear the stored address, or a logo URL as null to remove it.",
     requestBody: {
       contentType: "application/json",
       fields: [
         { name: "companyName", type: "string | null", required: false, description: "Registered company name", example: "Bytecode IT Solutions" },
-        { name: "companyLogoUrl", type: "string | null", required: false, description: "Hosted logo URL", example: "/uploads/images/logo.webp" },
+        { name: "companyLightThemedLogoUrl", type: "string | null", required: false, description: "Hosted logo URL for light backgrounds (null clears it)", example: "/uploads/images/logo-light.webp" },
+        { name: "companyDarkThemedLogoUrl", type: "string | null", required: false, description: "Hosted logo URL for dark backgrounds (null clears it)", example: "/uploads/images/logo-dark.webp" },
         { name: "companyAddress", type: "string | null", required: false, description: "Company address as free text", example: "2nd Floor, MG Road, Indore, MP 452001" },
         { name: "companyWhatsappNumber", type: "string | null", required: false, description: "WhatsApp contact number", example: "+919876543210" },
         { name: "companyPrimaryContactNumber", type: "string | null", required: false, description: "Primary phone number", example: "+919876543211" },

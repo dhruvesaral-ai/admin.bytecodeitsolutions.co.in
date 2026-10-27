@@ -1,7 +1,8 @@
 import type { Prisma } from "@/generated/prisma/client";
 
 export type SettingWriteBody = {
-  companyLogoUrl?: string | null;
+  companyLightThemedLogoUrl?: string | null;
+  companyDarkThemedLogoUrl?: string | null;
   companyName?: string | null;
   companyAddress?: string | null;
   companyWhatsappNumber?: string | null;
@@ -33,15 +34,26 @@ function assignSettingFields(
   body: SettingWriteBody,
   data: SettingScalarFields,
 ): { error: string } | null {
-  if (body.companyLogoUrl !== undefined) {
-    const companyLogoUrl = parseNullableString(
-      body.companyLogoUrl,
-      "companyLogoUrl",
+  if (body.companyLightThemedLogoUrl !== undefined) {
+    const companyLightThemedLogoUrl = parseNullableString(
+      body.companyLightThemedLogoUrl,
+      "companyLightThemedLogoUrl",
     );
-    if ("error" in companyLogoUrl) {
-      return companyLogoUrl;
+    if ("error" in companyLightThemedLogoUrl) {
+      return companyLightThemedLogoUrl;
     }
-    data.companyLogoUrl = companyLogoUrl.value;
+    data.companyLightThemedLogoUrl = companyLightThemedLogoUrl.value;
+  }
+
+  if (body.companyDarkThemedLogoUrl !== undefined) {
+    const companyDarkThemedLogoUrl = parseNullableString(
+      body.companyDarkThemedLogoUrl,
+      "companyDarkThemedLogoUrl",
+    );
+    if ("error" in companyDarkThemedLogoUrl) {
+      return companyDarkThemedLogoUrl;
+    }
+    data.companyDarkThemedLogoUrl = companyDarkThemedLogoUrl.value;
   }
 
   if (body.companyName !== undefined) {

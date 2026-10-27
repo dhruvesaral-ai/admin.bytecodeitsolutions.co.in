@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { AdminShell } from "@/components/admin/AdminShell";
 import { DataTable } from "@/components/admin/DataTable";
+import { ImageUrlField } from "@/components/admin/ImageUrlField";
 import {
   Alert,
   Button,
@@ -15,6 +16,8 @@ import { ApiError, apiDelete, apiGet, apiPatch, apiPost } from "@/lib/admin/clie
 import type { ListResponse, Setting } from "@/lib/admin/types";
 
 type FormState = {
+  companyLightThemedLogoUrl: string;
+  companyDarkThemedLogoUrl: string;
   companyName: string;
   companyAddress: string;
   companyWhatsappNumber: string;
@@ -23,6 +26,8 @@ type FormState = {
 };
 
 const emptyForm: FormState = {
+  companyLightThemedLogoUrl: "",
+  companyDarkThemedLogoUrl: "",
   companyName: "",
   companyAddress: "",
   companyWhatsappNumber: "",
@@ -32,6 +37,8 @@ const emptyForm: FormState = {
 
 function toForm(setting: Setting): FormState {
   return {
+    companyLightThemedLogoUrl: setting.companyLightThemedLogoUrl ?? "",
+    companyDarkThemedLogoUrl: setting.companyDarkThemedLogoUrl ?? "",
     companyName: setting.companyName ?? "",
     companyAddress: setting.companyAddress ?? "",
     companyWhatsappNumber: setting.companyWhatsappNumber ?? "",
@@ -42,6 +49,8 @@ function toForm(setting: Setting): FormState {
 
 function buildPayload(form: FormState) {
   return {
+    companyLightThemedLogoUrl: form.companyLightThemedLogoUrl.trim() || null,
+    companyDarkThemedLogoUrl: form.companyDarkThemedLogoUrl.trim() || null,
     companyName: form.companyName.trim() || null,
     companyAddress: form.companyAddress.trim() || null,
     companyWhatsappNumber: form.companyWhatsappNumber.trim() || null,
@@ -141,7 +150,7 @@ export default function ManageSettingsPage() {
   return (
     <AdminShell
       title="Settings"
-      description="Company branding, contact numbers, and the registered address used across the site."
+      description="Company logos for light and dark themes, contact numbers, and the registered address used across the site."
     >
       {message ? <Alert tone={message.tone}>{message.text}</Alert> : null}
 
@@ -156,6 +165,26 @@ export default function ManageSettingsPage() {
         }
       >
         <form className="grid gap-4 md:grid-cols-2" onSubmit={handleSubmit}>
+          <ImageUrlField
+            label="Light themed logo"
+            value={form.companyLightThemedLogoUrl}
+            onChange={(url) =>
+              setForm((current) => ({
+                ...current,
+                companyLightThemedLogoUrl: url,
+              }))
+            }
+          />
+          <ImageUrlField
+            label="Dark themed logo"
+            value={form.companyDarkThemedLogoUrl}
+            onChange={(url) =>
+              setForm((current) => ({
+                ...current,
+                companyDarkThemedLogoUrl: url,
+              }))
+            }
+          />
           <Field label="Company name">
             <Input
               value={form.companyName}
@@ -235,6 +264,7 @@ export default function ManageSettingsPage() {
         ) : (
           <DataTable
             columns={[
+              "Logos",
               "Company",
               "Address",
               "WhatsApp",
@@ -243,6 +273,26 @@ export default function ManageSettingsPage() {
               "Actions",
             ]}
             rows={items.map((item) => [
+              <div key={`${item.id}-logos`} className="flex gap-2">
+                {item.companyLightThemedLogoUrl ? (
+                  <img
+                    src={item.companyLightThemedLogoUrl}
+                    alt="Light themed logo"
+                    className="h-10 w-10 rounded-md border border-zinc-200 bg-white object-contain p-1 dark:border-zinc-700"
+                  />
+                ) : null}
+                {item.companyDarkThemedLogoUrl ? (
+                  <img
+                    src={item.companyDarkThemedLogoUrl}
+                    alt="Dark themed logo"
+                    className="h-10 w-10 rounded-md border border-zinc-200 bg-zinc-900 object-contain p-1 dark:border-zinc-700"
+                  />
+                ) : null}
+                {!item.companyLightThemedLogoUrl &&
+                !item.companyDarkThemedLogoUrl ? (
+                  <span>—</span>
+                ) : null}
+              </div>,
               item.companyName ?? "—",
               item.companyAddress ?? "—",
               item.companyWhatsappNumber ?? "—",

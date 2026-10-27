@@ -116,7 +116,8 @@ export type Page = {
 
 export type Setting = {
   id: string;
-  companyLogoUrl: string | null;
+  companyLightThemedLogoUrl: string | null;
+  companyDarkThemedLogoUrl: string | null;
   companyName: string | null;
   companyAddress: string | null;
   companyWhatsappNumber: string | null;

@@ -305,7 +305,8 @@ model Page {
 
 model Setting {
   id        String   @id @default(cuid())
-  companyLogoUrl String?
+  companyLightThemedLogoUrl String?
+  companyDarkThemedLogoUrl String?
   companyName String?
   companyAddress String? @map("company_address")
   companyWhatsappNumber String? @map("company_whatsapp_number")
