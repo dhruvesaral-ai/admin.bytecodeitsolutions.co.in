@@ -293,14 +293,38 @@ model SuccessStory {
 }
 
 model Page {
-  id         String   @id @default(cuid())
+  id         String    @id @default(cuid())
   heading    String
   subheading String
-  routeName  String   @unique @map("route_name")
-  createdAt  DateTime @default(now()) @map("created_at")
-  updatedAt  DateTime @updatedAt @map("updated_at")
-
+  routeName  String    @unique @map("route_name")
+  createdAt  DateTime  @default(now()) @map("created_at")
+  updatedAt  DateTime  @updatedAt @map("updated_at")
+  pageStats  PageStats?
   @@map("page")
+}
+
+model PageStats {
+  id        String   @id @default(cuid())
+  pageId    String   @unique @map("page_id")
+  views     Int      @default(0)
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  page Page @relation(fields: [pageId], references: [id], onDelete: Cascade)
+  pageClicks PageClicks[]
+  @@map("page_stats")
+}
+
+model PageClicks {
+  id        String   @id @default(cuid())
+  pageStatsId    String   @map("page_id")
+  fieldName String   @map("field_name")
+  clicks    Int      @default(0)
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+  page      PageStats?    @relation(fields: [pageStatsId], references: [id], onDelete: Cascade)
+
+  @@map("page_clicks")
 }
 
 model Setting {
@@ -316,3 +340,5 @@ model Setting {
   updatedAt DateTime @updatedAt @map("updated_at")
   @@map("setting")
 }
+
+
