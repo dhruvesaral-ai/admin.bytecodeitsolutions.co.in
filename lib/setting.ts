@@ -3,7 +3,7 @@ import type { Prisma } from "@/generated/prisma/client";
 export type SettingWriteBody = {
   companyLogoUrl?: string | null;
   companyName?: string | null;
-  companyAddressId?: string | null;
+  companyAddress?: string | null;
   companyWhatsappNumber?: string | null;
   companyPrimaryContactNumber?: string | null;
   companySecondaryContactNumber?: string | null;
@@ -13,7 +13,7 @@ export type SettingWriteBody = {
  * Scalar subset shared by `SettingCreateInput` and `SettingUpdateInput`, so the
  * same field assignment logic can feed both parsers.
  */
-type SettingScalarFields = Omit<Prisma.SettingUpdateInput, "address">;
+type SettingScalarFields = Prisma.SettingUpdateInput;
 
 function parseNullableString(
   value: unknown,
@@ -27,26 +27,6 @@ function parseNullableString(
   }
   const trimmed = value.trim();
   return { value: trimmed === "" ? null : trimmed };
-}
-
-function parseNonEmptyString(
-  value: unknown,
-  field: string,
-): { value: string } | { error: string } {
-  if (typeof value !== "string" || value.trim() === "") {
-    return { error: `${field} must be a non-empty string` };
-  }
-  return { value: value.trim() };
-}
-
-function parseNullableId(
-  value: unknown,
-  field: string,
-): { value: string | null } | { error: string } {
-  if (value === null) {
-    return { value: null };
-  }
-  return parseNonEmptyString(value, field);
 }
 
 function assignSettingFields(
@@ -70,6 +50,17 @@ function assignSettingFields(
       return companyName;
     }
     data.companyName = companyName.value;
+  }
+
+  if (body.companyAddress !== undefined) {
+    const companyAddress = parseNullableString(
+      body.companyAddress,
+      "companyAddress",
+    );
+    if ("error" in companyAddress) {
+      return companyAddress;
+    }
+    data.companyAddress = companyAddress.value;
   }
 
   if (body.companyWhatsappNumber !== undefined) {
@@ -118,19 +109,6 @@ export function parseSettingCreateBody(
     return error;
   }
 
-  if (body.companyAddressId !== undefined) {
-    const companyAddressId = parseNullableId(
-      body.companyAddressId,
-      "companyAddressId",
-    );
-    if ("error" in companyAddressId) {
-      return companyAddressId;
-    }
-    if (companyAddressId.value) {
-      data.address = { connect: { id: companyAddressId.value } };
-    }
-  }
-
   return { data };
 }
 
@@ -144,28 +122,9 @@ export function parseSettingUpdateBody(
     return error;
   }
 
-  if (body.companyAddressId !== undefined) {
-    const companyAddressId = parseNullableId(
-      body.companyAddressId,
-      "companyAddressId",
-    );
-    if ("error" in companyAddressId) {
-      return companyAddressId;
-    }
-    if (companyAddressId.value) {
-      data.address = { connect: { id: companyAddressId.value } };
-    } else {
-      data.address = { disconnect: true };
-    }
-  }
-
   if (Object.keys(data).length === 0) {
     return { error: "At least one setting field is required to update" };
   }
 
   return { data };
 }
-
-export const settingDetailInclude = {
-  address: true,
-} as const;

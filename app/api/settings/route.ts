@@ -1,22 +1,16 @@
 import { prisma } from "@/lib/db";
 import {
   isNextResponse,
-  isPrismaForeignKeyViolation,
   jsonError,
   jsonOk,
   parseJsonBody,
 } from "@/lib/api/http";
-import {
-  parseSettingCreateBody,
-  settingDetailInclude,
-  type SettingWriteBody,
-} from "@/lib/setting";
+import { parseSettingCreateBody, type SettingWriteBody } from "@/lib/setting";
 
 export async function GET() {
   try {
     const settings = await prisma.setting.findMany({
       orderBy: { createdAt: "asc" },
-      include: settingDetailInclude,
     });
     return jsonOk({ data: settings });
   } catch (error) {
@@ -36,15 +30,9 @@ export async function POST(request: Request) {
   }
 
   try {
-    const setting = await prisma.setting.create({
-      data: parsed.data,
-      include: settingDetailInclude,
-    });
+    const setting = await prisma.setting.create({ data: parsed.data });
     return jsonOk({ data: setting }, 201);
   } catch (error) {
-    if (isPrismaForeignKeyViolation(error)) {
-      return jsonError("companyAddressId does not match an existing address", 400);
-    }
     return jsonError(error, 500);
   }
 }

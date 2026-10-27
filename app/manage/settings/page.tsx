@@ -3,7 +3,6 @@
 import { useCallback, useEffect, useState } from "react";
 import { AdminShell } from "@/components/admin/AdminShell";
 import { DataTable } from "@/components/admin/DataTable";
-import { ImageUrlField } from "@/components/admin/ImageUrlField";
 import {
   Alert,
   Button,
@@ -11,15 +10,13 @@ import {
   EmptyState,
   Field,
   Input,
-  Select,
 } from "@/components/admin/ui";
 import { ApiError, apiDelete, apiGet, apiPatch, apiPost } from "@/lib/admin/client";
-import type { Address, ListResponse, Setting } from "@/lib/admin/types";
+import type { ListResponse, Setting } from "@/lib/admin/types";
 
 type FormState = {
   companyName: string;
-  companyLogoUrl: string;
-  companyAddressId: string;
+  companyAddress: string;
   companyWhatsappNumber: string;
   companyPrimaryContactNumber: string;
   companySecondaryContactNumber: string;
@@ -27,8 +24,7 @@ type FormState = {
 
 const emptyForm: FormState = {
   companyName: "",
-  companyLogoUrl: "",
-  companyAddressId: "",
+  companyAddress: "",
   companyWhatsappNumber: "",
   companyPrimaryContactNumber: "",
   companySecondaryContactNumber: "",
@@ -37,8 +33,7 @@ const emptyForm: FormState = {
 function toForm(setting: Setting): FormState {
   return {
     companyName: setting.companyName ?? "",
-    companyLogoUrl: setting.companyLogoUrl ?? "",
-    companyAddressId: setting.companyAddressId ?? "",
+    companyAddress: setting.companyAddress ?? "",
     companyWhatsappNumber: setting.companyWhatsappNumber ?? "",
     companyPrimaryContactNumber: setting.companyPrimaryContactNumber ?? "",
     companySecondaryContactNumber: setting.companySecondaryContactNumber ?? "",
@@ -48,8 +43,7 @@ function toForm(setting: Setting): FormState {
 function buildPayload(form: FormState) {
   return {
     companyName: form.companyName.trim() || null,
-    companyLogoUrl: form.companyLogoUrl.trim() || null,
-    companyAddressId: form.companyAddressId === "" ? null : form.companyAddressId,
+    companyAddress: form.companyAddress.trim() || null,
     companyWhatsappNumber: form.companyWhatsappNumber.trim() || null,
     companyPrimaryContactNumber:
       form.companyPrimaryContactNumber.trim() || null,
@@ -58,15 +52,8 @@ function buildPayload(form: FormState) {
   };
 }
 
-function formatAddress(address: Address) {
-  return [address.addressLine, address.city, address.state, address.pincode]
-    .filter(Boolean)
-    .join(", ");
-}
-
 export default function ManageSettingsPage() {
   const [items, setItems] = useState<Setting[]>([]);
-  const [addresses, setAddresses] = useState<Address[]>([]);
   const [form, setForm] = useState<FormState>(emptyForm);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
@@ -80,12 +67,8 @@ export default function ManageSettingsPage() {
     setLoading(true);
     setMessage(null);
     try {
-      const [settingsResponse, addressesResponse] = await Promise.all([
-        apiGet<ListResponse<Setting>>("/api/settings"),
-        apiGet<ListResponse<Address>>("/api/addresses"),
-      ]);
-      setItems(settingsResponse.data);
-      setAddresses(addressesResponse.data);
+      const response = await apiGet<ListResponse<Setting>>("/api/settings");
+      setItems(response.data);
     } catch (error) {
       setMessage({
         tone: "error",
@@ -184,13 +167,18 @@ export default function ManageSettingsPage() {
               }
             />
           </Field>
-          <ImageUrlField
-            label="Company logo"
-            value={form.companyLogoUrl}
-            onChange={(companyLogoUrl) =>
-              setForm((current) => ({ ...current, companyLogoUrl }))
-            }
-          />
+          <Field label="Company address">
+            <Input
+              value={form.companyAddress}
+              onChange={(event) =>
+                setForm((current) => ({
+                  ...current,
+                  companyAddress: event.target.value,
+                }))
+              }
+              placeholder="2nd Floor, MG Road, Indore, MP 452001"
+            />
+          </Field>
           <Field label="WhatsApp number">
             <Input
               value={form.companyWhatsappNumber}
@@ -227,27 +215,6 @@ export default function ManageSettingsPage() {
               placeholder="+919876543210"
             />
           </Field>
-          <Field
-            label="Company address"
-            hint="Addresses are managed by the addresses API."
-          >
-            <Select
-              value={form.companyAddressId}
-              onChange={(event) =>
-                setForm((current) => ({
-                  ...current,
-                  companyAddressId: event.target.value,
-                }))
-              }
-            >
-              <option value="">No address</option>
-              {addresses.map((address) => (
-                <option key={address.id} value={address.id}>
-                  {formatAddress(address)}
-                </option>
-              ))}
-            </Select>
-          </Field>
           <div className="md:col-span-2">
             <Button type="submit" disabled={saving}>
               {saving
@@ -269,29 +236,18 @@ export default function ManageSettingsPage() {
           <DataTable
             columns={[
               "Company",
-              "Logo",
+              "Address",
               "WhatsApp",
               "Primary contact",
               "Secondary contact",
-              "Address",
               "Actions",
             ]}
             rows={items.map((item) => [
               item.companyName ?? "—",
-              item.companyLogoUrl ? (
-                <img
-                  key={`${item.id}-logo`}
-                  src={item.companyLogoUrl}
-                  alt=""
-                  className="h-10 w-10 rounded-lg border border-zinc-200 object-cover dark:border-zinc-700"
-                />
-              ) : (
-                "—"
-              ),
+              item.companyAddress ?? "—",
               item.companyWhatsappNumber ?? "—",
               item.companyPrimaryContactNumber ?? "—",
               item.companySecondaryContactNumber ?? "—",
-              item.address ? formatAddress(item.address) : "—",
               <div key={item.id} className="flex gap-2">
                 <Button variant="secondary" onClick={() => startEdit(item)}>
                   Edit

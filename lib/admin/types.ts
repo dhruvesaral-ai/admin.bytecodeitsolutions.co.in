@@ -118,13 +118,12 @@ export type Setting = {
   id: string;
   companyLogoUrl: string | null;
   companyName: string | null;
-  companyAddressId: string | null;
+  companyAddress: string | null;
   companyWhatsappNumber: string | null;
   companyPrimaryContactNumber: string | null;
   companySecondaryContactNumber: string | null;
   createdAt: string;
   updatedAt: string;
-  address?: Address | null;
 };
 
 export type Role = {

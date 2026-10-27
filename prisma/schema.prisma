@@ -74,7 +74,6 @@ model Address {
   updatedAt     DateTime @updatedAt @map("updated_at")
   
   profile       Profile  @relation(fields: [profileId], references: [id], onDelete: Cascade)
-  settings      Setting[]
 }
 
 model Role {
@@ -308,12 +307,11 @@ model Setting {
   id        String   @id @default(cuid())
   companyLogoUrl String?
   companyName String?
-  companyAddressId String? @map("company_address_id")
+  companyAddress String? @map("company_address")
   companyWhatsappNumber String? @map("company_whatsapp_number")
   companyPrimaryContactNumber String? @map("company_contact_number")
   companySecondaryContactNumber String? @map("company_secondary_contact_number")
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
-  address   Address? @relation(fields: [companyAddressId], references: [id])
   @@map("setting")
 }
