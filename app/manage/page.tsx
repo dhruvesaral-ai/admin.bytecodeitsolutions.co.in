@@ -53,6 +53,11 @@ const sections = [
     description: "Manage video IDs associated with success stories.",
   },
   {
+    href: "/manage/settings",
+    title: "Settings",
+    description: "Manage company branding, contact numbers, and the registered address.",
+  },
+  {
     href: "/docs",
     title: "API Documentation",
     description: "Interactive reference for every API endpoint, request payloads, responses, and parameters.",

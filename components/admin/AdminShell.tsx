@@ -12,6 +12,7 @@ const nav = [
   { href: "/manage/pages", label: "Pages" },
   { href: "/manage/testimonials", label: "Testimonials" },
   { href: "/manage/success-stories", label: "Success stories" },
+  { href: "/manage/settings", label: "Settings" },
   { href: "/docs", label: "API Docs" },
 ];
 
