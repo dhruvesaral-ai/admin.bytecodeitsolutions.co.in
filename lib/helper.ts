@@ -2,7 +2,7 @@ import { Readable } from "node:stream";
 import type { IncomingMessage } from "node:http";
 import type { NextRequest } from "next/server";
 import type multer from "multer";
-import { imageUpload, pdfUpload } from "@/lib/multer";
+import { imageUpload, pdfUpload, videoUpload } from "@/lib/multer";
 
 type MulterRequest = IncomingMessage & { file?: Express.Multer.File };
 
@@ -48,4 +48,9 @@ export async function uploadImage(request: NextRequest) {
 export async function uploadPdf(request: NextRequest) {
   const file = await runSingle(request, pdfUpload.single("file"));
   return { url: `/uploads/pdfs/${file.filename}` };
+}
+
+export async function uploadVideo(request: NextRequest) {
+  const file = await runSingle(request, videoUpload.single("file"));
+  return { url: `/uploads/videos/${file.filename}` };
 }

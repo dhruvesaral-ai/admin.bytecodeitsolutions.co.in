@@ -56,10 +56,11 @@ export const API_CATEGORIES: ApiCategory[] = [
   { id: "carousel-slides", name: "Carousel Slides", description: "Individual slides, background images, and CTAs" },
   { id: "pages", name: "CMS Pages", description: "Dynamic page builder contents by route name with visit counters" },
   { id: "page-clicks", name: "Page Clicks", description: "Click counters for individual CTA fields on a page" },
+  { id: "projects", name: "Projects", description: "Portfolio projects with short and long descriptions and cover images" },
   { id: "testimonials", name: "Testimonials", description: "Student and client reviews with company branding" },
   { id: "success-stories", name: "Success Stories", description: "Student video testimonies and showcase stories" },
   { id: "settings", name: "Settings", description: "Company branding, contact numbers, and registered address" },
-  { id: "uploads", name: "File Uploads", description: "Media image and PDF document upload handlers" },
+  { id: "uploads", name: "File Uploads", description: "Media image, PDF document, and video upload handlers" },
 ];
 
 export const API_ENDPOINTS: ApiEndpoint[] = [
@@ -1415,6 +1416,113 @@ export const API_ENDPOINTS: ApiEndpoint[] = [
     ],
   },
 
+  // ================= PROJECTS =================
+  {
+    id: "projects-list",
+    category: "projects",
+    method: "GET",
+    path: "/api/projects",
+    title: "List Projects",
+    description: "Retrieve all projects, newest first.",
+    responses: [
+      {
+        status: 200,
+        description: "List of projects",
+        exampleJson: JSON.stringify({
+          data: [
+            {
+              id: "prj_1",
+              name: "Bytecode Admin Panel",
+              shortDescription: "Internal CMS for the website",
+              longDescription: "Next.js and Prisma admin panel that manages courses, leads, and portfolio content.",
+              imgUrl: "/uploads/projects/admin-panel.png",
+              videoUrl: "/uploads/videos/project-demo.mp4",
+              createdAt: "2026-10-27T12:00:00.000Z",
+              updatedAt: "2026-10-27T12:00:00.000Z",
+            },
+          ],
+        }, null, 2),
+      },
+    ],
+  },
+  {
+    id: "projects-create",
+    category: "projects",
+    method: "POST",
+    path: "/api/projects",
+    title: "Create Project",
+    description: "Add a project to the portfolio. Only name is required.",
+    requestBody: {
+      contentType: "application/json",
+      fields: [
+        { name: "name", type: "string", required: true, description: "Project name", example: "Bytecode Admin Panel" },
+        { name: "shortDescription", type: "string | null", required: false, description: "One-line summary used in cards" },
+        { name: "longDescription", type: "string | null", required: false, description: "Full description used on the project page" },
+        { name: "imgUrl", type: "string | null", required: false, description: "Cover image URL", example: "/uploads/projects/admin-panel.png" },
+        { name: "videoUrl", type: "string | null", required: false, description: "Demo video URL from /api/upload/video", example: "/uploads/videos/project-demo.mp4" },
+      ],
+      exampleJson: JSON.stringify({
+        name: "Bytecode Admin Panel",
+        shortDescription: "Internal CMS for the website",
+        longDescription: "Next.js and Prisma admin panel that manages courses, leads, and portfolio content.",
+        imgUrl: "/uploads/projects/admin-panel.png",
+        videoUrl: "/uploads/videos/project-demo.mp4",
+      }, null, 2),
+    },
+    responses: [
+      { status: 201, description: "Project created", exampleJson: JSON.stringify({ data: { id: "prj_1", name: "Bytecode Admin Panel", imgUrl: "/uploads/projects/admin-panel.png", videoUrl: "/uploads/videos/project-demo.mp4" } }, null, 2) },
+      { status: 400, description: "Validation error", exampleJson: JSON.stringify({ error: "name must be a non-empty string" }, null, 2) },
+    ],
+  },
+  {
+    id: "projects-get",
+    category: "projects",
+    method: "GET",
+    path: "/api/projects/[id]",
+    title: "Get Project By ID",
+    description: "Fetch a single project.",
+    responses: [
+      { status: 200, description: "Project found", exampleJson: JSON.stringify({ data: { id: "prj_1", name: "Bytecode Admin Panel", shortDescription: "Internal CMS for the website" } }, null, 2) },
+      { status: 404, description: "Project not found", exampleJson: JSON.stringify({ error: "Project not found" }, null, 2) },
+    ],
+  },
+  {
+    id: "projects-update",
+    category: "projects",
+    method: "PATCH",
+    path: "/api/projects/[id]",
+    title: "Update Project",
+    description: "Partially update a project. Send null to clear an optional field.",
+    requestBody: {
+      contentType: "application/json",
+      fields: [
+        { name: "name", type: "string", required: false, description: "Project name", example: "Bytecode Website" },
+        { name: "shortDescription", type: "string | null", required: false, description: "One-line summary used in cards" },
+        { name: "longDescription", type: "string | null", required: false, description: "Full description used on the project page" },
+        { name: "imgUrl", type: "string | null", required: false, description: "Cover image URL", example: "/uploads/projects/website.png" },
+        { name: "videoUrl", type: "string | null", required: false, description: "Demo video URL from /api/upload/video", example: "/uploads/videos/website-demo.mp4" },
+      ],
+      exampleJson: JSON.stringify({ name: "Bytecode Website", imgUrl: "/uploads/projects/website.png", videoUrl: "/uploads/videos/website-demo.mp4" }, null, 2),
+    },
+    responses: [
+      { status: 200, description: "Updated", exampleJson: JSON.stringify({ data: { id: "prj_1", name: "Bytecode Website" } }, null, 2) },
+      { status: 400, description: "Validation error", exampleJson: JSON.stringify({ error: "At least one of name, shortDescription, longDescription, imgUrl, or videoUrl is required" }, null, 2) },
+      { status: 404, description: "Project not found", exampleJson: JSON.stringify({ error: "Project not found" }, null, 2) },
+    ],
+  },
+  {
+    id: "projects-delete",
+    category: "projects",
+    method: "DELETE",
+    path: "/api/projects/[id]",
+    title: "Delete Project",
+    description: "Remove a project from the portfolio.",
+    responses: [
+      { status: 200, description: "Deleted", exampleJson: JSON.stringify({ data: { id: "prj_1" } }, null, 2) },
+      { status: 404, description: "Project not found", exampleJson: JSON.stringify({ error: "Project not found" }, null, 2) },
+    ],
+  },
+
   // ================= TESTIMONIALS & SUCCESS STORIES =================
   {
     id: "testimonials-create",
@@ -1618,6 +1726,33 @@ export const API_ENDPOINTS: ApiEndpoint[] = [
         exampleJson: JSON.stringify({ data: { url: "/uploads/syllabus-17929482.pdf", originalName: "Full_Syllabus.pdf" } }, null, 2),
       },
       { status: 400, description: "Missing file or invalid format", exampleJson: JSON.stringify({ error: "File must be a valid PDF document" }, null, 2) },
+    ],
+  },
+  {
+    id: "upload-video",
+    category: "uploads",
+    method: "POST",
+    path: "/api/upload/video",
+    title: "Upload Video",
+    description:
+      "Upload a project demo or promo video (MP4 or WebM, max 100 MB) via multipart/form-data. Returns the hosted public asset URL, e.g. for a project's videoUrl.",
+    headers: {
+      "Content-Type": "multipart/form-data",
+    },
+    requestBody: {
+      contentType: "multipart/form-data",
+      description: "Send file using key 'file' in FormData",
+      fields: [
+        { name: "file", type: "File (binary)", required: true, description: "MP4 or WebM video to upload", example: "project-demo.mp4" },
+      ],
+    },
+    responses: [
+      {
+        status: 201,
+        description: "Video uploaded successfully",
+        exampleJson: JSON.stringify({ data: { url: "/uploads/videos/17929482-project-demo.mp4" } }, null, 2),
+      },
+      { status: 400, description: "Missing file, wrong format, or larger than 100 MB", exampleJson: JSON.stringify({ error: "Only MP4 and WebM video files are allowed" }, null, 2) },
     ],
   },
 ];

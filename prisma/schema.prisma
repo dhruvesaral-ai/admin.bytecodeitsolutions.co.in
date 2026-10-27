@@ -331,4 +331,14 @@ model Setting {
   @@map("setting")
 }
 
-
+model Projects {
+  id        String   @id @default(cuid())
+  name      String
+  shortDescription String?
+  longDescription String?
+  imgUrl    String?  @map("img_url")
+  videoUrl  String?  @map("video_url")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+  @@map("projects")
+}

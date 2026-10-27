@@ -1,5 +1,6 @@
 import fs from "node:fs";
 import path from "node:path";
+import { Readable } from "node:stream";
 import { type NextRequest, NextResponse } from "next/server";
 
 const MIME_MAP: Record<string, string> = {
@@ -16,8 +17,50 @@ const MIME_MAP: Record<string, string> = {
   ".webm": "video/webm",
 };
 
+// Supports single-range requests: "bytes=start-end", "bytes=start-", "bytes=-suffix".
+// Returns null when the header is absent or unparseable (serve the whole file as-is).
+function parseRangeHeader(
+  header: string | null,
+  size: number,
+): { start: number; end: number } | "unsatisfiable" | null {
+  if (!header) {
+    return null;
+  }
+
+  const match = /^bytes=(\d*)-(\d*)$/.exec(header.trim());
+  if (!match) {
+    return null;
+  }
+
+  const [, rawStart, rawEnd] = match;
+  if (rawStart === "" && rawEnd === "") {
+    return null;
+  }
+
+  let start: number;
+  let end: number;
+
+  if (rawStart === "") {
+    const suffixLength = Number(rawEnd);
+    if (suffixLength <= 0) {
+      return null;
+    }
+    start = Math.max(size - suffixLength, 0);
+    end = size - 1;
+  } else {
+    start = Number(rawStart);
+    end = rawEnd === "" ? size - 1 : Number(rawEnd);
+  }
+
+  if (start >= size || start > end) {
+    return "unsatisfiable";
+  }
+
+  return { start, end: Math.min(end, size - 1) };
+}
+
 export async function GET(
-  _request: NextRequest,
+  request: NextRequest,
   context: { params: Promise<{ path?: string[] }> }
 ) {
   const { path: rawSegments } = await context.params;
@@ -56,6 +99,40 @@ export async function GET(
     const ext = path.extname(targetFilePath).toLowerCase();
     const contentType = MIME_MAP[ext] || "application/octet-stream";
 
+    // Video elements request byte ranges; answer them so large files stream and seek.
+    const range = parseRangeHeader(request.headers.get("range"), stat.size);
+
+    if (range === "unsatisfiable") {
+      return new NextResponse(null, {
+        status: 416,
+        headers: {
+          "Content-Type": contentType,
+          "Content-Range": `bytes */${stat.size}`,
+          "Accept-Ranges": "bytes",
+        },
+      });
+    }
+
+    if (range) {
+      const stream = fs.createReadStream(targetFilePath, {
+        start: range.start,
+        end: range.end,
+      });
+
+      return new NextResponse(Readable.toWeb(stream) as ReadableStream<Uint8Array>, {
+        status: 206,
+        headers: {
+          "Content-Type": contentType,
+          "Content-Length": (range.end - range.start + 1).toString(),
+          "Content-Range": `bytes ${range.start}-${range.end}/${stat.size}`,
+          "Accept-Ranges": "bytes",
+          "Cache-Control": "public, max-age=31536000, immutable",
+          "Access-Control-Allow-Origin": "*",
+          "Access-Control-Allow-Methods": "GET, HEAD, OPTIONS",
+        },
+      });
+    }
+
     const fileBuffer = fs.readFileSync(targetFilePath);
 
     return new NextResponse(fileBuffer, {
@@ -63,6 +140,7 @@ export async function GET(
       headers: {
         "Content-Type": contentType,
         "Content-Length": stat.size.toString(),
+        "Accept-Ranges": "bytes",
         "Cache-Control": "public, max-age=31536000, immutable",
         "Access-Control-Allow-Origin": "*",
         "Access-Control-Allow-Methods": "GET, HEAD, OPTIONS",
@@ -108,6 +186,7 @@ export async function HEAD(
     headers: {
       "Content-Type": contentType,
       "Content-Length": stat.size.toString(),
+      "Accept-Ranges": "bytes",
       "Cache-Control": "public, max-age=31536000, immutable",
       "Access-Control-Allow-Origin": "*",
       "Access-Control-Allow-Methods": "GET, HEAD, OPTIONS",

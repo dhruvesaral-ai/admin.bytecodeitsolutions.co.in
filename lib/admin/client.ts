@@ -60,6 +60,13 @@ export async function uploadPdfFile(file: File) {
   return parseResponse<{ data: { url: string } }>(response);
 }
 
+export async function uploadVideoFile(file: File) {
+  const body = new FormData();
+  body.append("file", file);
+  const response = await fetch("/api/upload/video", { method: "POST", body });
+  return parseResponse<{ data: { url: string } }>(response);
+}
+
 export async function uploadCourseCsv(file: File) {
   const body = new FormData();
   body.append("file", file);

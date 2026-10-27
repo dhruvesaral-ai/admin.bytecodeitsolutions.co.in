@@ -4,6 +4,7 @@ import multer from "multer";
 
 const imageDir = path.join(process.cwd(), "public/uploads/images");
 const pdfDir = path.join(process.cwd(), "public/uploads/pdfs");
+const videoDir = path.join(process.cwd(), "public/uploads/videos");
 
 function sanitizeFilename(originalName: string): string {
   const ext = path.extname(originalName).toLowerCase();
@@ -50,5 +51,22 @@ export const pdfUpload = multer({
       return;
     }
     cb(new Error("Only PDF files are allowed"));
+  },
+});
+
+// Kept to the formats the uploads route can serve with a playable Content-Type.
+const videoExtensions = new Set([".mp4", ".webm"]);
+const videoMimeTypes = new Set(["video/mp4", "video/webm"]);
+
+export const videoUpload = multer({
+  storage: diskStorage(videoDir),
+  limits: { fileSize: 100 * 1024 * 1024 },
+  fileFilter(_req, file, cb) {
+    const ext = path.extname(file.originalname).toLowerCase();
+    if (videoExtensions.has(ext) && videoMimeTypes.has(file.mimetype)) {
+      cb(null, true);
+      return;
+    }
+    cb(new Error("Only MP4 and WebM video files are allowed"));
   },
 });
