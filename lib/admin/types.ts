@@ -112,6 +112,7 @@ export type Page = {
   heading: string;
   subheading: string;
   routeName: string;
+  visits: number;
 };
 
 export type Setting = {

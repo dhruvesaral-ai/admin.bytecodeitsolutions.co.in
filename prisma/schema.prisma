@@ -297,33 +297,23 @@ model Page {
   heading    String
   subheading String
   routeName  String    @unique @map("route_name")
+  visits     Int       @default(0)
   createdAt  DateTime  @default(now()) @map("created_at")
   updatedAt  DateTime  @updatedAt @map("updated_at")
-  pageStats  PageStats?
-  @@map("page")
-}
-
-model PageStats {
-  id        String   @id @default(cuid())
-  pageId    String   @unique @map("page_id")
-  views     Int      @default(0)
-  createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @updatedAt @map("updated_at")
-
-  page Page @relation(fields: [pageId], references: [id], onDelete: Cascade)
   pageClicks PageClicks[]
-  @@map("page_stats")
+  @@map("page")
 }
 
 model PageClicks {
   id        String   @id @default(cuid())
-  pageStatsId    String   @map("page_id")
+  pageId    String   @map("page_id")
   fieldName String   @map("field_name")
   clicks    Int      @default(0)
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
-  page      PageStats?    @relation(fields: [pageStatsId], references: [id], onDelete: Cascade)
+  page Page @relation(fields: [pageId], references: [id], onDelete: Cascade)
 
+  @@unique([pageId, fieldName])
   @@map("page_clicks")
 }
 

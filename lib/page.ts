@@ -4,6 +4,7 @@ export type PageWriteBody = {
   heading?: string;
   subheading?: string;
   routeName?: string;
+  visits?: number;
 };
 
 /**
@@ -33,6 +34,13 @@ function parseNonEmptyString(
   return { value: value.trim() };
 }
 
+function parseCount(value: unknown): { value: number } | { error: string } {
+  if (typeof value !== "number" || !Number.isInteger(value) || value < 0) {
+    return { error: "visits must be a non-negative integer" };
+  }
+  return { value };
+}
+
 export function parsePageCreateBody(
   body: PageWriteBody,
 ): { data: Prisma.PageCreateInput } | { error: string } {
@@ -59,11 +67,21 @@ export function parsePageCreateBody(
     };
   }
 
+  let visits: number | undefined;
+  if (body.visits !== undefined) {
+    const parsedVisits = parseCount(body.visits);
+    if ("error" in parsedVisits) {
+      return parsedVisits;
+    }
+    visits = parsedVisits.value;
+  }
+
   return {
     data: {
       heading: heading.value,
       subheading: subheading.value,
       routeName,
+      ...(visits !== undefined ? { visits } : {}),
     },
   };
 }
@@ -104,9 +122,17 @@ export function parsePageUpdateBody(
     data.routeName = routeName;
   }
 
+  if (body.visits !== undefined) {
+    const visits = parseCount(body.visits);
+    if ("error" in visits) {
+      return visits;
+    }
+    data.visits = visits.value;
+  }
+
   if (Object.keys(data).length === 0) {
     return {
-      error: "At least one of heading, subheading, or routeName is required",
+      error: "At least one of heading, subheading, routeName, or visits is required",
     };
   }
 
