@@ -53,6 +53,11 @@ const sections = [
     description: "Manage video IDs associated with success stories.",
   },
   {
+    href: "/manage/projects",
+    title: "Projects",
+    description: "Manage portfolio projects, descriptions, cover images, and showcase videos.",
+  },
+  {
     href: "/manage/settings",
     title: "Settings",
     description: "Manage company branding, contact numbers, and the registered address.",

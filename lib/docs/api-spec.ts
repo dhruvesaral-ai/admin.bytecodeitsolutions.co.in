@@ -1755,4 +1755,179 @@ export const API_ENDPOINTS: ApiEndpoint[] = [
       { status: 400, description: "Missing file, wrong format, or larger than 100 MB", exampleJson: JSON.stringify({ error: "Only MP4 and WebM video files are allowed" }, null, 2) },
     ],
   },
+  {
+    id: "get-projects",
+    category: "projects",
+    method: "GET",
+    path: "/api/projects",
+    title: "List All Projects",
+    description: "Retrieve all showcase and portfolio projects ordered by creation date descending.",
+    responses: [
+      {
+        status: 200,
+        description: "List of projects",
+        exampleJson: JSON.stringify(
+          {
+            data: [
+              {
+                id: "cuid1234567890",
+                name: "Bytecode LMS",
+                shortDescription: "Enterprise training and learning portal",
+                longDescription: "A comprehensive platform with course catalogs, student enrollments, and video lessons.",
+                imgUrl: "/uploads/images/lms-cover.webp",
+                videoUrl: "/uploads/videos/lms-demo.mp4",
+                createdAt: "2026-10-27T10:00:00.000Z",
+                updatedAt: "2026-10-27T10:00:00.000Z",
+              },
+            ],
+          },
+          null,
+          2
+        ),
+      },
+    ],
+  },
+  {
+    id: "create-project",
+    category: "projects",
+    method: "POST",
+    path: "/api/projects",
+    title: "Create Project",
+    description: "Create a new project with name, descriptions, cover image, and showcase video.",
+    headers: { "Content-Type": "application/json" },
+    requestBody: {
+      contentType: "application/json",
+      fields: [
+        { name: "name", type: "string", required: true, description: "Project title or name", example: "Bytecode LMS" },
+        { name: "shortDescription", type: "string | null", required: false, description: "Short summary or tagline", example: "Enterprise training and learning portal" },
+        { name: "longDescription", type: "string | null", required: false, description: "Full project story or technical summary", example: "A comprehensive platform with course catalogs..." },
+        { name: "imgUrl", type: "string | null", required: false, description: "URL to cover or preview image", example: "/uploads/images/lms-cover.webp" },
+        { name: "videoUrl", type: "string | null", required: false, description: "URL to demo or walkthrough video", example: "/uploads/videos/lms-demo.mp4" },
+      ],
+      exampleJson: JSON.stringify(
+        {
+          name: "Bytecode LMS",
+          shortDescription: "Enterprise training and learning portal",
+          longDescription: "A comprehensive platform built with Next.js and Prisma.",
+          imgUrl: "/uploads/images/lms-cover.webp",
+          videoUrl: "/uploads/videos/lms-demo.mp4",
+        },
+        null,
+        2
+      ),
+    },
+    responses: [
+      {
+        status: 201,
+        description: "Project created successfully",
+        exampleJson: JSON.stringify(
+          {
+            data: {
+              id: "cuid1234567890",
+              name: "Bytecode LMS",
+              shortDescription: "Enterprise training and learning portal",
+              longDescription: "A comprehensive platform built with Next.js and Prisma.",
+              imgUrl: "/uploads/images/lms-cover.webp",
+              videoUrl: "/uploads/videos/lms-demo.mp4",
+              createdAt: "2026-10-27T10:00:00.000Z",
+              updatedAt: "2026-10-27T10:00:00.000Z",
+            },
+          },
+          null,
+          2
+        ),
+      },
+      { status: 400, description: "Validation error", exampleJson: JSON.stringify({ error: "name must be a non-empty string" }, null, 2) },
+    ],
+  },
+  {
+    id: "get-project-by-id",
+    category: "projects",
+    method: "GET",
+    path: "/api/projects/:id",
+    title: "Get Project by ID",
+    description: "Fetch a single project record by its unique ID.",
+    responses: [
+      {
+        status: 200,
+        description: "Project details",
+        exampleJson: JSON.stringify(
+          {
+            data: {
+              id: "cuid1234567890",
+              name: "Bytecode LMS",
+              shortDescription: "Enterprise training and learning portal",
+              longDescription: "A comprehensive platform built with Next.js and Prisma.",
+              imgUrl: "/uploads/images/lms-cover.webp",
+              videoUrl: "/uploads/videos/lms-demo.mp4",
+              createdAt: "2026-10-27T10:00:00.000Z",
+              updatedAt: "2026-10-27T10:00:00.000Z",
+            },
+          },
+          null,
+          2
+        ),
+      },
+      { status: 404, description: "Project not found", exampleJson: JSON.stringify({ error: "Project not found" }, null, 2) },
+    ],
+  },
+  {
+    id: "update-project",
+    category: "projects",
+    method: "PATCH",
+    path: "/api/projects/:id",
+    title: "Update Project",
+    description: "Update any field of an existing project by ID.",
+    headers: { "Content-Type": "application/json" },
+    requestBody: {
+      contentType: "application/json",
+      fields: [
+        { name: "name", type: "string", required: false, description: "New project title", example: "Bytecode LMS 2.0" },
+        { name: "shortDescription", type: "string | null", required: false, description: "Updated summary", example: "Next-gen education suite" },
+        { name: "longDescription", type: "string | null", required: false, description: "Updated description" },
+        { name: "imgUrl", type: "string | null", required: false, description: "Updated image URL" },
+        { name: "videoUrl", type: "string | null", required: false, description: "Updated video URL" },
+      ],
+      exampleJson: JSON.stringify({ name: "Bytecode LMS 2.0" }, null, 2),
+    },
+    responses: [
+      {
+        status: 200,
+        description: "Project updated",
+        exampleJson: JSON.stringify(
+          {
+            data: {
+              id: "cuid1234567890",
+              name: "Bytecode LMS 2.0",
+              shortDescription: "Next-gen education suite",
+              longDescription: "A comprehensive platform built with Next.js and Prisma.",
+              imgUrl: "/uploads/images/lms-cover.webp",
+              videoUrl: "/uploads/videos/lms-demo.mp4",
+              createdAt: "2026-10-27T10:00:00.000Z",
+              updatedAt: "2026-10-27T10:05:00.000Z",
+            },
+          },
+          null,
+          2
+        ),
+      },
+      { status: 404, description: "Project not found", exampleJson: JSON.stringify({ error: "Project not found" }, null, 2) },
+    ],
+  },
+  {
+    id: "delete-project",
+    category: "projects",
+    method: "DELETE",
+    path: "/api/projects/:id",
+    title: "Delete Project",
+    description: "Permanently delete a project record by ID.",
+    responses: [
+      {
+        status: 200,
+        description: "Project deleted",
+        exampleJson: JSON.stringify({ data: { id: "cuid1234567890" } }, null, 2),
+      },
+      { status: 404, description: "Project not found", exampleJson: JSON.stringify({ error: "Project not found" }, null, 2) },
+    ],
+  },
 ];

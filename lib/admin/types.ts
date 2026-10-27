@@ -221,6 +221,18 @@ export type Payment = {
   registration?: { id: string; registrationNo: string; course?: Pick<Course, "id" | "name"> } | null;
 };
 
+export type Project = {
+  id: string;
+  name: string;
+  shortDescription: string | null;
+  longDescription: string | null;
+  imgUrl: string | null;
+  videoUrl: string | null;
+  createdAt: string;
+  updatedAt: string;
+};
+
 export type ListResponse<T> = { data: T[] };
 export type ItemResponse<T> = { data: T };
+
 
