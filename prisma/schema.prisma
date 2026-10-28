@@ -193,6 +193,7 @@ model Course {
   duration             String?
   status               GeneralStatus    @default(active)
   courseImgUrl         String?          @map("course_img_url")
+  portraitImgUrl       String?          @map("portrait_img_url")
   syllabus             String?
   courseCategorieId    String?          @map("course_categorie_id")
   isPlacementGurranted Boolean          @default(false) @map("is_placement_gurranted")

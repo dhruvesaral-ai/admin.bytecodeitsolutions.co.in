@@ -42,6 +42,7 @@ type FormState = {
   duration: string;
   status: GeneralStatus;
   courseImgUrl: string;
+  portraitImgUrl: string;
   syllabus: string;
   courseCategorieId: string;
   isPlacementGurranted: boolean;
@@ -60,6 +61,7 @@ const emptyForm: FormState = {
   duration: "",
   status: "active",
   courseImgUrl: "",
+  portraitImgUrl: "",
   syllabus: "",
   courseCategorieId: "",
   isPlacementGurranted: false,
@@ -86,6 +88,7 @@ function toForm(course: Course): FormState {
     duration: course.duration ?? "",
     status: course.status,
     courseImgUrl: course.courseImgUrl ?? "",
+    portraitImgUrl: course.portraitImgUrl ?? "",
     syllabus: course.syllabus ?? "",
     courseCategorieId: course.courseCategorieId ?? "",
     isPlacementGurranted: course.isPlacementGurranted,
@@ -109,6 +112,8 @@ function buildPayload(form: FormState) {
     duration: form.duration.trim() === "" ? null : form.duration,
     status: form.status,
     courseImgUrl: form.courseImgUrl.trim() === "" ? null : form.courseImgUrl,
+    portraitImgUrl:
+      form.portraitImgUrl.trim() === "" ? null : form.portraitImgUrl,
     syllabus: form.syllabus.trim() === "" ? null : form.syllabus,
     courseCategorieId: form.courseCategorieId === "" ? null : form.courseCategorieId,
     isPlacementGurranted: form.isPlacementGurranted,
@@ -399,6 +404,13 @@ export default function ManageCoursesPage() {
             value={form.courseImgUrl}
             onChange={(courseImgUrl) =>
               setForm((current) => ({ ...current, courseImgUrl }))
+            }
+          />
+          <ImageUrlField
+            label="Portrait image"
+            value={form.portraitImgUrl}
+            onChange={(portraitImgUrl) =>
+              setForm((current) => ({ ...current, portraitImgUrl }))
             }
           />
           <Field label="Technology tags" hint="Comma-separated">
