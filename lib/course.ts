@@ -12,6 +12,7 @@ export type CourseWriteBody = {
   duration?: string | null;
   status?: GeneralStatus;
   courseImgUrl?: string | null;
+  portraitImgUrl?: string | null;
   syllabus?: string | null;
   courseCategorieId?: string | null;
   isPlacementGurranted?: boolean;
@@ -201,6 +202,17 @@ function assignCourseFields(
       return courseImgUrl;
     }
     data.courseImgUrl = courseImgUrl.value;
+  }
+
+  if (body.portraitImgUrl !== undefined) {
+    const portraitImgUrl = parseNullableString(
+      body.portraitImgUrl,
+      "portraitImgUrl",
+    );
+    if ("error" in portraitImgUrl) {
+      return portraitImgUrl;
+    }
+    data.portraitImgUrl = portraitImgUrl.value;
   }
 
   if (body.syllabus !== undefined) {

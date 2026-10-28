@@ -68,6 +68,7 @@ export type Course = {
   duration: string | null;
   status: GeneralStatus;
   courseImgUrl: string | null;
+  portraitImgUrl: string | null;
   syllabus: string | null;
   courseCategorieId: string | null;
   isPlacementGurranted: boolean;
