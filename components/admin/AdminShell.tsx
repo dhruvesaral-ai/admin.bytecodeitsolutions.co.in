@@ -2,6 +2,8 @@ import Link from "next/link";
 
 const nav = [
   { href: "/manage", label: "Overview" },
+  { href: "/manage/users", label: "Users" },
+  { href: "/manage/sessions", label: "Active Sessions" },
   { href: "/manage/roles", label: "Roles" },
   { href: "/manage/carousals", label: "Carousals" },
   { href: "/manage/carousel-slides", label: "Carousel slides" },

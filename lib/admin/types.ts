@@ -138,6 +138,17 @@ export type Role = {
   _count?: { users: number };
 };
 
+export type AuthSession = {
+  id: string;
+  userAgent: string | null;
+  ipAddress: string | null;
+  userId: string;
+  refreshToken: string;
+  createdAt: string;
+  updatedAt: string;
+  user?: User;
+};
+
 export type User = {
   id: string;
   username: string;
@@ -147,7 +158,9 @@ export type User = {
   updatedAt: string;
   role?: Role | null;
   profile?: Profile | null;
+  authSession?: AuthSession | null;
 };
+
 
 export type Profile = {
   id: string;
@@ -235,5 +248,7 @@ export type Project = {
 
 export type ListResponse<T> = { data: T[] };
 export type ItemResponse<T> = { data: T };
+
+
 
 

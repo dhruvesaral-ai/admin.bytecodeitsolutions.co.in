@@ -3,6 +3,16 @@ import { AdminShell } from "@/components/admin/AdminShell";
 
 const sections = [
   {
+    href: "/manage/users",
+    title: "Users",
+    description: "Manage accounts, phone numbers, roles, and active/banned status.",
+  },
+  {
+    href: "/manage/sessions",
+    title: "Active Sessions",
+    description: "Inspect live device sessions, IP tracking, token validity, and revoke access.",
+  },
+  {
     href: "/manage/roles",
     title: "Roles",
     description: "Manage access levels and authorization roles for platform users.",

@@ -127,4 +127,6 @@ export const userDetailInclude = {
       addresses: true,
     },
   },
+  authSession: true,
 } as const;
+
