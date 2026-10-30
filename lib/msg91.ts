@@ -37,7 +37,13 @@ export interface Msg91Response {
  */
 export function formatMobileNumber(phone: string, defaultCountryCode = "91"): string {
   if (!phone) return "";
-  const cleaned = phone.replace(/[^0-9]/g, "");
+  let cleaned = phone.replace(/[^0-9]/g, "");
+  if (cleaned.length === 11 && cleaned.startsWith("0")) {
+    cleaned = cleaned.slice(1);
+  }
+  if (cleaned.length === 12 && cleaned.startsWith("91")) {
+    return cleaned;
+  }
   if (cleaned.length === 10) {
     return `${defaultCountryCode}${cleaned}`;
   }

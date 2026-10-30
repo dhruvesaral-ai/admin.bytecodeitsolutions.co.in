@@ -3,7 +3,6 @@ import type { IncomingMessage } from "node:http";
 import type { NextRequest } from "next/server";
 import type multer from "multer";
 import { imageUpload, pdfUpload, videoUpload } from "@/lib/multer";
-import { MSG91_API, MSG91_AUTH_KEY, MSG91_TEMPLATE_ID } from "@/config";
 
 type MulterRequest = IncomingMessage & { file?: Express.Multer.File };
 

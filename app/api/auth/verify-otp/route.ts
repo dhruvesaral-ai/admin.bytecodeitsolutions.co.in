@@ -57,9 +57,15 @@ export async function POST(request: NextRequest) {
       .toLowerCase()
       .trim();
 
-    // Find or create user
-    let user = await prisma.user.findUnique({
-      where: { username: mobile },
+    // Find or create user (matches 91XXXXXXXXXX or legacy formats)
+    let user = await prisma.user.findFirst({
+      where: {
+        OR: [
+          { username: mobile },
+          { username: mobile.slice(2) },
+          { username: `+${mobile}` },
+        ],
+      },
       include: {
         role: true,
         profile: true,
@@ -89,6 +95,16 @@ export async function POST(request: NextRequest) {
           username: mobile,
           status: "active",
         },
+        include: {
+          role: true,
+          profile: true,
+        },
+      });
+    } else if (user.username !== mobile) {
+      // Migrate legacy username to standard 91XXXXXXXXXX format
+      user = await prisma.user.update({
+        where: { id: user.id },
+        data: { username: mobile },
         include: {
           role: true,
           profile: true,

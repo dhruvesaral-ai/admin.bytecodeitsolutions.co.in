@@ -270,12 +270,12 @@ export const API_ENDPOINTS: ApiEndpoint[] = [
     requestBody: {
       contentType: "application/json",
       fields: [
-        { name: "username", type: "string", required: true, description: "Unique username or phone number (e.g. +919876543210)", example: "+919876543210" },
+        { name: "username", type: "string", required: true, description: "10-digit mobile number, saved in backend with 91 prefix", example: "9876543210" },
         { name: "roleId", type: "string | null", required: false, description: "ID of the Role to assign", example: "cmvntewju000810vw8vabpoym" },
         { name: "status", type: "string", required: false, default: "active", description: "'active' or 'inactive'", example: "active" },
       ],
       exampleJson: JSON.stringify({
-        username: "+919876543210",
+        username: "9876543210",
         roleId: "cmvntewju000810vw8vabpoym",
         status: "active",
       }, null, 2),
@@ -287,7 +287,7 @@ export const API_ENDPOINTS: ApiEndpoint[] = [
         exampleJson: JSON.stringify({
           data: {
             id: "usr_cmvntgetn000910vwq7a0bjca",
-            username: "+919876543210",
+            username: "919876543210",
             status: "active",
             roleId: "cmvntewju000810vw8vabpoym",
             createdAt: "2026-10-25T12:40:59.147Z",
@@ -316,7 +316,7 @@ export const API_ENDPOINTS: ApiEndpoint[] = [
         exampleJson: JSON.stringify({
           data: {
             id: "usr_123",
-            username: "+919876543210",
+            username: "919876543210",
             status: "active",
             roleId: "role_student",
             role: { id: "role_student", name: "Student", slug: "student" },
@@ -352,7 +352,7 @@ export const API_ENDPOINTS: ApiEndpoint[] = [
         status: 200,
         description: "User updated successfully",
         exampleJson: JSON.stringify({
-          data: { id: "usr_123", username: "+919876543210", status: "active", roleId: "role_student123" },
+          data: { id: "usr_123", username: "919876543210", status: "active", roleId: "role_student123" },
         }, null, 2),
       },
       { status: 404, description: "User not found", exampleJson: JSON.stringify({ error: "User not found" }, null, 2) },
@@ -486,7 +486,7 @@ export const API_ENDPOINTS: ApiEndpoint[] = [
               email: "aarav@example.com",
               status: "active",
               profileImgUrl: null,
-              user: { id: "cmvntgetn000910vwq7a0bjca", username: "+919876543210" },
+              user: { id: "cmvntgetn000910vwq7a0bjca", username: "919876543210" },
               addresses: [{ id: "addr_1", city: "Kota", state: "Rajasthan" }],
             },
           ],
@@ -551,7 +551,7 @@ export const API_ENDPOINTS: ApiEndpoint[] = [
             id: "prof_123",
             name: "Aarav Sharma",
             email: "aarav@example.com",
-            user: { username: "+919876543210" },
+            user: { username: "919876543210" },
             registrations: [{ id: "reg_1", registrationNo: "REG_BATCH_2026_A_AARAV_SHARMA" }],
             enrollments: [],
             payments: [{ id: "pay_1", rupees: 500, isVerified: true }],
@@ -1249,7 +1249,7 @@ export const API_ENDPOINTS: ApiEndpoint[] = [
               id: "cmvntcwp3000210vwbh8knylo",
               firstName: "Aarav",
               lastName: "Sharma",
-              username: "+919876543210",
+              username: "919876543210",
               status: "converted",
               generatedSource: "online",
               course: { id: "crs_1", name: "Full Stack Web Development" },
@@ -1271,7 +1271,7 @@ export const API_ENDPOINTS: ApiEndpoint[] = [
       contentType: "application/json",
       fields: [
         { name: "firstName", type: "string", required: true, description: "Lead first name", example: "Aarav" },
-        { name: "username", type: "string", required: true, description: "Lead phone number or contact handle", example: "+919876543210" },
+        { name: "username", type: "string", required: true, description: "10-digit lead phone number, saved in backend with 91 prefix", example: "9876543210" },
         { name: "lastName", type: "string | null", required: false, description: "Lead last name", example: "Sharma" },
         { name: "courseId", type: "string | null", required: false, description: "Interested course ID", example: "crs_1" },
         { name: "status", type: "string", required: false, default: "hot", description: "hot | medium | cold | converted", example: "hot" },
@@ -1284,7 +1284,7 @@ export const API_ENDPOINTS: ApiEndpoint[] = [
       exampleJson: JSON.stringify({
         firstName: "Aarav",
         lastName: "Sharma",
-        username: "+919876543210",
+        username: "9876543210",
         courseId: "crs_1",
         status: "hot",
         generatedSource: "online",

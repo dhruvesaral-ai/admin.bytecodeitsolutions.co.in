@@ -1,5 +1,7 @@
+import type { Prisma } from "@/generated/prisma/client";
 import { prisma } from "@/lib/db";
 import { jsonError, jsonOk } from "@/lib/api/http";
+import { normalizeUsername } from "@/lib/user";
 
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
@@ -7,13 +9,21 @@ export async function GET(request: Request) {
   const ipAddress = searchParams.get("ipAddress");
 
   try {
-    const where: {
-      user?: { username?: string };
-      ipAddress?: string;
-    } = {};
+    const where: Prisma.AuthSessionWhereInput = {};
 
     if (username) {
-      where.user = { username };
+      const normalized = normalizeUsername(username);
+      if (normalized) {
+        where.user = {
+          OR: [
+            { username: normalized },
+            { username: username.trim() },
+            { username: `+${normalized}` },
+          ],
+        };
+      } else {
+        where.user = { username: username.trim() };
+      }
     }
     if (ipAddress) {
       where.ipAddress = ipAddress;

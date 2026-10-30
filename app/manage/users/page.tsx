@@ -72,6 +72,22 @@ export default function ManageUsersPage() {
     void loadData();
   }, [loadData]);
 
+function sanitizePhoneDigits(value: string | null | undefined): string {
+  if (!value) return "";
+  let cleaned = value.trim();
+  if (cleaned.startsWith("+91")) {
+    cleaned = cleaned.slice(3);
+  }
+  const digits = cleaned.replace(/\D/g, "");
+  if (digits.length === 12 && digits.startsWith("91")) {
+    return digits.slice(2, 12);
+  }
+  if (digits.length === 11 && digits.startsWith("0")) {
+    return digits.slice(1, 11);
+  }
+  return digits.slice(0, 10);
+}
+
   function resetForm() {
     setForm(emptyForm);
     setEditingId(null);
@@ -80,7 +96,7 @@ export default function ManageUsersPage() {
   function startEdit(user: User) {
     setEditingId(user.id);
     setForm({
-      username: user.username,
+      username: sanitizePhoneDigits(user.username),
       roleId: user.roleId || "",
       status: user.status,
     });
@@ -92,8 +108,18 @@ export default function ManageUsersPage() {
     setSaving(true);
     setMessage(null);
 
+    const cleanUsername = sanitizePhoneDigits(form.username);
+    if (cleanUsername.length !== 10) {
+      setMessage({
+        tone: "error",
+        text: "Please enter a valid 10-digit phone number for username.",
+      });
+      setSaving(false);
+      return;
+    }
+
     const payload = {
-      username: form.username.trim(),
+      username: cleanUsername,
       roleId: form.roleId ? form.roleId : null,
       status: form.status,
     };
@@ -242,13 +268,14 @@ export default function ManageUsersPage() {
           <form className="grid gap-4 md:grid-cols-3" onSubmit={handleSubmit}>
             <Field
               label="Username / Mobile"
-              hint="Unique phone number or username (e.g. 919876543210)"
+              hint="10-digit mobile number (e.g. 9876543210) — saved with 91 prefix"
             >
               <Input
                 required
-                placeholder="e.g. 919876543210"
+                placeholder="e.g. 9876543210"
                 value={form.username}
-                onChange={(e) => setForm((c) => ({ ...c, username: e.target.value }))}
+                maxLength={10}
+                onChange={(e) => setForm((c) => ({ ...c, username: sanitizePhoneDigits(e.target.value) }))}
               />
             </Field>
 

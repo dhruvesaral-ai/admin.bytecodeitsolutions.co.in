@@ -47,6 +47,22 @@ export async function PATCH(request: Request, context: RouteContext) {
   }
 
   try {
+    if (typeof parsed.data.username === "string") {
+      const existing = await prisma.user.findFirst({
+        where: {
+          id: { not: id },
+          OR: [
+            { username: parsed.data.username },
+            { username: parsed.data.username.slice(2) },
+            { username: `+${parsed.data.username}` },
+          ],
+        },
+      });
+      if (existing) {
+        return jsonError("A user with this username already exists", 409);
+      }
+    }
+
     const user = await prisma.user.update({
       where: { id },
       data: parsed.data,

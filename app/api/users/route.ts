@@ -1,3 +1,4 @@
+import type { Prisma } from "@/generated/prisma/client";
 import { prisma } from "@/lib/db";
 import {
   isNextResponse,
@@ -8,6 +9,7 @@ import {
   parseJsonBody,
 } from "@/lib/api/http";
 import {
+  normalizeUsername,
   parseUserCreateBody,
   userDetailInclude,
   type UserWriteBody,
@@ -20,11 +22,7 @@ export async function GET(request: Request) {
   const username = searchParams.get("username");
 
   try {
-    const where: {
-      status?: "active" | "inactive";
-      roleId?: string;
-      username?: string;
-    } = {};
+    const where: Prisma.UserWhereInput = {};
 
     if (status === "active" || status === "inactive") {
       where.status = status;
@@ -33,7 +31,16 @@ export async function GET(request: Request) {
       where.roleId = roleId;
     }
     if (username) {
-      where.username = username;
+      const normalized = normalizeUsername(username);
+      if (normalized) {
+        where.OR = [
+          { username: normalized },
+          { username: username.trim() },
+          { username: `+${normalized}` },
+        ];
+      } else {
+        where.username = username.trim();
+      }
     }
 
     const users = await prisma.user.findMany({
@@ -59,6 +66,19 @@ export async function POST(request: Request) {
   }
 
   try {
+    const existing = await prisma.user.findFirst({
+      where: {
+        OR: [
+          { username: parsed.data.username },
+          { username: parsed.data.username.slice(2) },
+          { username: `+${parsed.data.username}` },
+        ],
+      },
+    });
+    if (existing) {
+      return jsonError("A user with this username already exists", 409);
+    }
+
     const user = await prisma.user.create({
       data: parsed.data,
       include: userDetailInclude,

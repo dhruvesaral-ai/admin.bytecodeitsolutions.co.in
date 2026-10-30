@@ -44,6 +44,22 @@ function cleanCodeSegment(value: string, fallback: string): string {
   return cleaned || fallback;
 }
 
+function sanitizePhoneDigits(value: string | null | undefined): string {
+  if (!value) return "";
+  let cleaned = value.trim();
+  if (cleaned.startsWith("+91")) {
+    cleaned = cleaned.slice(3);
+  }
+  const digits = cleaned.replace(/\D/g, "");
+  if (digits.length === 12 && digits.startsWith("91")) {
+    return digits.slice(2, 12);
+  }
+  if (digits.length === 11 && digits.startsWith("0")) {
+    return digits.slice(1, 11);
+  }
+  return digits.slice(0, 10);
+}
+
 export function buildRegistrationNumber(batchName: string, profileName: string): string {
   const cleanBatch = cleanCodeSegment(batchName, "BATCH");
   const cleanProfile = cleanCodeSegment(profileName, "STUDENT");
@@ -141,7 +157,7 @@ function LeadRegistrationWizard({
 
       // Pre-fill Step 1
       setUserForm({
-        username: leadData.username,
+        username: sanitizePhoneDigits(leadData.username),
         roleId: rolesRes.data.length > 0 ? rolesRes.data[0].id : "",
       });
 
@@ -261,9 +277,9 @@ function LeadRegistrationWizard({
     setSubmitting(true);
     setMessage(null);
 
-    const username = userForm.username.trim();
-    if (!username) {
-      setMessage({ tone: "error", text: "Username is required." });
+    const username = sanitizePhoneDigits(userForm.username);
+    if (username.length !== 10) {
+      setMessage({ tone: "error", text: "Please enter a valid 10-digit phone number for username." });
       setSubmitting(false);
       return;
     }
@@ -782,9 +798,10 @@ function LeadRegistrationWizard({
             >
               <Input
                 required
+                maxLength={10}
                 value={userForm.username}
                 onChange={(e) =>
-                  setUserForm((prev) => ({ ...prev, username: e.target.value }))
+                  setUserForm((prev) => ({ ...prev, username: sanitizePhoneDigits(e.target.value) }))
                 }
                 placeholder="e.g. 9876543210"
               />

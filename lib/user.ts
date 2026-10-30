@@ -7,6 +7,65 @@ export type UserWriteBody = {
   roleId?: string | null;
 };
 
+/**
+ * Normalizes any valid phone/username string to 91XXXXXXXXXX.
+ * Frontend always sends a 10-digit number; backend has to save it with 91 adding at first.
+ * Also handles numbers that already include 91, +91, or leading 0.
+ */
+export function normalizeUsername(value: unknown): string | null {
+  if (typeof value !== "string" || value.trim() === "") {
+    return null;
+  }
+  let digits = value.trim().replace(/\D/g, "");
+  if (digits.length === 11 && digits.startsWith("0")) {
+    digits = digits.slice(1);
+  }
+  if (digits.length === 12 && digits.startsWith("91")) {
+    return digits;
+  }
+  if (digits.length === 10) {
+    return `91${digits}`;
+  }
+  return null;
+}
+
+/**
+ * Extracts raw 10 digits from any phone/username format (+91, 91, leading 0, etc.).
+ * Suitable for UI inputs that expect only 10 digits.
+ */
+export function sanitizePhoneDigits(value: string | null | undefined): string {
+  if (!value) return "";
+  let cleaned = value.trim();
+  if (cleaned.startsWith("+91")) {
+    cleaned = cleaned.slice(3);
+  }
+  const digits = cleaned.replace(/\D/g, "");
+  if (digits.length === 12 && digits.startsWith("91")) {
+    return digits.slice(2, 12);
+  }
+  if (digits.length === 11 && digits.startsWith("0")) {
+    return digits.slice(1, 11);
+  }
+  return digits.slice(0, 10);
+}
+
+/**
+ * Parses and validates a username from the request body.
+ * Expects a 10-digit number from frontend and ensures it is returned with '91' prefixed.
+ */
+export function parseUsername(
+  value: unknown,
+): { value: string } | { error: string } {
+  if (typeof value !== "string" || value.trim() === "") {
+    return { error: "username must be a 10-digit phone number" };
+  }
+  const normalized = normalizeUsername(value);
+  if (!normalized) {
+    return { error: "username must be a 10-digit phone number" };
+  }
+  return { value: normalized };
+}
+
 function parseNonEmptyString(
   value: unknown,
   field: string,
@@ -46,7 +105,7 @@ function parseGeneralStatus(
 export function parseUserCreateBody(
   body: UserWriteBody,
 ): { data: Prisma.UserCreateInput } | { error: string } {
-  const username = parseNonEmptyString(body.username, "username");
+  const username = parseUsername(body.username);
   if ("error" in username) {
     return username;
   }
@@ -86,7 +145,7 @@ export function parseUserUpdateBody(
   const data: Prisma.UserUpdateInput = {};
 
   if (body.username !== undefined) {
-    const username = parseNonEmptyString(body.username, "username");
+    const username = parseUsername(body.username);
     if ("error" in username) {
       return username;
     }
@@ -129,4 +188,3 @@ export const userDetailInclude = {
   },
   authSession: true,
 } as const;
-

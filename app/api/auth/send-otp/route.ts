@@ -29,10 +29,14 @@ export async function POST(request: NextRequest) {
       .toLowerCase()
       .trim();
 
-    // Check user status and role
-    const user = await prisma.user.findUnique({
+    // Check user status and role (matches 91XXXXXXXXXX or legacy formats)
+    const user = await prisma.user.findFirst({
       where: {
-        username: mobile,
+        OR: [
+          { username: mobile },
+          { username: mobile.slice(2) },
+          { username: `+${mobile}` },
+        ],
       },
       include: {
         role: true,

@@ -3,6 +3,7 @@ import {
   LeadGeneratedSource as LeadGeneratedSourceValues,
   LeadStatus as LeadStatusValues,
 } from "@/generated/prisma/client";
+import { parseUsername } from "@/lib/user";
 
 export type LeadWriteBody = {
   firstName?: string;
@@ -81,20 +82,7 @@ function generatedSource(
 function parseLeadUsername(
   value: unknown,
 ): { value: string } | { error: string } {
-  if (typeof value !== "string" || value.trim() === "") {
-    return { error: "username must be a 10-digit phone number" };
-  }
-  const sanitized = value.trim().replace(/[\s-]/g, "");
-  if (/^\d{10}$/.test(sanitized)) {
-    return { value: `+91${sanitized}` };
-  }
-  if (/^\+91\d{10}$/.test(sanitized)) {
-    return { value: sanitized };
-  }
-  if (/^91\d{10}$/.test(sanitized)) {
-    return { value: `+${sanitized}` };
-  }
-  return { error: "username must be a 10-digit phone number" };
+  return parseUsername(value);
 }
 
 function assignLeadFields(
