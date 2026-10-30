@@ -1,3 +1,5 @@
+const isDev = process.env.NODE_ENV === "development";
+export const DATABASE_URL = isDev ? process.env.DATABASE_LOCAL_URL : process.env.DATABASE_URL;
 export const MSG91_API = "https://control.msg91.com/api/v5/";
 export const MSG91_AUTH_KEY = process.env.MSG91_AUTH_KEY || "";
 export const MSG91_TEMPLATE_ID = process.env.MSG91_TEMPLATE_ID || "";

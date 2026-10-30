@@ -1,8 +1,9 @@
 
 import { PrismaClient } from "@/generated/prisma/client";
 import { PrismaPg } from "@prisma/adapter-pg";
+import { DATABASE_URL } from "@/config";
 
-const connectionString = process.env.DATABASE_URL;
+const connectionString = DATABASE_URL;
 
 if (!connectionString) {
   throw new Error("DATABASE_URL is not configured");
