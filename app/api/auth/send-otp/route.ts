@@ -23,10 +23,19 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Check user status if user already exists
+    const { searchParams } = new URL(request.url);
+    const callingFrom = (body.callingFrom || searchParams.get("callingFrom") || "")
+      .toString()
+      .toLowerCase()
+      .trim();
+
+    // Check user status and role
     const user = await prisma.user.findUnique({
       where: {
         username: mobile,
+      },
+      include: {
+        role: true,
       },
     });
 
@@ -35,6 +44,17 @@ export async function POST(request: NextRequest) {
         { error: "User account is suspended or inactive" },
         { status: 403 },
       );
+    }
+
+    // When logging in from admin panel, users must already be added by staff and not have 'student' role
+    if (callingFrom === "admin") {
+      const isStudentOrUnregistered = !user || !user.role || user.role.slug === "student";
+      if (isStudentOrUnregistered) {
+        return NextResponse.json(
+          { error: "Ask staff to add you then try to login" },
+          { status: 403 },
+        );
+      }
     }
 
     // Client metadata

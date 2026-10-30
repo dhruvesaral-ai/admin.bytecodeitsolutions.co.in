@@ -76,6 +76,7 @@ export const API_ENDPOINTS: ApiEndpoint[] = [
       contentType: "application/json",
       fields: [
         { name: "mobile", type: "string", required: true, description: "Recipient mobile phone number (with or without country code)", example: "9876543210" },
+        { name: "callingFrom", type: "string", required: false, description: "Origin client portal (e.g. 'admin'). When set to 'admin', only pre-registered staff (non-student) can request OTP.", example: "admin" },
         { name: "template_id", type: "string", required: false, description: "Override MSG91 template ID (defaults to ENV template ID)" },
         { name: "otp_expiry", type: "number", required: false, description: "OTP validity duration in minutes (default: 15)", example: 15 },
         { name: "otp_length", type: "number", required: false, description: "Number of digits (4 to 9, default: 4)", example: 4 },
@@ -83,6 +84,7 @@ export const API_ENDPOINTS: ApiEndpoint[] = [
       ],
       exampleJson: JSON.stringify({
         mobile: "9876543210",
+        callingFrom: "admin",
         params: { Param1: "value1" },
       }, null, 2),
     },

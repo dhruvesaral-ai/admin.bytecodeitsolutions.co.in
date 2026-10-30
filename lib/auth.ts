@@ -344,3 +344,75 @@ export async function revokeUserSession(userId: string) {
     where: { userId },
   });
 }
+
+/**
+ * Server-side session verification for Server Components & Layouts.
+ * Returns the user if authenticated and has a non-student staff role.
+ */
+export async function getServerSessionUser() {
+  try {
+    const { cookies } = await import("next/headers");
+    const cookieStore = await cookies();
+    const accessToken = cookieStore.get("access_token")?.value;
+    const refreshToken = cookieStore.get("refresh_token")?.value;
+
+    if (!accessToken && !refreshToken) {
+      return null;
+    }
+
+    // 1. Try verifying short-lived access token
+    if (accessToken) {
+      try {
+        const decoded = verifyJwtToken<AuthTokenPayload>(accessToken);
+        if (decoded.type === "access" && decoded.userId) {
+          const user = await prisma.user.findUnique({
+            where: { id: decoded.userId },
+            include: { role: true, profile: true },
+          });
+
+          if (
+            user &&
+            user.status === "active" &&
+            user.role &&
+            user.role.slug !== "student"
+          ) {
+            return user;
+          }
+        }
+      } catch {
+        // TokenExpiredError or invalid, fall back to database refresh token
+      }
+    }
+
+    // 2. If access token is expired, verify database session with refresh token
+    if (refreshToken) {
+      try {
+        const session = await prisma.authSession.findUnique({
+          where: { refreshToken },
+          include: {
+            user: {
+              include: { role: true, profile: true },
+            },
+          },
+        });
+
+        if (
+          session &&
+          session.user &&
+          session.user.status === "active" &&
+          session.user.role &&
+          session.user.role.slug !== "student"
+        ) {
+          return session.user;
+        }
+      } catch {
+        return null;
+      }
+    }
+
+    return null;
+  } catch {
+    return null;
+  }
+}
+

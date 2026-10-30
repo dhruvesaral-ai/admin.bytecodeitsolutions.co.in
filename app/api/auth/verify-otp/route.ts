@@ -51,6 +51,12 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    const { searchParams } = new URL(request.url);
+    const callingFrom = (body.callingFrom || searchParams.get("callingFrom") || "")
+      .toString()
+      .toLowerCase()
+      .trim();
+
     // Find or create user
     let user = await prisma.user.findUnique({
       where: { username: mobile },
@@ -65,6 +71,16 @@ export async function POST(request: NextRequest) {
         { error: "User account is suspended or inactive" },
         { status: 403 },
       );
+    }
+
+    if (callingFrom === "admin") {
+      const isStudentOrUnregistered = !user || !user.role || user.role.slug === "student";
+      if (isStudentOrUnregistered) {
+        return NextResponse.json(
+          { error: "ask staff to add you then try to login" },
+          { status: 403 },
+        );
+      }
     }
 
     if (!user) {
