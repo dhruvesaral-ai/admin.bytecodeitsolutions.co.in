@@ -64,6 +64,166 @@ export const API_CATEGORIES: ApiCategory[] = [
 ];
 
 export const API_ENDPOINTS: ApiEndpoint[] = [
+  // ================= AUTH (MSG91 & SESSIONS) =================
+  {
+    id: "auth-send-otp",
+    category: "users",
+    method: "POST",
+    path: "/api/auth/send-otp",
+    title: "Send OTP via MSG91",
+    description: "Sends an OTP via MSG91 SMS API. Supports template parameters, custom OTP, expiry, and phone normalization.",
+    requestBody: {
+      contentType: "application/json",
+      fields: [
+        { name: "mobile", type: "string", required: true, description: "Recipient mobile phone number (with or without country code)", example: "9876543210" },
+        { name: "template_id", type: "string", required: false, description: "Override MSG91 template ID (defaults to ENV template ID)" },
+        { name: "otp_expiry", type: "number", required: false, description: "OTP validity duration in minutes (default: 15)", example: 15 },
+        { name: "otp_length", type: "number", required: false, description: "Number of digits (4 to 9, default: 4)", example: 4 },
+        { name: "params", type: "object", required: false, description: "Key-value dictionary for template variables (e.g. Param1, Param2)", example: { Param1: "value1" } },
+      ],
+      exampleJson: JSON.stringify({
+        mobile: "9876543210",
+        params: { Param1: "value1" },
+      }, null, 2),
+    },
+    responses: [
+      {
+        status: 200,
+        description: "OTP sent successfully",
+        exampleJson: JSON.stringify({ success: true, message: "OTP sent successfully", type: "success", mobile: "919876543210" }, null, 2),
+      },
+      {
+        status: 400,
+        description: "Invalid input or MSG91 error",
+        exampleJson: JSON.stringify({ error: "Invalid mobile number format" }, null, 2),
+      },
+    ],
+  },
+  {
+    id: "auth-verify-otp",
+    category: "users",
+    method: "POST",
+    path: "/api/auth/verify-otp",
+    title: "Verify OTP & Issue Session",
+    description: "Verifies the entered OTP with MSG91. On success, creates/finds the user, records the AuthSession, and issues short-lived JWT (15m) and refresh token (30d).",
+    requestBody: {
+      contentType: "application/json",
+      fields: [
+        { name: "mobile", type: "string", required: true, description: "Recipient mobile phone number", example: "9876543210" },
+        { name: "otp", type: "string", required: true, description: "OTP code entered by user", example: "1234" },
+      ],
+      exampleJson: JSON.stringify({ mobile: "9876543210", otp: "1234" }, null, 2),
+    },
+    responses: [
+      {
+        status: 200,
+        description: "OTP verified, returns tokens and sets auth cookies",
+        exampleJson: JSON.stringify({
+          success: true,
+          message: "OTP verified successfully",
+          accessToken: "eyJhbGciOiJIUzI1NiIs...",
+          refreshToken: "eyJhbGciOiJIUzI1NiIs...",
+          user: { id: "usr_abc123", username: "919876543210", status: "active", role: null, profile: null },
+        }, null, 2),
+      },
+      {
+        status: 400,
+        description: "Incorrect or expired OTP",
+        exampleJson: JSON.stringify({ error: "OTP not match" }, null, 2),
+      },
+    ],
+  },
+  {
+    id: "auth-resend-otp",
+    category: "users",
+    method: "POST",
+    path: "/api/auth/resend-otp",
+    title: "Resend / Retry OTP",
+    description: "Retries delivering the OTP via SMS ('text') or voice call ('voice') using MSG91 retry API.",
+    requestBody: {
+      contentType: "application/json",
+      fields: [
+        { name: "mobile", type: "string", required: true, description: "Recipient mobile phone number", example: "9876543210" },
+        { name: "retrytype", type: "string", required: false, default: "text", description: "'text' for SMS retry or 'voice' for voice call", example: "text" },
+      ],
+      exampleJson: JSON.stringify({ mobile: "9876543210", retrytype: "text" }, null, 2),
+    },
+    responses: [
+      {
+        status: 200,
+        description: "Retry triggered successfully",
+        exampleJson: JSON.stringify({ success: true, message: "retry send successfully", type: "success", retrytype: "text", mobile: "919876543210" }, null, 2),
+      },
+    ],
+  },
+  {
+    id: "auth-refresh",
+    category: "users",
+    method: "POST",
+    path: "/api/auth/refresh",
+    title: "Refresh Access Token",
+    description: "When the short-lived access token expires, validates the user's active session in the database with the refresh token and issues a brand new access token.",
+    requestBody: {
+      contentType: "application/json",
+      fields: [
+        { name: "refreshToken", type: "string", required: false, description: "Refresh token (can alternatively be sent in x-refresh-token header or cookie)", example: "eyJhbGciOiJIUzI1NiIs..." },
+        { name: "rotateRefreshToken", type: "boolean", required: false, default: "false", description: "Whether to rotate the refresh token as well" },
+      ],
+      exampleJson: JSON.stringify({ refreshToken: "eyJhbGciOiJIUzI1NiIs..." }, null, 2),
+    },
+    responses: [
+      {
+        status: 200,
+        description: "New access token issued successfully",
+        exampleJson: JSON.stringify({
+          success: true,
+          message: "New access token issued successfully",
+          accessToken: "eyJhbGciOiJIUzI1NiIs...",
+          refreshToken: "eyJhbGciOiJIUzI1NiIs...",
+          user: { id: "usr_abc123", username: "919876543210", status: "active" },
+        }, null, 2),
+      },
+      {
+        status: 401,
+        description: "Session expired or revoked",
+        exampleJson: JSON.stringify({ error: "Session not found or has been revoked" }, null, 2),
+      },
+    ],
+  },
+  {
+    id: "auth-session",
+    category: "users",
+    method: "GET",
+    path: "/api/auth/session",
+    title: "Get Current Session & User",
+    description: "Validates current request authentication. If short-lived JWT is expired, automatically checks database session and returns refreshed token.",
+    responses: [
+      {
+        status: 200,
+        description: "Session validated",
+        exampleJson: JSON.stringify({
+          success: true,
+          user: { id: "usr_abc123", username: "919876543210", status: "active" },
+          refreshed: false,
+        }, null, 2),
+      },
+    ],
+  },
+  {
+    id: "auth-logout",
+    category: "users",
+    method: "POST",
+    path: "/api/auth/logout",
+    title: "Logout User Session",
+    description: "Revokes the active AuthSession from database and clears HTTP-only authentication cookies.",
+    responses: [
+      {
+        status: 200,
+        description: "Logged out successfully",
+        exampleJson: JSON.stringify({ success: true, message: "Logged out successfully" }, null, 2),
+      },
+    ],
+  },
   // ================= USERS =================
   {
     id: "users-list",

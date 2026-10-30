@@ -42,8 +42,21 @@ model User {
   updatedAt     DateTime       @updatedAt @map("updated_at")
   role          Role?          @relation(fields: [roleId], references: [id])
   profile       Profile?
-
+  authSession   AuthSession?
   @@map("user")
+}
+
+model AuthSession {
+  id        String   @id @default(cuid())
+  userAgent String?  @map("user_agent")
+  ipAddress String?  @map("ip_address")
+  userId    String   @unique @map("user_id")
+  refreshToken String @unique @map("refresh_token")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("auth_session")
 }
 
 model Profile {

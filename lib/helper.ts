@@ -3,6 +3,7 @@ import type { IncomingMessage } from "node:http";
 import type { NextRequest } from "next/server";
 import type multer from "multer";
 import { imageUpload, pdfUpload, videoUpload } from "@/lib/multer";
+import { MSG91_API, MSG91_AUTH_KEY, MSG91_TEMPLATE_ID } from "@/config";
 
 type MulterRequest = IncomingMessage & { file?: Express.Multer.File };
 
@@ -53,4 +54,17 @@ export async function uploadPdf(request: NextRequest) {
 export async function uploadVideo(request: NextRequest) {
   const file = await runSingle(request, videoUpload.single("file"));
   return { url: `/uploads/videos/${file.filename}` };
+}
+
+import { sendMsg91Otp } from "@/lib/msg91";
+
+export async function generateFourDigitOtp(): Promise<string> {
+  return Math.floor(1000 + Math.random() * 9000).toString();
+}
+
+export async function sendOtpToSms(phoneNumber: string, otp?: string) {
+  return await sendMsg91Otp({
+    mobile: phoneNumber,
+    otp,
+  });
 }
