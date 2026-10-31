@@ -1419,7 +1419,7 @@ export const API_ENDPOINTS: ApiEndpoint[] = [
         { name: "routeName", type: "string", required: true, description: "Target frontend path; normalized to lowercase slug (e.g. '/About Us/' -> 'about-us')", example: "about-us" },
         { name: "heading", type: "string", required: true, description: "Page heading", example: "About Bytecode" },
         { name: "subheading", type: "string", required: true, description: "Page subheading", example: "Who we are" },
-        { name: "videoUrl", type: "string", required: true, description: "Page showcase/hero video URL (from /api/upload/video or direct URL)", example: "/uploads/videos/about-demo.mp4" },
+        { name: "videoUrl", type: "string | null", required: false, description: "Page showcase/hero video URL (from /api/upload/video or direct URL)", example: "/uploads/videos/about-demo.mp4" },
         { name: "visits", type: "number", required: false, default: "0", description: "Initial visit count (non-negative integer)", example: 0 },
       ],
       exampleJson: JSON.stringify({ routeName: "about-us", heading: "About Bytecode", subheading: "Who we are", videoUrl: "/uploads/videos/about-demo.mp4" }, null, 2),

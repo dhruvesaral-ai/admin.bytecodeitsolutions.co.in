@@ -3,7 +3,7 @@ import type { Prisma } from "@/generated/prisma/client";
 export type PageWriteBody = {
   heading?: string;
   subheading?: string;
-  videoUrl?: string;
+  videoUrl?: string | null;
   routeName?: string;
   visits?: number;
 };
@@ -35,6 +35,20 @@ function parseNonEmptyString(
   return { value: value.trim() };
 }
 
+function parseNullableString(
+  value: unknown,
+  field: string,
+): { value: string | null } | { error: string } {
+  if (value === null || value === undefined) {
+    return { value: null };
+  }
+  if (typeof value !== "string") {
+    return { error: `${field} must be a string or null` };
+  }
+  const trimmed = value.trim();
+  return { value: trimmed === "" ? null : trimmed };
+}
+
 function parseCount(value: unknown): { value: number } | { error: string } {
   if (typeof value !== "number" || !Number.isInteger(value) || value < 0) {
     return { error: "visits must be a non-negative integer" };
@@ -55,9 +69,13 @@ export function parsePageCreateBody(
     return subheading;
   }
 
-  const videoUrl = parseNonEmptyString(body.videoUrl, "videoUrl");
-  if ("error" in videoUrl) {
-    return videoUrl;
+  let videoUrl: string | null = null;
+  if (body.videoUrl !== undefined && body.videoUrl !== null) {
+    const parsedVideoUrl = parseNullableString(body.videoUrl, "videoUrl");
+    if ("error" in parsedVideoUrl) {
+      return parsedVideoUrl;
+    }
+    videoUrl = parsedVideoUrl.value;
   }
 
   const rawRouteName = parseNonEmptyString(body.routeName, "routeName");
@@ -86,7 +104,7 @@ export function parsePageCreateBody(
     data: {
       heading: heading.value,
       subheading: subheading.value,
-      videoUrl: videoUrl.value,
+      videoUrl,
       routeName,
       ...(visits !== undefined ? { visits } : {}),
     },
@@ -115,7 +133,7 @@ export function parsePageUpdateBody(
   }
 
   if (body.videoUrl !== undefined) {
-    const videoUrl = parseNonEmptyString(body.videoUrl, "videoUrl");
+    const videoUrl = parseNullableString(body.videoUrl, "videoUrl");
     if ("error" in videoUrl) {
       return videoUrl;
     }

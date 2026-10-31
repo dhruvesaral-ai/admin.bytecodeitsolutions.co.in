@@ -5,4 +5,4 @@
 
 */
 -- AlterTable
-ALTER TABLE "page" ADD COLUMN     "video_url" TEXT NOT NULL;
+ALTER TABLE "page" ADD COLUMN     "video_url" TEXT;

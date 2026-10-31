@@ -85,20 +85,11 @@ export default function ManagePagesPage() {
       return;
     }
 
-    if (!form.videoUrl.trim()) {
-      setMessage({
-        tone: "error",
-        text: "Please provide or upload a showcase video for this page",
-      });
-      setSaving(false);
-      return;
-    }
-
     try {
       const payload = {
         heading: form.heading.trim(),
         subheading: form.subheading.trim(),
-        videoUrl: form.videoUrl.trim(),
+        videoUrl: form.videoUrl.trim() || null,
         routeName: formattedRoute,
       };
 
@@ -295,7 +286,7 @@ export default function ManagePagesPage() {
           {/* Showcase Video */}
           <div className="md:col-span-2">
             <VideoUrlField
-              label="Page showcase video"
+              label="Page showcase video (optional)"
               value={form.videoUrl}
               onChange={(videoUrl) =>
                 setForm((current) => ({
@@ -303,7 +294,6 @@ export default function ManagePagesPage() {
                   videoUrl,
                 }))
               }
-              required
             />
           </div>
 
@@ -479,29 +469,33 @@ export default function ManagePagesPage() {
               </button>
             </div>
 
-            <div className="mt-4 space-y-3">
-              <video
-                src={previewPage.videoUrl}
-                controls
-                autoPlay
-                className="max-h-80 w-full rounded-xl bg-black object-contain shadow-sm"
-              >
-                Your browser does not support HTML5 video.
-              </video>
-              <div className="flex items-center justify-between text-xs text-zinc-500">
-                <span className="truncate max-w-[80%] font-mono text-zinc-600 dark:text-zinc-400">
-                  {previewPage.videoUrl}
-                </span>
-                <a
-                  href={previewPage.videoUrl}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="font-medium text-indigo-600 hover:underline dark:text-indigo-400"
+            {previewPage.videoUrl ? (
+              <div className="mt-4 space-y-3">
+                <video
+                  src={previewPage.videoUrl}
+                  controls
+                  autoPlay
+                  className="max-h-80 w-full rounded-xl bg-black object-contain shadow-sm"
                 >
-                  Open in tab ↗
-                </a>
+                  Your browser does not support HTML5 video.
+                </video>
+                <div className="flex items-center justify-between text-xs text-zinc-500">
+                  <span className="truncate max-w-[80%] font-mono text-zinc-600 dark:text-zinc-400">
+                    {previewPage.videoUrl}
+                  </span>
+                  <a
+                    href={previewPage.videoUrl}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="font-medium text-indigo-600 hover:underline dark:text-indigo-400"
+                  >
+                    Open in tab ↗
+                  </a>
+                </div>
               </div>
-            </div>
+            ) : (
+              <p className="mt-4 text-sm text-zinc-500">No video configured for this page.</p>
+            )}
           </div>
         </div>
       ) : null}

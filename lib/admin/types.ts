@@ -112,7 +112,7 @@ export type Page = {
   id: string;
   heading: string;
   subheading: string;
-  videoUrl: string;
+  videoUrl: string | null;
   routeName: string;
   visits: number;
 };
