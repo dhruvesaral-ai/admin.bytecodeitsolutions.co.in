@@ -310,7 +310,7 @@ model Page {
   id         String    @id @default(cuid())
   heading    String
   subheading String
-  videoUrl   String    @map("video_url")
+  videoUrl   String?    @map("video_url")
   routeName  String    @unique @map("route_name")
   visits     Int       @default(0)
   createdAt  DateTime  @default(now()) @map("created_at")
