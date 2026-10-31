@@ -3,6 +3,7 @@ import type { Prisma } from "@/generated/prisma/client";
 export type PageWriteBody = {
   heading?: string;
   subheading?: string;
+  videoUrl?: string;
   routeName?: string;
   visits?: number;
 };
@@ -54,6 +55,11 @@ export function parsePageCreateBody(
     return subheading;
   }
 
+  const videoUrl = parseNonEmptyString(body.videoUrl, "videoUrl");
+  if ("error" in videoUrl) {
+    return videoUrl;
+  }
+
   const rawRouteName = parseNonEmptyString(body.routeName, "routeName");
   if ("error" in rawRouteName) {
     return rawRouteName;
@@ -80,6 +86,7 @@ export function parsePageCreateBody(
     data: {
       heading: heading.value,
       subheading: subheading.value,
+      videoUrl: videoUrl.value,
       routeName,
       ...(visits !== undefined ? { visits } : {}),
     },
@@ -107,6 +114,14 @@ export function parsePageUpdateBody(
     data.subheading = subheading.value;
   }
 
+  if (body.videoUrl !== undefined) {
+    const videoUrl = parseNonEmptyString(body.videoUrl, "videoUrl");
+    if ("error" in videoUrl) {
+      return videoUrl;
+    }
+    data.videoUrl = videoUrl.value;
+  }
+
   if (body.routeName !== undefined) {
     const rawRouteName = parseNonEmptyString(body.routeName, "routeName");
     if ("error" in rawRouteName) {
@@ -132,7 +147,8 @@ export function parsePageUpdateBody(
 
   if (Object.keys(data).length === 0) {
     return {
-      error: "At least one of heading, subheading, routeName, or visits is required",
+      error:
+        "At least one of heading, subheading, videoUrl, routeName, or visits is required",
     };
   }
 

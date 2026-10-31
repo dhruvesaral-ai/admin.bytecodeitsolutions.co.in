@@ -15,16 +15,19 @@ import {
 import { apiDelete, apiGet, apiPatch, apiPost, ApiError } from "@/lib/admin/client";
 import type { Page, ListResponse } from "@/lib/admin/types";
 import { formatRouteName } from "@/lib/page";
+import { VideoUrlField } from "@/components/admin/VideoUrlField";
 
 type FormState = {
   heading: string;
   subheading: string;
+  videoUrl: string;
   routeName: string;
 };
 
 const emptyForm: FormState = {
   heading: "",
   subheading: "",
+  videoUrl: "",
   routeName: "",
 };
 
@@ -36,6 +39,7 @@ export default function ManagePagesPage() {
   const [saving, setSaving] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [copiedRoute, setCopiedRoute] = useState<string | null>(null);
+  const [previewPage, setPreviewPage] = useState<Page | null>(null);
   const [message, setMessage] = useState<{
     tone: "error" | "success";
     text: string;
@@ -81,20 +85,28 @@ export default function ManagePagesPage() {
       return;
     }
 
+    if (!form.videoUrl.trim()) {
+      setMessage({
+        tone: "error",
+        text: "Please provide or upload a showcase video for this page",
+      });
+      setSaving(false);
+      return;
+    }
+
     try {
+      const payload = {
+        heading: form.heading.trim(),
+        subheading: form.subheading.trim(),
+        videoUrl: form.videoUrl.trim(),
+        routeName: formattedRoute,
+      };
+
       if (editingId) {
-        await apiPatch(`/api/pages/${editingId}`, {
-          heading: form.heading,
-          subheading: form.subheading,
-          routeName: formattedRoute,
-        });
+        await apiPatch(`/api/pages/${editingId}`, payload);
         setMessage({ tone: "success", text: "Page updated successfully." });
       } else {
-        await apiPost("/api/pages", {
-          heading: form.heading,
-          subheading: form.subheading,
-          routeName: formattedRoute,
-        });
+        await apiPost("/api/pages", payload);
         setMessage({ tone: "success", text: "Page created successfully." });
       }
       resetForm();
@@ -133,6 +145,7 @@ export default function ManagePagesPage() {
     setForm({
       heading: item.heading,
       subheading: item.subheading,
+      videoUrl: item.videoUrl ?? "",
       routeName: item.routeName,
     });
     window.scrollTo({ top: 0, behavior: "smooth" });
@@ -158,14 +171,15 @@ export default function ManagePagesPage() {
       (item) =>
         item.routeName.toLowerCase().includes(query) ||
         item.heading.toLowerCase().includes(query) ||
-        item.subheading.toLowerCase().includes(query),
+        item.subheading.toLowerCase().includes(query) ||
+        (item.videoUrl && item.videoUrl.toLowerCase().includes(query)),
     );
   }, [items, searchQuery]);
 
   return (
     <AdminShell
       title="Pages"
-      description="Create and manage dynamic frontend website pages with customizable headings, subheadings, and URL routes."
+      description="Create and manage dynamic frontend website pages with customizable headings, subheadings, showcase videos, and URL routes."
     >
       {message ? <Alert tone={message.tone}>{message.text}</Alert> : null}
 
@@ -278,6 +292,21 @@ export default function ManagePagesPage() {
             </Field>
           </div>
 
+          {/* Showcase Video */}
+          <div className="md:col-span-2">
+            <VideoUrlField
+              label="Page showcase video"
+              value={form.videoUrl}
+              onChange={(videoUrl) =>
+                setForm((current) => ({
+                  ...current,
+                  videoUrl,
+                }))
+              }
+              required
+            />
+          </div>
+
           {/* Submit Actions */}
           <div className="flex items-center gap-3 md:col-span-2 pt-2">
             <Button type="submit" disabled={saving}>
@@ -304,7 +333,7 @@ export default function ManagePagesPage() {
             <div className="w-56 sm:w-64">
               <Input
                 type="search"
-                placeholder="Search route or heading…"
+                placeholder="Search route, heading, video…"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
               />
@@ -317,13 +346,13 @@ export default function ManagePagesPage() {
         ) : items.length === 0 ? (
           <EmptyState>
             No pages created yet. Use the form above to add your first page route
-            (e.g. "home", "training").
+            (e.g. &quot;home&quot;, &quot;training&quot;).
           </EmptyState>
         ) : filteredItems.length === 0 ? (
-          <EmptyState>No pages match your search query "{searchQuery}".</EmptyState>
+          <EmptyState>No pages match your search query &quot;{searchQuery}&quot;.</EmptyState>
         ) : (
           <DataTable
-            columns={["Route", "Heading", "Subheading", "Actions"]}
+            columns={["Route", "Heading", "Subheading", "Video", "Actions"]}
             rows={filteredItems.map((item) => [
               <div key="route" className="flex items-center gap-2">
                 <span className="inline-flex items-center rounded-md bg-indigo-50 px-2.5 py-1 font-mono text-xs font-semibold text-indigo-700 ring-1 ring-inset ring-indigo-700/10 dark:bg-indigo-950/50 dark:text-indigo-300 dark:ring-indigo-400/20">
@@ -367,6 +396,45 @@ export default function ManagePagesPage() {
               >
                 {item.subheading}
               </div>,
+              <div key="video" className="flex items-center gap-2">
+                {item.videoUrl ? (
+                  <>
+                    <button
+                      type="button"
+                      onClick={() => setPreviewPage(item)}
+                      className="inline-flex items-center gap-1.5 rounded-md bg-purple-50 px-2.5 py-1 text-xs font-semibold text-purple-700 hover:bg-purple-100 transition dark:bg-purple-950/50 dark:text-purple-300 dark:hover:bg-purple-900/50"
+                      title="Preview video"
+                    >
+                      <span>🎬 Watch</span>
+                    </button>
+                    <a
+                      href={item.videoUrl}
+                      target="_blank"
+                      rel="noreferrer"
+                      title="Open video URL in new tab"
+                      className="rounded p-1 text-zinc-400 hover:bg-zinc-100 hover:text-zinc-600 dark:hover:bg-zinc-800 dark:hover:text-zinc-200"
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="13"
+                        height="13"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      >
+                        <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
+                        <polyline points="15 3 21 3 21 9" />
+                        <line x1="10" y1="14" x2="21" y2="3" />
+                      </svg>
+                    </a>
+                  </>
+                ) : (
+                  <span className="text-xs text-zinc-400 italic">— None</span>
+                )}
+              </div>,
               <div key="actions" className="flex gap-2">
                 <Button variant="secondary" onClick={() => startEdit(item)}>
                   Edit
@@ -382,6 +450,61 @@ export default function ManagePagesPage() {
           />
         )}
       </Card>
+
+      {/* Video Preview Modal */}
+      {previewPage ? (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 backdrop-blur-xs"
+          onClick={() => setPreviewPage(null)}
+        >
+          <div
+            className="relative max-h-[90vh] w-full max-w-2xl overflow-y-auto rounded-2xl border border-zinc-200 bg-white p-6 shadow-2xl dark:border-zinc-800 dark:bg-zinc-900"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="flex items-start justify-between border-b border-zinc-100 pb-4 dark:border-zinc-800">
+              <div>
+                <h3 className="text-lg font-bold text-zinc-900 dark:text-zinc-50">
+                  {previewPage.heading}
+                </h3>
+                <p className="text-xs text-zinc-500 font-mono">
+                  /{previewPage.routeName}
+                </p>
+              </div>
+              <button
+                type="button"
+                onClick={() => setPreviewPage(null)}
+                className="rounded-lg p-1 text-zinc-400 hover:bg-zinc-100 hover:text-zinc-600 dark:hover:bg-zinc-800 dark:hover:text-zinc-200"
+              >
+                ✕
+              </button>
+            </div>
+
+            <div className="mt-4 space-y-3">
+              <video
+                src={previewPage.videoUrl}
+                controls
+                autoPlay
+                className="max-h-80 w-full rounded-xl bg-black object-contain shadow-sm"
+              >
+                Your browser does not support HTML5 video.
+              </video>
+              <div className="flex items-center justify-between text-xs text-zinc-500">
+                <span className="truncate max-w-[80%] font-mono text-zinc-600 dark:text-zinc-400">
+                  {previewPage.videoUrl}
+                </span>
+                <a
+                  href={previewPage.videoUrl}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="font-medium text-indigo-600 hover:underline dark:text-indigo-400"
+                >
+                  Open in tab ↗
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      ) : null}
     </AdminShell>
   );
 }
